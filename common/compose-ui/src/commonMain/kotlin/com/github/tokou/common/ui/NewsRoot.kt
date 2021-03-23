@@ -8,6 +8,6 @@ import com.github.tokou.common.root.NewsRoot
 fun NewsRoot(component: NewsRoot) {
     Children(routerState = component.routerState) { child, _ -> when (child) {
         is NewsRoot.Child.Main -> NewsListScreen(component = child.component)
-        is NewsRoot.Child.Detail -> NewsDetailScreen()
+        is NewsRoot.Child.Detail -> NewsDetailScreen(component = child.component)
     } }
 }

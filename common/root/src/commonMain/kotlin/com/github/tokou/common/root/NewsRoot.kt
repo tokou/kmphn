@@ -2,17 +2,18 @@ package com.github.tokou.common.root
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.RouterState
+import com.arkivanov.decompose.pop
+import com.arkivanov.decompose.push
 import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.github.tokou.common.detail.NewsDetail
+import com.github.tokou.common.detail.NewsDetailComponent
 import com.github.tokou.common.main.NewsMain
 import com.github.tokou.common.main.NewsMainComponent
 import com.github.tokou.common.root.NewsRoot.*
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.SendChannel
 
 interface NewsRoot {
     val routerState: Value<RouterState<*, Child>>
@@ -25,21 +26,14 @@ interface NewsRoot {
 
 class NewsRootComponent(
     componentContext: ComponentContext,
-    private val newsMain: (ComponentContext, SendChannel<NewsMain.Output>) -> NewsMain,
-    private val newsDetail: (ComponentContext, SendChannel<NewsDetail.Output>) -> NewsDetail,
+    private val newsMain: (ComponentContext, (NewsMain.Output) -> Unit) -> NewsMain,
+    private val newsDetail: (ComponentContext, (NewsDetail.Output) -> Unit) -> NewsDetail,
 ): NewsRoot, ComponentContext by componentContext {
 
     constructor(componentContext: ComponentContext) : this(
         componentContext = componentContext,
-        newsMain = { context, _ ->
-            NewsMainComponent(context)
-        },
-        newsDetail = { _, _ ->
-            object : NewsDetail {
-                override val models: Value<NewsDetail.Model>
-                    get() = MutableValue(NewsDetail.Model(NewsDetail.News(1, "", null, "", "", "", "")))
-            }
-        }
+        newsMain = { context, output -> NewsMainComponent(context, output) },
+        newsDetail = { context, output -> NewsDetailComponent(context, output) }
     )
 
     private val router = router<Configuration, Child>(
@@ -53,15 +47,13 @@ class NewsRootComponent(
         is Configuration.Detail -> Child.Detail(newsDetail(componentContext, detailOutput()))
     }
 
-    private fun mainOutput(): SendChannel<NewsMain.Output> {
-        val c = Channel<NewsMain.Output>()
-        return c
-    }
+    private fun mainOutput() = { output: NewsMain.Output -> when (output) {
+        is NewsMain.Output.Selected -> router.push(Configuration.Detail(1))
+    } }
 
-    private fun detailOutput(): SendChannel<NewsDetail.Output> {
-        val c = Channel<NewsDetail.Output>()
-        return c
-    }
+    private fun detailOutput() = { output: NewsDetail.Output -> when (output) {
+        is NewsDetail.Output.Back -> router.pop()
+    } }
 
     override val routerState: Value<RouterState<*, Child>> = router.state
 

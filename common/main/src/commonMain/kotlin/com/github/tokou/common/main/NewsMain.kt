@@ -35,7 +35,8 @@ interface NewsMain {
 }
 
 class NewsMainComponent(
-    componentContext: ComponentContext
+    componentContext: ComponentContext,
+    private val onOutput: (Output) -> Unit
 ): NewsMain, ComponentContext by componentContext {
 
     private val _models = MutableValue(Model(news))
@@ -46,6 +47,7 @@ class NewsMainComponent(
     }
 
     override fun onNewsSecondarySelected(id: Long) {
+        onOutput(Output.Selected(id))
     }
 
     override fun onLoadMoreSelected() {

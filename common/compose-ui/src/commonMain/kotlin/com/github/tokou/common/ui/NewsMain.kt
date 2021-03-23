@@ -35,7 +35,7 @@ fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
         NewsList(
             news = model.news,
             onLinkClick = { component.onNewsSelected(it.id) },
-            onItemClick = { component.onNewsSelected(it.id) }
+            onItemClick = { component.onNewsSecondarySelected(it.id) }
         )
     }
 }

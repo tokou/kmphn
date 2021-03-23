@@ -1,6 +1,9 @@
 package com.github.tokou.common.detail
 
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.MutableValue
+import com.arkivanov.decompose.ComponentContext
+import com.github.tokou.common.detail.NewsDetail.*
 
 interface NewsDetail {
 
@@ -9,6 +12,8 @@ interface NewsDetail {
     data class Model(
         val news: News
     )
+
+    fun onBack()
 
     sealed class Output {
         object Back : Output()
@@ -23,4 +28,27 @@ interface NewsDetail {
         val comments: String,
         val points: String,
     )
+}
+
+val news = News(
+    id = 1,
+    title = "Firefox 87 trims HTTP Referrers by default to protect user privacy",
+    link = "https://blog.mozilla.org/security/2021/03/22/firefox-87-trims-http-referrers-by-default-to-protect-user-privacy/",
+    user = "twapi",
+    time = "4 hrs",
+    comments = "137",
+    points = "542"
+)
+
+class NewsDetailComponent(
+    componentContext: ComponentContext,
+    private val onOutput: (Output) -> Unit
+): NewsDetail, ComponentContext by componentContext {
+
+    private val _models = MutableValue(Model(news))
+    override val models: Value<Model> = _models
+
+    override fun onBack() {
+        onOutput(Output.Back)
+    }
 }
