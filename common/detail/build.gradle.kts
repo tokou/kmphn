@@ -39,6 +39,7 @@ kotlin {
                 implementation("com.arkivanov.decompose:decompose:0.1.9")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
                 implementation(project(":common:api"))
+                implementation(project(":common:utils"))
             }
         }
         val commonTest by getting

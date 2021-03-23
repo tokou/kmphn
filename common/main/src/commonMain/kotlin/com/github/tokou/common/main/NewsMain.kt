@@ -1,10 +1,10 @@
 package com.github.tokou.common.main
 
-import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.reduce
 import com.github.tokou.common.main.NewsMain.*
+import com.github.tokou.common.utils.ComponentContext
 
 interface NewsMain {
 

@@ -6,12 +6,15 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponen
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
+import kotlinx.coroutines.runBlocking
 
-fun main() = Window("HN") {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        AppTheme {
-            val rootComponent = rememberRootComponent { NewsRootComponent(it) }
-            NewsRoot(component = rootComponent)
+fun main() = runBlocking {
+    Window("HN") {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            AppTheme {
+                val rootComponent = rememberRootComponent { NewsRootComponent(it, this) }
+                NewsRoot(component = rootComponent)
+            }
         }
     }
 }

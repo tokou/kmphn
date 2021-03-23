@@ -1,19 +1,20 @@
 package com.github.tokou.common.root
 
-import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.RouterState
 import com.arkivanov.decompose.pop
 import com.arkivanov.decompose.push
-import com.arkivanov.decompose.router
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
-import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetailComponent
 import com.github.tokou.common.main.NewsMain
 import com.github.tokou.common.main.NewsMainComponent
-import com.github.tokou.common.root.NewsRoot.*
+import com.github.tokou.common.root.NewsRoot.Child
+import com.github.tokou.common.utils.ComponentContext
+import com.github.tokou.common.utils.router
+import kotlinx.coroutines.CoroutineScope
+import com.arkivanov.decompose.ComponentContext as DecomposeComponentContext
 
 interface NewsRoot {
     val routerState: Value<RouterState<*, Child>>
@@ -25,21 +26,24 @@ interface NewsRoot {
 }
 
 class NewsRootComponent(
-    componentContext: ComponentContext,
+    componentContext: DecomposeComponentContext,
+    coroutineScope: CoroutineScope,
     private val newsMain: (ComponentContext, (NewsMain.Output) -> Unit) -> NewsMain,
     private val newsDetail: (ComponentContext, (NewsDetail.Output) -> Unit) -> NewsDetail,
-): NewsRoot, ComponentContext by componentContext {
+): NewsRoot, ComponentContext, DecomposeComponentContext by componentContext, CoroutineScope by coroutineScope {
 
-    constructor(componentContext: ComponentContext) : this(
+    constructor(componentContext: DecomposeComponentContext, coroutineScope: CoroutineScope) : this(
         componentContext = componentContext,
+        coroutineScope = coroutineScope,
         newsMain = { context, output -> NewsMainComponent(context, output) },
         newsDetail = { context, output -> NewsDetailComponent(context, output) }
     )
 
-    private val router = router<Configuration, Child>(
-        initialConfiguration = Configuration.Main,
+    private val router = router(
+        initialConfiguration = { Configuration.Main },
         handleBackButton = true,
-        componentFactory = ::createChild
+        componentFactory = ::createChild,
+        configurationClass = Configuration::class
     )
 
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child = when (configuration) {

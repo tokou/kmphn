@@ -20,6 +20,7 @@ kotlin {
             dependencies {
                 implementation(project(":common:compose-ui"))
                 implementation(project(":common:root"))
+                implementation(project(":common:utils"))
                 implementation(compose.desktop.currentOs)
                 implementation("com.arkivanov.decompose:decompose:0.1.9")
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:0.1.9")

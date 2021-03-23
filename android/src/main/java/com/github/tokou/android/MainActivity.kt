@@ -3,6 +3,7 @@ package com.github.tokou.android
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
+import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.NewsRoot
@@ -14,7 +15,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
-                val rootComponent = rememberRootComponent { NewsRootComponent(it) }
+                val rootComponent = rememberRootComponent { NewsRootComponent(it, lifecycleScope) }
                 NewsRoot(component = rootComponent)
             }
         }

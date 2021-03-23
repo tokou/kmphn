@@ -58,6 +58,7 @@ kotlin {
                 implementation(project(":common:main"))
                 implementation(project(":common:detail"))
                 implementation(project(":common:root"))
+                implementation(project(":common:utils"))
             }
         }
         val commonTest by getting
