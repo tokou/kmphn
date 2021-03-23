@@ -21,6 +21,8 @@ kotlin {
                 implementation(project(":common:compose-ui"))
                 implementation(project(":common:root"))
                 implementation(compose.desktop.currentOs)
+                implementation("com.arkivanov.decompose:decompose:0.1.9")
+                implementation("com.arkivanov.decompose:extensions-compose-jetbrains:0.1.9")
             }
         }
         val jvmTest by getting
