@@ -12,6 +12,7 @@ rootProject.name = "hn"
 
 include(":android")
 include(":desktop")
+include(":common:api")
 include(":common:compose-ui")
 include(":common:root")
 include(":common:main")

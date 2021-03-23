@@ -3,14 +3,20 @@ package com.github.tokou.common.detail
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.lifecycle.doOnCreate
+import com.arkivanov.decompose.value.reduce
+import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.detail.NewsDetail.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 interface NewsDetail {
 
     val models: Value<Model>
 
     data class Model(
-        val news: News
+        val news: News,
+        val maxitem: Long = 0
     )
 
     fun onBack()
@@ -47,6 +53,17 @@ class NewsDetailComponent(
 
     private val _models = MutableValue(Model(news))
     override val models: Value<Model> = _models
+
+    init {
+        lifecycle.doOnCreate {
+            GlobalScope.launch {
+                val id = NewsApi.fetchMaxItemId()
+                val item = NewsApi.fetchItem(id)
+                println(item)
+                _models.reduce { it.copy(maxitem = id) }
+            }
+        }
+    }
 
     override fun onBack() {
         onOutput(Output.Back)

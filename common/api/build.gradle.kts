@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization") version "1.4.30"
     id("com.android.library")
 }
 
@@ -36,19 +37,32 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.arkivanov.decompose:decompose:0.1.9")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-                implementation(project(":common:api"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
+                implementation("io.ktor:ktor-client-core:1.5.2")
+                implementation("io.ktor:ktor-client-json:1.5.2")
+                implementation("io.ktor:ktor-client-logging:1.5.2")
+                implementation("io.ktor:ktor-client-serialization:1.5.2")
             }
         }
         val commonTest by getting
-        val androidMain by getting
+        val androidMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-okhttp:1.5.2")
+                implementation("org.slf4j:slf4j-simple:1.7.30")
+            }
+        }
         val androidTest by getting {
             dependencies {
                 implementation("junit:junit:4.13.2")
             }
         }
-        val desktopMain by getting
+        val desktopMain by getting {
+            dependencies {
+                implementation("io.ktor:ktor-client-okhttp:1.5.2")
+                implementation("org.slf4j:slf4j-simple:1.7.30")
+            }
+        }
         val desktopTest by getting
     }
 
