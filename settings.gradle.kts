@@ -13,3 +13,6 @@ rootProject.name = "hn"
 include(":android")
 include(":desktop")
 include(":common:compose-ui")
+include(":common:root")
+include(":common:main")
+include(":common:detail")
