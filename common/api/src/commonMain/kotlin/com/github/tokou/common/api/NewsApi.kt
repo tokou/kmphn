@@ -1,5 +1,8 @@
 package com.github.tokou.common.api
 
+import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.Timestamp
+import com.github.tokou.common.utils.UserId
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -23,10 +26,6 @@ fun createHttpClient(json: Json, enableNetworkLogs: Boolean) = HttpClient {
         level = if (enableNetworkLogs) LogLevel.INFO else LogLevel.NONE
     }
 }
-
-typealias ItemId = Long
-typealias UserId = String
-typealias Timestamp = Long
 
 // https://hackernews.api-docs.io/v0/overview/introduction
 object NewsApi {

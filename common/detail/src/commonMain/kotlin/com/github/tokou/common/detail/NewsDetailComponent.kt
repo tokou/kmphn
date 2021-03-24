@@ -6,6 +6,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.utils.ComponentContext
+import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.asValue
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.Dispatchers

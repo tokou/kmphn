@@ -2,6 +2,9 @@ package com.github.tokou.common.detail
 
 import com.arkivanov.mvikotlin.core.store.Store
 import com.github.tokou.common.detail.NewsDetailStore.*
+import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.Timestamp
+import com.github.tokou.common.utils.UserId
 
 internal interface NewsDetailStore : Store<Intent, State, Label> {
 
