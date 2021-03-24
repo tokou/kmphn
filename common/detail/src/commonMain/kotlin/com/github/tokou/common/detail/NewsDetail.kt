@@ -48,6 +48,7 @@ val news = News(
 
 class NewsDetailComponent(
     componentContext: ComponentContext,
+    itemId: Long,
     private val onOutput: (Output) -> Unit
 ): NewsDetail, ComponentContext by componentContext {
 

@@ -29,14 +29,20 @@ class NewsRootComponent(
     componentContext: DecomposeComponentContext,
     coroutineScope: CoroutineScope,
     private val newsMain: (ComponentContext, (NewsMain.Output) -> Unit) -> NewsMain,
-    private val newsDetail: (ComponentContext, (NewsDetail.Output) -> Unit) -> NewsDetail,
+    private val newsDetail: (ComponentContext, itemId: Long, (NewsDetail.Output) -> Unit) -> NewsDetail,
 ): NewsRoot, ComponentContext, DecomposeComponentContext by componentContext, CoroutineScope by coroutineScope {
 
     constructor(componentContext: DecomposeComponentContext, coroutineScope: CoroutineScope) : this(
         componentContext = componentContext,
         coroutineScope = coroutineScope,
         newsMain = { context, output -> NewsMainComponent(context, output) },
-        newsDetail = { context, output -> NewsDetailComponent(context, output) }
+        newsDetail = { context, itemId, output ->
+            NewsDetailComponent(
+                componentContext = context,
+                itemId = itemId,
+                onOutput = output,
+            )
+        }
     )
 
     private val router = router(
@@ -48,11 +54,11 @@ class NewsRootComponent(
 
     private fun createChild(configuration: Configuration, componentContext: ComponentContext): Child = when (configuration) {
         Configuration.Main -> Child.Main(newsMain(componentContext, mainOutput()))
-        is Configuration.Detail -> Child.Detail(newsDetail(componentContext, detailOutput()))
+        is Configuration.Detail -> Child.Detail(newsDetail(componentContext, configuration.itemId, detailOutput()))
     }
 
     private fun mainOutput() = { output: NewsMain.Output -> when (output) {
-        is NewsMain.Output.Selected -> router.push(Configuration.Detail(1))
+        is NewsMain.Output.Selected -> router.push(Configuration.Detail(output.id))
     } }
 
     private fun detailOutput() = { output: NewsDetail.Output -> when (output) {
