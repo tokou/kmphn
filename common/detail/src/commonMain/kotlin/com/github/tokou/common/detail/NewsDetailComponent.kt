@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.utils.ComponentContext
+import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,22 +32,31 @@ class NewsDetailComponent(
         points = points.toString()
     )
 
-    private fun NewsDetailStore.Comment.asModel(op: UserId?): NewsDetail.Comment = when (this) {
+    private fun NewsDetailStore.Comment.asModel(collapsedIds: Set<ItemId>, op: UserId?): NewsDetail.Comment = when (this) {
         is NewsDetailStore.Comment.Loading -> NewsDetail.Comment.Loading(id)
-        is NewsDetailStore.Comment.Content -> NewsDetail.Comment.Content.Expanded(
-            id = id,
-            user = user,
-            time = time.toString(),
-            isOp = user == op,
-            children = comments.map { c -> c.asModel(op) },
-            text = text,
-        )
+        is NewsDetailStore.Comment.Content -> {
+            if (collapsedIds.contains(id)) NewsDetail.Comment.Content.Collapsed(
+                id = id,
+                user = user,
+                isOp = user == op,
+                time = time.toString(),
+                childrenCount = childrenCount.toString()
+            )
+            else NewsDetail.Comment.Content.Expanded(
+                id = id,
+                user = user,
+                time = time.toString(),
+                isOp = user == op,
+                children = comments.map { c -> c.asModel(collapsedIds, op) },
+                text = text,
+            )
+        }
     }
 
     private val stateToModel: suspend (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
         is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
             header = it.news.asHeader(),
-            comments = it.news.comments.map { c -> c.asModel(it.news.user) }
+            comments = it.news.comments.map { c -> c.asModel(it.collapsedComments, it.news.user) }
         )
         else -> NewsDetail.Model.Empty
     } }
@@ -64,5 +74,9 @@ class NewsDetailComponent(
 
     override fun onBack() {
         onOutput(NewsDetail.Output.Back)
+    }
+
+    override fun onCommentClicked(comment: NewsDetail.Comment.Content) {
+        store.accept(NewsDetailStore.Intent.ToggleComment(comment.id))
     }
 }

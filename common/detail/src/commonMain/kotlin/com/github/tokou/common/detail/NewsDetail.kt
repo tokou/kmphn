@@ -6,6 +6,7 @@ interface NewsDetail {
 
     val models: Flow<Model>
 
+    fun onCommentClicked(comment: Comment.Content)
     fun onBack()
 
     sealed class Output {

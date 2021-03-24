@@ -8,13 +8,18 @@ import com.github.tokou.common.utils.UserId
 
 interface NewsDetailStore : Store<Intent, State, Label> {
 
-    sealed class Intent
+    sealed class Intent {
+        data class ToggleComment(val id: ItemId) : Intent()
+    }
 
     sealed class State {
         object Error : State()
         object Loading : State()
         object Empty : State()
-        data class Content(val news: News) : State()
+        data class Content(
+            val news: News,
+            val collapsedComments: Set<ItemId> = emptySet()
+        ) : State()
     }
 
     data class News(
@@ -38,7 +43,9 @@ interface NewsDetailStore : Store<Intent, State, Label> {
             val time: Timestamp,
             val text: String,
             val comments: List<Comment>
-        ) : Comment()
+        ) : Comment() {
+            val childrenCount: Int = comments.size + comments.sumBy { (it as? Content)?.childrenCount ?: 1 }
+        }
     }
 
     sealed class Label

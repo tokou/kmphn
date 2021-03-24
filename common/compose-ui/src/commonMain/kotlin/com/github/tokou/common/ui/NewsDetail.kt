@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import com.github.tokou.common.platform.VerticalScrollbar
 import com.github.tokou.common.platform.rememberScrollbarAdapter
+import com.github.tokou.common.utils.UserId
 
 @Composable
 fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
@@ -35,7 +36,7 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
         when (m) {
             Model.Empty -> Text("No Story Selected")
             Model.Loading -> Text("Loading...")
-            is Model.Content -> NewsDetailContent(m)
+            is Model.Content -> NewsDetailContent(m, component::onCommentClicked)
         }
     }
 }
@@ -58,11 +59,18 @@ fun NewsDetailBar(onBack: () -> Unit) = TopAppBar(
 
 
 @Composable
-fun NewsDetailContent(content: Model.Content) {
+fun NewsDetailContent(content: Model.Content, onCommentClicked: (Comment.Content) -> Unit) {
     val state = rememberLazyListState()
 
     Box(Modifier.fillMaxSize()) {
-        NewsComments(modifier = Modifier.fillMaxWidth(), state = state, comments = content.comments) {
+        NewsComments(
+            modifier = Modifier.fillMaxWidth(),
+            state = state,
+            comments = content.comments,
+            onCommentClicked = onCommentClicked,
+            onUserClicked = {},
+            onLinkClicked = {},
+        ) {
             NewsHeader(header = content.header)
         }
         VerticalScrollbar(
@@ -87,23 +95,53 @@ fun NewsComments(
     modifier: Modifier = Modifier,
     comments: List<Comment>,
     state: LazyListState = rememberLazyListState(),
+    onCommentClicked: (Comment.Content) -> Unit,
+    onUserClicked: (UserId) -> Unit,
+    onLinkClicked: (String) -> Unit,
     header: @Composable () -> Unit = {}
 ) {
+
+    fun LazyListScope.commentTree(comments: List<Comment>, padding: Dp = 0.dp) {
+        comments.forEach { c ->
+            when (c) {
+                is Comment.Loading -> item {
+                    Text(
+                        text = "Loading comment ${c.id}",
+                        modifier = Modifier
+                            .padding(start = padding)
+                            .fillMaxWidth()
+                    )
+                }
+                is Comment.Content.Collapsed -> item {
+                    Text(
+                        text = "Commend collapsed ${c.id} ${c.childrenCount}",
+                        modifier = Modifier
+                            .padding(start = padding)
+                            .clickable { onCommentClicked(c) }
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    )
+                }
+                is Comment.Content.Expanded -> {
+                    item {
+                        Text(
+                            text = "Comment expanded ${c.id}",
+                            modifier = Modifier
+                                .padding(start = padding)
+                                .clickable { onCommentClicked(c) }
+                                .padding(16.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+                    commentTree(c.children, padding + 16.dp)
+                }
+            }
+        }
+    }
+
     LazyColumn(modifier = modifier, state = state) {
         item { header() }
         commentTree(comments)
     }
 }
 
-private fun LazyListScope.commentTree(comments: List<Comment>, padding: Dp = 0.dp) {
-    comments.forEach { c ->
-        when (c) {
-            is Comment.Loading -> item { Text("Loading comment ${c.id}", modifier = Modifier.padding(start = padding)) }
-            is Comment.Content.Collapsed -> item { Text("Commend collapsed ${c.id}", modifier = Modifier.padding(start = padding)) }
-            is Comment.Content.Expanded -> {
-                item { Text("Comment expanded ${c.id}", modifier = Modifier.padding(start = padding)) }
-                commentTree(c.children, padding + 16.dp)
-            }
-        }
-    }
-}
