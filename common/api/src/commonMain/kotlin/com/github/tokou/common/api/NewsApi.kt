@@ -1,26 +1,26 @@
 package com.github.tokou.common.api
 
 import io.ktor.client.*
-import io.ktor.client.request.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
+import io.ktor.client.request.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 
-fun createJson() = Json { ignoreUnknownKeys = true }
+fun createJson() = Json {
+    ignoreUnknownKeys = true
+}
 
 fun createHttpClient(json: Json, enableNetworkLogs: Boolean) = HttpClient {
     install(JsonFeature) {
         serializer = KotlinxSerializer(json)
     }
-    if (enableNetworkLogs) {
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.INFO
-        }
+    install(Logging) {
+        logger = Logger.DEFAULT
+        level = if (enableNetworkLogs) LogLevel.INFO else LogLevel.NONE
     }
 }
 
@@ -130,6 +130,6 @@ object NewsApi {
     suspend fun fetchAskStoriesIds() = client.get<List<Long>>("$baseUrl/askstories.json")
     suspend fun fetchShowStoriesIds() = client.get<List<Long>>("$baseUrl/showstories.json")
     suspend fun fetchUpdates() = client.get<Updates>("$baseUrl/updates.json")
-    suspend fun fetchUser(id: String) = client.get<User>("$baseUrl/user/$id.json")
-    suspend fun fetchItem(id: Long) = client.get<Item>("$baseUrl/item/$id.json")
+    suspend fun fetchUser(id: String) = client.get<User?>("$baseUrl/user/$id.json")
+    suspend fun fetchItem(id: Long) = client.get<Item?>("$baseUrl/item/$id.json")
 }
