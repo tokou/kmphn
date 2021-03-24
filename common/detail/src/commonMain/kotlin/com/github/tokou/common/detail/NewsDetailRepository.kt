@@ -4,20 +4,21 @@ import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.Item
 import com.github.tokou.common.database.NewsDatabase
 
-private fun Item.asNewsDetail(): NewsDetail.News = NewsDetail.News(
-    id = id,
-    title = title.orEmpty(),
-    link = link,
-    user = user.orEmpty(),
-    time = created,
-    comments = "0",
-    points = "0"
-)
-
 class NewsDetailRepository(
     private val database: NewsDatabase,
     private val api: NewsApi
 ) : NewsDetailStoreProvider.Repository {
+
+    private fun Item.asNewsDetail(): NewsDetail.News = NewsDetail.News(
+        id = id,
+        title = title.orEmpty(),
+        link = link,
+        user = user.orEmpty(),
+        time = created,
+        comments = "0",
+        points = "0"
+    )
+
     override suspend fun load(id: Long): NewsDetail.News? {
         val queries = database.itemQueries
         val dbItem = queries.selectById(id).executeAsOneOrNull()
@@ -55,5 +56,4 @@ class NewsDetailRepository(
             type = this::class.simpleName!!
         )
     }
-
 }

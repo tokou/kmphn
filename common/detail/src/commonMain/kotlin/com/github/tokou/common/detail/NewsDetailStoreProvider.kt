@@ -5,6 +5,7 @@ import com.arkivanov.mvikotlin.core.store.SimpleBootstrapper
 import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
+import com.github.tokou.common.detail.NewsDetailStore.*
 
 internal class NewsDetailStoreProvider(
     private val storeFactory: StoreFactory,
@@ -12,9 +13,9 @@ internal class NewsDetailStoreProvider(
     private val id: Long
 ) {
 
-    fun provide(): NewsDetailStore = object : NewsDetailStore, Store<NewsDetailStore.Intent, NewsDetailStore.State, NewsDetailStore.Label> by storeFactory.create(
+    fun provide(): NewsDetailStore = object : NewsDetailStore, Store<Intent, State, Label> by storeFactory.create(
         name = "NewsDetailStore",
-        initialState = NewsDetailStore.State.Empty,
+        initialState = State.Empty,
         bootstrapper = SimpleBootstrapper(Unit),
         executorFactory = ::ExecutorImpl,
         reducer = ReducerImpl
@@ -25,16 +26,16 @@ internal class NewsDetailStoreProvider(
         object NotFound : Result()
     }
 
-    private object ReducerImpl : Reducer<NewsDetailStore.State, Result> {
-        override fun NewsDetailStore.State.reduce(result: Result): NewsDetailStore.State =
+    private object ReducerImpl : Reducer<State, Result> {
+        override fun State.reduce(result: Result): State =
             when (result) {
-                is Result.Loaded -> NewsDetailStore.State.Content(result.item)
-                Result.NotFound -> NewsDetailStore.State.Error
+                is Result.Loaded -> State.Content(result.item)
+                Result.NotFound -> State.Error
             }
     }
 
-    private inner class ExecutorImpl : SuspendExecutor<NewsDetailStore.Intent, Unit, NewsDetailStore.State, Result, NewsDetailStore.Label>() {
-        override suspend fun executeAction(action: Unit, getState: () -> NewsDetailStore.State) {
+    private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>() {
+        override suspend fun executeAction(action: Unit, getState: () -> State) {
             repository.load(id)?.let { dispatch(Result.Loaded(it)) } ?: dispatch(Result.NotFound)
         }
     }

@@ -37,35 +37,3 @@ interface NewsDetail {
         val points: String,
     )
 }
-
-class NewsDetailComponent(
-    componentContext: ComponentContext,
-    storeFactory: StoreFactory,
-    database: NewsDatabase,
-    itemId: Long,
-    private val onOutput: (Output) -> Unit
-): NewsDetail, ComponentContext by componentContext {
-
-    private val store =
-        instanceKeeper.getStore {
-            NewsDetailStoreProvider(
-                storeFactory = storeFactory,
-                repository = NewsDetailRepository(database, NewsApi),
-                id = itemId
-            ).provide()
-        }
-
-    override val models: Value<Model> = store
-        .asValue(this + Dispatchers.Main)
-        .map(stateToModel)
-        .map { it.copy(maxitem = itemId) }
-
-    override fun onBack() {
-        onOutput(Output.Back)
-    }
-}
-
-internal val stateToModel: (NewsDetailStore.State) -> Model = { when (it) {
-    is NewsDetailStore.State.Content -> Model(it.news)
-    else -> Model()
-} }
