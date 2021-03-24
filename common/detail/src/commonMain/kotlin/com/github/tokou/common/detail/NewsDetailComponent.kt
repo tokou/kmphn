@@ -21,9 +21,34 @@ class NewsDetailComponent(
     private val onOutput: (NewsDetail.Output) -> Unit
 ): NewsDetail, ComponentContext by componentContext {
 
+    private fun NewsDetailStore.News.asHeader() = NewsDetail.Header(
+        id = id,
+        title = title.orEmpty(),
+        link = link,
+        user = user.orEmpty(),
+        time = time.toString(),
+        commentsCount = descendants.toString(),
+        points = points.toString()
+    )
+
+    private fun NewsDetailStore.Comment.asModel(op: UserId?): NewsDetail.Comment = when (this) {
+        is NewsDetailStore.Comment.Loading -> NewsDetail.Comment.Loading(id)
+        is NewsDetailStore.Comment.Content -> NewsDetail.Comment.Content.Expanded(
+            id = id,
+            user = user,
+            time = time.toString(),
+            isOp = user == op,
+            children = comments.map { c -> c.asModel(op) },
+            text = text,
+        )
+    }
+
     private val stateToModel: (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
-        is NewsDetailStore.State.Content -> NewsDetail.Model(it.news)
-        else -> NewsDetail.Model()
+        is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
+            header = it.news.asHeader(),
+            comments = it.news.comments.map { c -> c.asModel(it.news.user) }
+        )
+        else -> NewsDetail.Model.Empty
     } }
 
     private val store =
@@ -38,7 +63,6 @@ class NewsDetailComponent(
     override val models: Value<NewsDetail.Model> = store
         .asValue(this + Dispatchers.Main)
         .map(stateToModel)
-        .map { it.copy(maxitem = itemId) }
 
     override fun onBack() {
         onOutput(NewsDetail.Output.Back)

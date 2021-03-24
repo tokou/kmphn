@@ -9,17 +9,18 @@ class NewsDetailRepository(
     private val api: NewsApi
 ) : NewsDetailStoreProvider.Repository {
 
-    private fun Item.asNewsDetail(): NewsDetail.News = NewsDetail.News(
+    private fun Item.asNewsDetail() = NewsDetailStore.News(
         id = id,
         title = title.orEmpty(),
         link = link,
         user = user.orEmpty(),
-        time = created,
-        comments = "0",
-        points = "0"
+        time = 0,
+        comments = kids.map { NewsDetailStore.Comment.Loading(it) },
+        points = 0,
+        descendants = 0
     )
 
-    override suspend fun load(id: Long): NewsDetail.News? {
+    override suspend fun load(id: Long): NewsDetailStore.News? {
         val queries = database.itemQueries
         val dbItem = queries.selectById(id).executeAsOneOrNull()
         if (dbItem != null) return dbItem.asNewsDetail()

@@ -7,7 +7,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.github.tokou.common.detail.NewsDetailStore.*
 
-internal class NewsDetailStoreProvider(
+class NewsDetailStoreProvider(
     private val storeFactory: StoreFactory,
     private val repository: Repository,
     private val id: Long
@@ -22,7 +22,7 @@ internal class NewsDetailStoreProvider(
     ) {}
 
     private sealed class Result {
-        data class Loaded(val item: NewsDetail.News) : Result()
+        data class Loaded(val item: News) : Result()
         object NotFound : Result()
     }
 
@@ -41,6 +41,6 @@ internal class NewsDetailStoreProvider(
     }
 
     interface Repository {
-        suspend fun load(id: Long): NewsDetail.News?
+        suspend fun load(id: Long): News?
     }
 }
