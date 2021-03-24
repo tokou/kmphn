@@ -9,6 +9,8 @@ import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.database.NewsDatabaseDriver
+import com.github.tokou.common.database.createDatabase
+import com.github.tokou.common.database.peristentDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
@@ -24,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                         componentContext = it,
                         coroutineScope = lifecycleScope,
                         storeFactory = LoggingStoreFactory(DefaultStoreFactory),
-                        database = NewsDatabase(NewsDatabaseDriver(this))
+                        database = createDatabase(peristentDatabaseDriver(this))
                     )
                 }
                 NewsRoot(component = rootComponent)
