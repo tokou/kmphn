@@ -1,0 +1,8 @@
+
+CREATE TABLE IF NOT EXISTS comment(
+id INTEGER NOT NULL PRIMARY KEY,
+user TEXT,
+created TEXT NOT NULL,
+content TEXT,
+parentId INTEGER REFERENCES comment(id)
+);
