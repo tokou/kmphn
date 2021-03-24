@@ -6,6 +6,8 @@ import com.arkivanov.mvikotlin.core.store.Store
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.github.tokou.common.detail.NewsDetailStore.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 class NewsDetailStoreProvider(
     private val storeFactory: StoreFactory,
@@ -35,12 +37,19 @@ class NewsDetailStoreProvider(
     }
 
     private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>() {
-        override suspend fun executeAction(action: Unit, getState: () -> State) {
-            repository.load(id)?.let { dispatch(Result.Loaded(it)) } ?: dispatch(Result.NotFound)
+        override suspend fun executeAction(action: Unit, getState: () -> State) = coroutineScope<Unit> {
+            repository
+                .updates
+                .map(Result::Loaded)
+                .flowOn(Dispatchers.Default)
+                .onEach(::dispatch)
+                .launchIn(this)
+            repository.load(id)
         }
     }
 
     interface Repository {
-        suspend fun load(id: Long): News?
+        val updates: Flow<News>
+        suspend fun load(id: Long)
     }
 }
