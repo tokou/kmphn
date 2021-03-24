@@ -2,10 +2,7 @@ package com.github.tokou.common.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.*
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
@@ -18,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.asState
+import androidx.compose.ui.unit.Dp
 import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetail.*
 import androidx.compose.runtime.getValue
@@ -94,14 +91,18 @@ fun NewsComments(
 ) {
     LazyColumn(modifier = modifier, state = state) {
         item { header() }
-        items(items = comments) {
-            when (it) {
-                is Comment.Loading -> Text("Loading comment ${it.id}")
-                is Comment.Content.Collapsed -> Text(it.toString())
-                is Comment.Content.Expanded -> NewsComments(
-                    modifier = modifier.padding(start = 16.dp),
-                    comments = it.children,
-                )
+        commentTree(comments)
+    }
+}
+
+private fun LazyListScope.commentTree(comments: List<Comment>, padding: Dp = 0.dp) {
+    comments.forEach { c ->
+        when (c) {
+            is Comment.Loading -> item { Text("Loading comment ${c.id}", modifier = Modifier.padding(start = padding)) }
+            is Comment.Content.Collapsed -> item { Text("Commend collapsed ${c.id}", modifier = Modifier.padding(start = padding)) }
+            is Comment.Content.Expanded -> {
+                item { Text("Comment expanded ${c.id}", modifier = Modifier.padding(start = padding)) }
+                commentTree(c.children, padding + 16.dp)
             }
         }
     }
