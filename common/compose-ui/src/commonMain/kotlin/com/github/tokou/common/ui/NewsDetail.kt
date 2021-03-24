@@ -29,7 +29,7 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
     ) {
         Column {
             Text(text = model.maxitem.toString())
-            NewsDetail(news = model.news)
+            model.news?.let { NewsDetail(news = it) } ?: Text("No news")
         }
     }
 }

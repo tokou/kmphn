@@ -1,21 +1,23 @@
 package com.github.tokou.common.detail
 
 import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.lifecycle.doOnCreate
-import com.arkivanov.decompose.value.reduce
+import com.arkivanov.decompose.value.operator.map
+import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.github.tokou.common.api.NewsApi
+import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.detail.NewsDetail.*
 import com.github.tokou.common.utils.ComponentContext
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.github.tokou.common.utils.asValue
+import com.github.tokou.common.utils.getStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.plus
 
 interface NewsDetail {
 
     val models: Value<Model>
 
     data class Model(
-        val news: News,
+        val news: News? = null,
         val maxitem: Long = 0
     )
 
@@ -36,37 +38,34 @@ interface NewsDetail {
     )
 }
 
-val news = News(
-    id = 1,
-    title = "Firefox 87 trims HTTP Referrers by default to protect user privacy",
-    link = "https://blog.mozilla.org/security/2021/03/22/firefox-87-trims-http-referrers-by-default-to-protect-user-privacy/",
-    user = "twapi",
-    time = "4 hrs",
-    comments = "137",
-    points = "542"
-)
-
 class NewsDetailComponent(
     componentContext: ComponentContext,
+    storeFactory: StoreFactory,
+    database: NewsDatabase,
     itemId: Long,
     private val onOutput: (Output) -> Unit
 ): NewsDetail, ComponentContext by componentContext {
 
-    private val _models = MutableValue(Model(news))
-    override val models: Value<Model> = _models
-
-    init {
-        lifecycle.doOnCreate {
-            launch {
-                val id = NewsApi.fetchMaxItemId()
-                val item = NewsApi.fetchItem(id)
-                println(item)
-                _models.reduce { it.copy(maxitem = id) }
-            }
+    private val store =
+        instanceKeeper.getStore {
+            NewsDetailStoreProvider(
+                storeFactory = storeFactory,
+                repository = NewsDetailRepository(database, NewsApi),
+                id = itemId
+            ).provide()
         }
-    }
+
+    override val models: Value<Model> = store
+        .asValue(this + Dispatchers.Main)
+        .map(stateToModel)
+        .map { it.copy(maxitem = itemId) }
 
     override fun onBack() {
         onOutput(Output.Back)
     }
 }
+
+internal val stateToModel: (NewsDetailStore.State) -> Model = { when (it) {
+    is NewsDetailStore.State.Content -> Model(it.news)
+    else -> Model()
+} }
