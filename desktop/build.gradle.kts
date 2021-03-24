@@ -19,11 +19,16 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(project(":common:compose-ui"))
+                implementation(project(":common:database"))
                 implementation(project(":common:root"))
                 implementation(project(":common:utils"))
                 implementation(compose.desktop.currentOs)
                 implementation("com.arkivanov.decompose:decompose:0.1.9")
                 implementation("com.arkivanov.decompose:extensions-compose-jetbrains:0.1.9")
+                implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")
+                implementation("com.arkivanov.mvikotlin:mvikotlin-main:2.0.1")
+                implementation("com.arkivanov.mvikotlin:mvikotlin-logging:2.0.1")
+                implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
             }
         }
         val jvmTest by getting

@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
+import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
+import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.github.tokou.common.database.NewsDatabase
+import com.github.tokou.common.database.NewsDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
@@ -15,7 +19,14 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             AppTheme {
-                val rootComponent = rememberRootComponent { NewsRootComponent(it, lifecycleScope) }
+                val rootComponent = rememberRootComponent {
+                    NewsRootComponent(
+                        componentContext = it,
+                        coroutineScope = lifecycleScope,
+                        storeFactory = LoggingStoreFactory(DefaultStoreFactory),
+                        database = NewsDatabase(NewsDatabaseDriver(this))
+                    )
+                }
                 NewsRoot(component = rootComponent)
             }
         }

@@ -6,6 +6,8 @@ import com.arkivanov.decompose.push
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetailComponent
 import com.github.tokou.common.main.NewsMain
@@ -32,13 +34,20 @@ class NewsRootComponent(
     private val newsDetail: (ComponentContext, itemId: Long, (NewsDetail.Output) -> Unit) -> NewsDetail,
 ): NewsRoot, ComponentContext, DecomposeComponentContext by componentContext, CoroutineScope by coroutineScope {
 
-    constructor(componentContext: DecomposeComponentContext, coroutineScope: CoroutineScope) : this(
+    constructor(
+        componentContext: DecomposeComponentContext,
+        coroutineScope: CoroutineScope,
+        storeFactory: StoreFactory,
+        database: NewsDatabase
+    ) : this(
         componentContext = componentContext,
         coroutineScope = coroutineScope,
         newsMain = { context, output -> NewsMainComponent(context, output) },
         newsDetail = { context, itemId, output ->
             NewsDetailComponent(
                 componentContext = context,
+                storeFactory = storeFactory,
+                database = database,
                 itemId = itemId,
                 onOutput = output,
             )
