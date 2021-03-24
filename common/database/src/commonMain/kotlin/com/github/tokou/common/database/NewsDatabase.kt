@@ -12,6 +12,7 @@ private val kidsAdapter = object : ColumnAdapter<List<Long>, String> {
 }
 
 fun createDatabase(driver: SqlDriver): NewsDatabase {
-    val adapter = Item.Adapter(kidsAdapter)
-    return NewsDatabase(driver, adapter)
+    val itemAdapter = Item.Adapter(kidsAdapter)
+    val commentAdapter = Comment.Adapter(kidsAdapter)
+    return NewsDatabase(driver, commentAdapter, itemAdapter)
 }
