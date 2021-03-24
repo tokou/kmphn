@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.arkivanov.decompose.extensions.compose.jetbrains.asState
@@ -27,7 +28,7 @@ import com.github.tokou.common.platform.rememberScrollbarAdapter
 
 @Composable
 fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
-    val model by component.models.asState()
+    val model by component.models.collectAsState(Model.Empty)
 
     Scaffold(
         modifier = modifier,

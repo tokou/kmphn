@@ -1,14 +1,13 @@
 package com.github.tokou.common.main
 
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.reduce
 import com.github.tokou.common.main.NewsMain.*
 import com.github.tokou.common.utils.ComponentContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 interface NewsMain {
 
-    val models: Value<Model>
+    val models: Flow<Model>
 
     data class Model(
         val news: List<News>
@@ -39,11 +38,11 @@ class NewsMainComponent(
     private val onOutput: (Output) -> Unit
 ): NewsMain, ComponentContext by componentContext {
 
-    private val _models = MutableValue(Model(news))
-    override val models: Value<Model> = _models
+    private val _models = MutableStateFlow(Model(news))
+    override val models: Flow<Model> = _models
 
     override fun onNewsSelected(id: Long) {
-        _models.reduce { it.copy(news = listOf(news.first().copy(id = 36565113, title = "New item")) + it.news) }
+        _models.value = _models.value.copy(news = listOf(news.first().copy(id = 36565113, title = "New item")) + _models.value.news)
     }
 
     override fun onNewsSecondarySelected(id: Long) {

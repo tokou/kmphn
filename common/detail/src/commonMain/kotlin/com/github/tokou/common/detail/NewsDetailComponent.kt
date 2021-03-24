@@ -1,18 +1,18 @@
 package com.github.tokou.common.detail
 
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.utils.ComponentContext
 import com.github.tokou.common.utils.UserId
-import com.github.tokou.common.utils.asValue
 import com.github.tokou.common.utils.getStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.plus
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.Flow
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NewsDetailComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
@@ -43,7 +43,7 @@ class NewsDetailComponent(
         )
     }
 
-    private val stateToModel: (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
+    private val stateToModel: suspend (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
         is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
             header = it.news.asHeader(),
             comments = it.news.comments.map { c -> c.asModel(it.news.user) }
@@ -60,9 +60,7 @@ class NewsDetailComponent(
             ).provide()
         }
 
-    override val models: Value<NewsDetail.Model> = store
-        .asValue(this + Dispatchers.Main)
-        .map(stateToModel)
+    override val models: Flow<NewsDetail.Model> = store.states.map(stateToModel)
 
     override fun onBack() {
         onOutput(NewsDetail.Output.Back)

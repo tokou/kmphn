@@ -18,7 +18,7 @@ fun <T : Any> Store<*, T, *>.asValue(coroutineScope: CoroutineScope): Value<T> =
 
         override fun subscribe(observer: ValueObserver<T>) {
             val job = states
-                .onEach { observer(it) }
+                .onEach(observer::invoke)
                 .launchIn(coroutineScope)
             this.jobs += observer to job
         }

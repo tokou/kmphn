@@ -1,10 +1,10 @@
 package com.github.tokou.common.detail
 
-import com.arkivanov.decompose.value.Value
+import kotlinx.coroutines.flow.Flow
 
 interface NewsDetail {
 
-    val models: Value<Model>
+    val models: Flow<Model>
 
     fun onBack()
 

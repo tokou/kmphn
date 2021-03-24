@@ -7,8 +7,6 @@ import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
-import com.github.tokou.common.database.NewsDatabase
-import com.github.tokou.common.database.NewsDatabaseDriver
 import com.github.tokou.common.database.createDatabase
 import com.github.tokou.common.database.peristentDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +27,7 @@ import com.github.tokou.common.platform.rememberScrollbarAdapter
 
 @Composable
 fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
-    val model by component.models.asState()
+    val model by component.models.collectAsState(NewsMain.Model(emptyList()))
 
     Scaffold(
         topBar = { NewsBar(onRefresh = component::onRefresh) },
