@@ -106,9 +106,9 @@ fun NewsComments(
             when (c) {
                 is Comment.Loading -> item {
                     Text(
-                        text = "Loading comment ${c.id}",
+                        text = "Loading comments...",
                         modifier = Modifier
-                            .padding(start = padding)
+                            .padding(start = padding + 16.dp)
                             .fillMaxWidth()
                     )
                 }

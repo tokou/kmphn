@@ -33,7 +33,7 @@ class NewsDetailComponent(
     )
 
     private fun NewsDetailStore.Comment.asModel(collapsedIds: Set<ItemId>, op: UserId?): NewsDetail.Comment = when (this) {
-        is NewsDetailStore.Comment.Loading -> NewsDetail.Comment.Loading(id)
+        is NewsDetailStore.Comment.Loading -> NewsDetail.Comment.Loading
         is NewsDetailStore.Comment.Content -> {
             if (collapsedIds.contains(id)) NewsDetail.Comment.Content.Collapsed(
                 id = id,
@@ -47,16 +47,20 @@ class NewsDetailComponent(
                 user = user,
                 time = time.toString(),
                 isOp = user == op,
-                children = comments.map { c -> c.asModel(collapsedIds, op) },
+                children = comments.map { c -> c.asModel(collapsedIds, op) }.withSingleLoading(),
                 text = text,
             )
         }
     }
 
+    private fun List<NewsDetail.Comment>.withSingleLoading(): List<NewsDetail.Comment> =
+        if (none { it is NewsDetail.Comment.Loading }) this
+        else filterIsInstance<NewsDetail.Comment.Content>() + NewsDetail.Comment.Loading
+
     private val stateToModel: suspend (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
         is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
             header = it.news.asHeader(),
-            comments = it.news.comments.map { c -> c.asModel(it.collapsedComments, it.news.user) }
+            comments = it.news.comments.map { c -> c.asModel(it.collapsedComments, it.news.user) }.withSingleLoading()
         )
         else -> NewsDetail.Model.Empty
     } }

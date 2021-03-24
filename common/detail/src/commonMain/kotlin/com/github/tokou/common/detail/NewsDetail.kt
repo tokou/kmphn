@@ -32,11 +32,11 @@ interface NewsDetail {
     }
 
     sealed class Comment {
-        abstract val id: Long
 
-        data class Loading(override val id: Long) : Comment()
+        object Loading : Comment()
 
         sealed class Content : Comment() {
+            abstract val id: Long
             abstract val user: String
             abstract val time: String
             abstract val isOp: Boolean
