@@ -1,3 +1,4 @@
+import kotlin.collections.List;
 
 CREATE TABLE IF NOT EXISTS item(
 id INTEGER NOT NULL PRIMARY KEY,
@@ -5,6 +6,7 @@ user TEXT,
 created TEXT NOT NULL,
 content TEXT,
 title TEXT,
+kids TEXT as List<Long> NOT NULL DEFAULT "[]",
 link TEXT,
 type TEXT NOT NULL
 );

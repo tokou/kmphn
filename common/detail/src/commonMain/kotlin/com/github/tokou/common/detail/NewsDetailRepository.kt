@@ -53,6 +53,7 @@ class NewsDetailRepository(
             content = content,
             title = title,
             link = link,
+            kids = kids,
             type = this::class.simpleName!!
         )
     }
