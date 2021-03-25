@@ -24,6 +24,7 @@ interface NewsDetailStore : Store<Intent, State, Label> {
     data class News(
         val id: ItemId,
         val title: String?,
+        val text: String?,
         val link: String?,
         val user: UserId?,
         val time: Timestamp,

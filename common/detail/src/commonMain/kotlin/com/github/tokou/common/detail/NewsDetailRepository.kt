@@ -18,6 +18,7 @@ class NewsDetailRepository(
     private fun Item.asNewsDetail() = NewsDetailStore.News(
         id = id,
         title = title.orEmpty(),
+        text = content,
         link = link,
         user = user.orEmpty(),
         time = 0,

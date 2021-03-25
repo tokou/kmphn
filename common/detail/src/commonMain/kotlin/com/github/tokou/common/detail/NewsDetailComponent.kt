@@ -25,6 +25,7 @@ class NewsDetailComponent(
     private fun NewsDetailStore.News.asHeader() = NewsDetail.Header(
         id = id,
         title = title.orEmpty(),
+        text = text,
         link = link,
         user = user.orEmpty(),
         time = time.toString(),
