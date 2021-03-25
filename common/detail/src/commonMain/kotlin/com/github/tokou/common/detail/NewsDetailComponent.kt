@@ -41,7 +41,7 @@ class NewsDetailComponent(
                 user = user,
                 isOp = user == op,
                 time = time.toString(),
-                childrenCount = childrenCount.toString()
+                childrenCount = if (childrenCount > 0) childrenCount.toString() else ""
             )
             else NewsDetail.Comment.Content.Expanded(
                 id = id,
