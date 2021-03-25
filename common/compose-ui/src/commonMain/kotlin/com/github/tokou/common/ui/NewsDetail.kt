@@ -168,24 +168,36 @@ fun CommentCollapsed(
     comment: Comment.Content.Collapsed,
     onCommentClicked: (Comment.Content) -> Unit
 ) {
-    Text(
-        text = "Commend collapsed ${comment.id} ${comment.childrenCount}",
+    Row(
         modifier = Modifier
             .clickable { onCommentClicked(comment) }
             .padding(16.dp)
             .fillMaxWidth()
-    )
+    ) {
+        Text(text = comment.user)
+        Spacer(Modifier.width(32.dp))
+        Text(text = comment.time)
+        Spacer(Modifier.width(16.dp))
+        Text(text = comment.childrenCount)
+    }
 }
 
 @Composable
 fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (Comment.Content) -> Unit) {
-    Text(
-        text = "Comment expanded ${comment.id}",
+    Column(
         modifier = Modifier
             .clickable { onCommentClicked(comment) }
             .padding(16.dp)
             .fillMaxWidth()
-    )
+    ) {
+        Row {
+            Text(text = comment.user)
+            Spacer(Modifier.width(32.dp))
+            Text(text = comment.time)
+        }
+        Spacer(Modifier.height(16.dp))
+        Text(text = comment.text)
+    }
 }
 
 @Composable

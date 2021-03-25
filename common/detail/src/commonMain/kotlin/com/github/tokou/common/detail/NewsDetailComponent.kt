@@ -40,13 +40,13 @@ class NewsDetailComponent(
                 id = id,
                 user = user,
                 isOp = user == op,
-                time = time.toString(),
+                time = "$time hrs",
                 childrenCount = if (childrenCount > 0) childrenCount.toString() else ""
             )
             else NewsDetail.Comment.Content.Expanded(
                 id = id,
                 user = user,
-                time = time.toString(),
+                time = "$time hrs",
                 isOp = user == op,
                 children = comments.map { c -> c.asModel(collapsedIds, op) }.withSingleLoading(),
                 text = text,
