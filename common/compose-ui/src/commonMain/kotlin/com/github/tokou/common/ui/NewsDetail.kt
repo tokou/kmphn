@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.PressGestureScope
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -19,8 +21,13 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
@@ -267,9 +274,14 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
     ) {
         CommentHeader(comment)
         Spacer(Modifier.height(8.dp))
+        val urlAnnotation = "url"
+        val uriHandler = LocalUriHandler.current
+        val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+        val pressedLink = remember { mutableStateOf<String?>(null) }
         val underline = SpanStyle(color = MaterialTheme.colors.primary, textDecoration = TextDecoration.Underline)
         val emphasis = SpanStyle(fontStyle = FontStyle.Italic)
         val code = SpanStyle(fontFamily = FontFamily.Monospace)
+        val background = SpanStyle(background = MaterialTheme.colors.primary.copy(alpha = 0.1f))
 
         val text = buildAnnotatedString {
             for (t in comment.text) {
@@ -282,9 +294,11 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
                     }
                     is Text.Link -> {
                         pushStyle(underline)
-                        pushStringAnnotation("url", t.link)
+                        if (t.link == pressedLink.value) pushStyle(background)
+                        pushStringAnnotation(urlAnnotation, t.link)
                         append(t.text)
                         pop()
+                        if (t.link == pressedLink.value) pop()
                         pop()
                     }
                     is Text.Code -> {
@@ -295,10 +309,29 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
                 }
             }
         }
+        fun Offset.correspondingAnnotation(f: (AnnotatedString.Range<String>) -> Unit) {
+            layoutResult.value?.let {
+                val position = it.getOffsetForPosition(this)
+                text
+                    .getStringAnnotations(position, position)
+                    .firstOrNull()
+                    ?.let(f)
+            }
+        }
+        val handleLinkPress: suspend PressGestureScope.(Offset) -> Unit = { pos ->
+            pos.correspondingAnnotation { if (it.tag == urlAnnotation) pressedLink.value = it.item }
+        }
+        fun handleLinkTap(pos: Offset) { pos.correspondingAnnotation {
+            pressedLink.value = null
+            if (it.tag == urlAnnotation) uriHandler.openUri(it.item)
+        } }
         Text(
             text = text,
             onTextLayout = { layoutResult.value = it },
-            style = MaterialTheme.typography.body1
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.pointerInput(Unit) {
+                detectTapGestures(onTap = ::handleLinkTap, onPress = handleLinkPress)
+            }
         )
     }
 }
