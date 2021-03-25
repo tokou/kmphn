@@ -92,7 +92,7 @@ class NewsDetailComponent(
         store.accept(NewsDetailStore.Intent.Refresh)
     }
 
-    override fun onCommentClicked(comment: NewsDetail.Comment.Content) {
-        store.accept(NewsDetailStore.Intent.ToggleComment(comment.id))
+    override fun onCommentClicked(id: ItemId) {
+        store.accept(NewsDetailStore.Intent.ToggleComment(id))
     }
 }

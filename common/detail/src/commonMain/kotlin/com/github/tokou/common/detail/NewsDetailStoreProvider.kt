@@ -81,12 +81,14 @@ class NewsDetailStoreProvider(
             load()
         }
 
-        private fun toggleComment(id: ItemId, state: State) = when (state) {
-            is State.Content -> {
-                val collapsed = state.collapsedComments
-                val toggled = if (collapsed.contains(id)) collapsed - id else collapsed + id
-                dispatch(Result.Toggled(id, toggled))
-            }
+        private fun toggleComment(id: ItemId, state: State) = state.contentCase {
+            val collapsed = collapsedComments
+            val toggled = if (collapsed.contains(id)) collapsed - id else collapsed + id
+            dispatch(Result.Toggled(id, toggled))
+        }
+
+        private fun State.contentCase(f: State.Content.() -> Unit) = when (this) {
+            is State.Content -> f(this)
             else -> {}
         }
     }

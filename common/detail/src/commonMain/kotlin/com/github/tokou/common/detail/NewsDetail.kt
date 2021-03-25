@@ -1,12 +1,13 @@
 package com.github.tokou.common.detail
 
+import com.github.tokou.common.utils.ItemId
 import kotlinx.coroutines.flow.Flow
 
 interface NewsDetail {
 
     val models: Flow<Model>
 
-    fun onCommentClicked(comment: Comment.Content)
+    fun onCommentClicked(id: ItemId)
     fun onBack()
     fun onRetry()
 

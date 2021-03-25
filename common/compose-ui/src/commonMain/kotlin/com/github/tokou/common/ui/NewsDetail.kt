@@ -26,6 +26,7 @@ import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetail.*
 import com.github.tokou.common.platform.VerticalScrollbar
 import com.github.tokou.common.platform.rememberScrollbarAdapter
+import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.UserId
 
 @Composable
@@ -149,7 +150,7 @@ fun NewsHeader(modifier: Modifier = Modifier, header: Header) {
 fun LazyListScope.commentTree(
     comments: List<Comment>,
     padding: Dp = 0.dp,
-    onCommentClicked: (Comment.Content) -> Unit
+    onCommentClicked: (ItemId) -> Unit
 ) {
     comments.forEach { c ->
         commentRow(c, padding, onCommentClicked)
@@ -176,11 +177,11 @@ fun CommentLoader() {
 @Composable
 fun CommentCollapsed(
     comment: Comment.Content.Collapsed,
-    onCommentClicked: (Comment.Content) -> Unit
+    onCommentClicked: (ItemId) -> Unit
 ) {
     Row(
         modifier = Modifier
-            .clickable { onCommentClicked(comment) }
+            .clickable { onCommentClicked(comment.id) }
             .padding(16.dp)
             .fillMaxWidth()
     ) {
@@ -193,10 +194,10 @@ fun CommentCollapsed(
 }
 
 @Composable
-fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (Comment.Content) -> Unit) {
+fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId) -> Unit) {
     Column(
         modifier = Modifier
-            .clickable { onCommentClicked(comment) }
+            .clickable { onCommentClicked(comment.id) }
             .padding(16.dp)
             .fillMaxWidth()
     ) {
@@ -251,7 +252,7 @@ val step = 16.dp
 fun LazyListScope.commentRow(
     comment: Comment,
     padding: Dp,
-    onCommentClicked: (Comment.Content) -> Unit
+    onCommentClicked: (ItemId) -> Unit
 ) {
     item {
         when (comment) {
@@ -270,7 +271,7 @@ fun NewsComments(
     modifier: Modifier = Modifier,
     comments: List<Comment>,
     state: LazyListState = rememberLazyListState(),
-    onCommentClicked: (Comment.Content) -> Unit,
+    onCommentClicked: (ItemId) -> Unit,
     onUserClicked: (UserId) -> Unit,
     onLinkClicked: (String) -> Unit,
     header: @Composable () -> Unit = {}
