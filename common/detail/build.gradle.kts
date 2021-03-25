@@ -43,18 +43,28 @@ kotlin {
                 implementation(project(":common:utils"))
                 implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
-
+                implementation("com.squareup.sqldelight:coroutines-extensions:1.4.4")
             }
         }
-        val commonTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
+            }
+        }
         val androidMain by getting
         val androidTest by getting {
             dependencies {
-                implementation("junit:junit:4.13.2")
+                implementation(kotlin("test-junit"))
             }
         }
         val desktopMain by getting
-        val desktopTest by getting
+        val desktopTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
     }
 
     tasks.withType<KotlinCompile> {

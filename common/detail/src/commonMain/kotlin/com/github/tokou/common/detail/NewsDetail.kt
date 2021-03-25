@@ -52,7 +52,7 @@ interface NewsDetail {
                 override val isOp: Boolean,
                 override val isSelected: Boolean,
                 val children: List<Comment>,
-                val text: String
+                val text: List<Text>
             ) : Content()
 
             data class Collapsed(
@@ -64,5 +64,13 @@ interface NewsDetail {
                 val childrenCount: String
             ) : Content()
         }
+    }
+
+    sealed class Text {
+        abstract val text: String
+        data class Plain(override val text: String) : Text()
+        data class Emphasis(override val text: String) : Text()
+        data class Link(override val text: String, val link: String) : Text()
+        data class Code(override val text: String) : Text()
     }
 }

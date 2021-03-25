@@ -14,12 +14,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.tokou.common.detail.NewsDetail
@@ -207,7 +210,39 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
             Text(text = comment.time)
         }
         Spacer(Modifier.height(16.dp))
-        Text(text = comment.text)
+        val underline = SpanStyle(color = MaterialTheme.colors.primary, textDecoration = TextDecoration.Underline)
+        val emphasis = SpanStyle(fontStyle = FontStyle.Italic)
+        val code = SpanStyle(fontFamily = FontFamily.Monospace)
+
+        val text = buildAnnotatedString {
+            for (t in comment.text) {
+                when (t) {
+                    is Text.Plain -> append(t.text)
+                    is Text.Emphasis -> {
+                        pushStyle(emphasis)
+                        append(t.text)
+                        pop()
+                    }
+                    is Text.Link -> {
+                        pushStyle(underline)
+                        pushStringAnnotation("url", t.link)
+                        append(t.text)
+                        pop()
+                        pop()
+                    }
+                    is Text.Code -> {
+                        pushStyle(code)
+                        append(t.text)
+                        pop()
+                    }
+                }
+            }
+        }
+        Text(
+            text = text,
+            onTextLayout = { layoutResult.value = it },
+            modifier = Modifier
+        )
     }
 }
 
