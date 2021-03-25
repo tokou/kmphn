@@ -18,7 +18,7 @@ class NewsDetailStoreProvider(
 
     fun provide(): NewsDetailStore = object : NewsDetailStore, Store<Intent, State, Label> by storeFactory.create(
         name = "NewsDetailStore",
-        initialState = State.Empty,
+        initialState = State.Loading,
         bootstrapper = SimpleBootstrapper(Unit),
         executorFactory = ::ExecutorImpl,
         reducer = ReducerImpl
@@ -53,10 +53,10 @@ class NewsDetailStoreProvider(
         override suspend fun executeAction(action: Unit, getState: () -> State) = coroutineScope {
             repository
                 .updates
-                .onStart { Result.Loading }
                 .map(Result::Loaded)
                 .flowOn(Dispatchers.Default)
                 .onEach(::dispatch)
+                .onStart { dispatch(Result.Loading) }
                 .launchIn(this)
             repository.load(id)
         }

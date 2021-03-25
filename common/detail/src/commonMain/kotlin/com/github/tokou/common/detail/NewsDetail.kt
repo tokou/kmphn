@@ -14,7 +14,6 @@ interface NewsDetail {
     }
 
     sealed class Model {
-        object Empty : Model()
         object Loading : Model()
         data class Content(val header: Header, val comments: List<Comment>) : Model()
     }

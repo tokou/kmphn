@@ -62,7 +62,8 @@ class NewsDetailComponent(
             header = it.news.asHeader(),
             comments = it.news.comments.map { c -> c.asModel(it.collapsedComments, it.news.user) }.withSingleLoading()
         )
-        else -> NewsDetail.Model.Empty
+        NewsDetailStore.State.Loading -> NewsDetail.Model.Loading
+        NewsDetailStore.State.Error -> TODO()
     } }
 
     private val store =

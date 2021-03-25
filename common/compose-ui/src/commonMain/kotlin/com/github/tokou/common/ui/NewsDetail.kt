@@ -26,30 +26,48 @@ import com.github.tokou.common.utils.UserId
 
 @Composable
 fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
-    val model by component.models.collectAsState(Model.Empty)
+    val model by component.models.collectAsState(Model.Loading)
 
-    Scaffold(
+    NewsDetailScaffold(
         modifier = modifier,
-        topBar = { NewsDetailBar(onBack = component::onBack) },
+        onBack = component::onBack
     ) {
         val m = model
         when (m) {
-            Model.Empty -> Text("No Story Selected")
-            Model.Loading -> Text("Loading...")
+            Model.Loading -> Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
             is Model.Content -> NewsDetailContent(m, component::onCommentClicked)
         }
     }
 }
 
 @Composable
-fun NewsDetailBar(onBack: () -> Unit) = TopAppBar(
+fun NewsDetailScaffold(
+    modifier: Modifier = Modifier,
+    showBack: Boolean = true,
+    onBack: () -> Unit = {},
+    content: @Composable (PaddingValues) -> Unit
+) {
+    Scaffold(
+        modifier = modifier,
+        topBar = { NewsDetailBar(showBack = showBack, onBack = onBack) },
+        content = content
+    )
+}
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit) = TopAppBar(
     title = {},
     navigationIcon = {
-        Icon(
-            Icons.Filled.ArrowBack,
-            contentDescription = "Back",
-            modifier = Modifier.clickable(onClick = onBack).padding(4.dp)
-        )
+        AnimatedVisibility(showBack) {
+            Icon(
+                Icons.Filled.ArrowBack,
+                contentDescription = "Back",
+                modifier = Modifier.clickable(onClick = onBack).padding(16.dp)
+            )
+        }
     },
     actions = {
         Icon(Icons.Filled.Share, contentDescription = "Share", modifier = Modifier.clickable {  }.padding(4.dp))

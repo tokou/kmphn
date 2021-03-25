@@ -15,7 +15,6 @@ interface NewsDetailStore : Store<Intent, State, Label> {
     sealed class State {
         object Error : State()
         object Loading : State()
-        object Empty : State()
         data class Content(
             val news: News,
             val collapsedComments: Set<ItemId> = emptySet()
