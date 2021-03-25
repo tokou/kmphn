@@ -70,8 +70,8 @@ fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit) = TopAppBar(
         }
     },
     actions = {
-        Icon(Icons.Filled.Share, contentDescription = "Share", modifier = Modifier.clickable {  }.padding(4.dp))
-        Icon(Icons.Filled.MoreVert, contentDescription = "More", modifier = Modifier.clickable {  }.padding(4.dp))
+        Icon(Icons.Filled.Share, contentDescription = "Share", modifier = Modifier.clickable {  }.padding(16.dp))
+        Icon(Icons.Filled.MoreVert, contentDescription = "More", modifier = Modifier.clickable {  }.padding(16.dp))
     },
 )
 

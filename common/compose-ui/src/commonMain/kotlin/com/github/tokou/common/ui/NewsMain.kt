@@ -44,7 +44,7 @@ fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
 @Composable
 fun NewsBar(onRefresh: () -> Unit) = TopAppBar(
     title = {
-        Column(modifier = Modifier.clickable { }.padding(12.dp)) {
+        Column(modifier = Modifier.clickable { }.padding(8.dp)) {
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text("Hacker News", style = MaterialTheme.typography.subtitle1)
                 Text("Frontpage", style = MaterialTheme.typography.subtitle2)
@@ -52,11 +52,11 @@ fun NewsBar(onRefresh: () -> Unit) = TopAppBar(
         }
     },
     actions = {
-        Icon(Icons.Filled.Sync, contentDescription = "Refresh", modifier = Modifier.clickable(onClick = onRefresh).padding(4.dp))
-        Icon(Icons.Filled.MoreVert, contentDescription = "More", modifier = Modifier.clickable {  }.padding(4.dp))
+        Icon(Icons.Filled.Sync, contentDescription = "Refresh", modifier = Modifier.clickable(onClick = onRefresh).padding(16.dp))
+        Icon(Icons.Filled.MoreVert, contentDescription = "More", modifier = Modifier.clickable {  }.padding(16.dp))
     },
     navigationIcon = {
-        Icon(Icons.Filled.MenuOpen, contentDescription = "Menu", modifier = Modifier.clickable {  }.padding(4.dp))
+        Icon(Icons.Filled.MenuOpen, contentDescription = "Menu", modifier = Modifier.clickable {  }.padding(16.dp))
     }
 )
 
