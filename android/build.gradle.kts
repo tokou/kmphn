@@ -24,7 +24,6 @@ dependencies {
     implementation("com.arkivanov.mvikotlin:mvikotlin-main:2.0.1")
     implementation("com.arkivanov.mvikotlin:mvikotlin-logging:2.0.1")
     implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.0")
     implementation(compose.material)
 }
 

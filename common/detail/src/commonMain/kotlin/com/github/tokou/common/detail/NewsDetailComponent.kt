@@ -4,7 +4,7 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
-import com.github.tokou.common.utils.ComponentContext
+import com.arkivanov.decompose.ComponentContext
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.getStore

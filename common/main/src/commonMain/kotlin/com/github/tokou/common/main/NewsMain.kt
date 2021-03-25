@@ -1,9 +1,9 @@
 package com.github.tokou.common.main
 
 import com.github.tokou.common.main.NewsMain.*
-import com.github.tokou.common.utils.ComponentContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import com.arkivanov.decompose.ComponentContext
 
 interface NewsMain {
 

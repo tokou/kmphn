@@ -13,10 +13,7 @@ import com.github.tokou.common.detail.NewsDetailComponent
 import com.github.tokou.common.main.NewsMain
 import com.github.tokou.common.main.NewsMainComponent
 import com.github.tokou.common.root.NewsRoot.Child
-import com.github.tokou.common.utils.ComponentContext
-import com.github.tokou.common.utils.router
-import kotlinx.coroutines.CoroutineScope
-import com.arkivanov.decompose.ComponentContext as DecomposeComponentContext
+import com.arkivanov.decompose.ComponentContext
 
 interface NewsRoot {
     val routerState: Value<RouterState<*, Child>>
@@ -28,20 +25,17 @@ interface NewsRoot {
 }
 
 class NewsRootComponent(
-    componentContext: DecomposeComponentContext,
-    coroutineScope: CoroutineScope,
+    componentContext: ComponentContext,
     private val newsMain: (ComponentContext, (NewsMain.Output) -> Unit) -> NewsMain,
     private val newsDetail: (ComponentContext, itemId: Long, (NewsDetail.Output) -> Unit) -> NewsDetail,
-): NewsRoot, ComponentContext, DecomposeComponentContext by componentContext, CoroutineScope by coroutineScope {
+): NewsRoot, ComponentContext by componentContext {
 
     constructor(
-        componentContext: DecomposeComponentContext,
-        coroutineScope: CoroutineScope,
+        componentContext: ComponentContext,
         storeFactory: StoreFactory,
         database: NewsDatabase
     ) : this(
         componentContext = componentContext,
-        coroutineScope = coroutineScope,
         newsMain = { context, output -> NewsMainComponent(context, output) },
         newsDetail = { context, itemId, output ->
             NewsDetailComponent(

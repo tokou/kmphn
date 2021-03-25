@@ -3,7 +3,6 @@ package com.github.tokou.android
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.lifecycleScope
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
@@ -22,7 +21,6 @@ class MainActivity : AppCompatActivity() {
                 val rootComponent = rememberRootComponent {
                     NewsRootComponent(
                         componentContext = it,
-                        coroutineScope = lifecycleScope,
                         storeFactory = LoggingStoreFactory(DefaultStoreFactory),
                         database = createDatabase(peristentDatabaseDriver(this))
                     )
