@@ -52,11 +52,17 @@ fun NewsBar(onRefresh: () -> Unit) = TopAppBar(
         }
     },
     actions = {
-        Icon(Icons.Filled.Sync, contentDescription = "Refresh", modifier = Modifier.clickable(onClick = onRefresh).padding(16.dp))
-        Icon(Icons.Filled.MoreVert, contentDescription = "More", modifier = Modifier.clickable {  }.padding(16.dp))
-    },
+        IconButton(onClick = {}) {
+            Icon(Icons.Filled.Sync, contentDescription = "Refresh")
+        }
+        IconButton(onClick = {}) {
+            Icon(Icons.Filled.MoreVert, contentDescription = "More")
+        }
+  },
     navigationIcon = {
-        Icon(Icons.Filled.MenuOpen, contentDescription = "Menu", modifier = Modifier.clickable {  }.padding(16.dp))
+        IconButton(onClick = {}) {
+            Icon(Icons.Filled.MenuOpen, contentDescription = "Menu")
+        }
     }
 )
 

@@ -74,22 +74,24 @@ fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit) = TopAppBar(
     title = {},
     navigationIcon = {
         AnimatedVisibility(showBack) {
-            Icon(
-                Icons.Filled.ArrowBack,
-                contentDescription = "Back",
-                modifier = Modifier.clickable(onClick = onBack).padding(16.dp)
-            )
+            IconButton(onClick = onBack) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+            }
         }
     },
     actions = {
-        Icon(Icons.Filled.Share, contentDescription = "Share", modifier = Modifier.clickable {  }.padding(16.dp))
-        Icon(Icons.Filled.MoreVert, contentDescription = "More", modifier = Modifier.clickable {  }.padding(16.dp))
+        IconButton(onClick = {}) {
+            Icon(Icons.Filled.Share, contentDescription = "Share")
+        }
+        IconButton(onClick = {}) {
+            Icon(Icons.Filled.MoreVert, contentDescription = "More")
+        }
     },
 )
 
 
 @Composable
-fun NewsDetailContent(content: Model.Content, onCommentClicked: (Comment.Content) -> Unit) {
+fun NewsDetailContent(content: Model.Content, onCommentClicked: (ItemId) -> Unit) {
     val state = rememberLazyListState()
 
     Box(Modifier.fillMaxSize()) {
