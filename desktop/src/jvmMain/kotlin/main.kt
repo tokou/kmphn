@@ -1,4 +1,3 @@
-import androidx.compose.desktop.AppWindow
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
@@ -16,9 +15,13 @@ import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
 import java.awt.Desktop
+import java.awt.image.BufferedImage
 import java.net.URI
+import javax.imageio.ImageIO
 
-fun main() = Window(title = "HN") { App() }
+val icon: BufferedImage = ImageIO.read(object {}::class.java.getResource("/icon.png"))
+
+fun main() = Window(title = "HN", icon = icon) { App() }
 
 val uriHandler = object : UriHandler {
     override fun openUri(uri: String) {
