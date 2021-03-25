@@ -27,8 +27,8 @@ class NewsDetailStoreProvider(
     private sealed class Result {
         data class Loaded(val item: News) : Result()
         data class Toggled(val itemId: ItemId, val collapsedComments: Set<ItemId>) : Result()
-        object NotFound : Result()
-        object Loading : Result()
+        object NotFound : Result() { override fun toString(): String = this::class.simpleName ?: super.toString() }
+        object Loading : Result() { override fun toString(): String = this::class.simpleName ?: super.toString() }
     }
 
     private object ReducerImpl : Reducer<State, Result> {
@@ -56,6 +56,7 @@ class NewsDetailStoreProvider(
         suspend fun load() = coroutineScope {
             repository
                 .updates
+                .conflate()
                 .map { r -> r
                     .map { Result.Loaded(it) }
                     .recover { if (it == NoContent) Result.Loading else Result.NotFound }

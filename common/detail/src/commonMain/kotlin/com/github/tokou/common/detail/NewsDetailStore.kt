@@ -9,13 +9,13 @@ import com.github.tokou.common.utils.UserId
 interface NewsDetailStore : Store<Intent, State, Label> {
 
     sealed class Intent {
-        object Refresh : Intent()
+        object Refresh : Intent() { override fun toString(): String = this::class.simpleName ?: super.toString() }
         data class ToggleComment(val id: ItemId) : Intent()
     }
 
     sealed class State {
-        object Error : State()
-        object Loading : State()
+        object Error : State() { override fun toString(): String = this::class.simpleName ?: super.toString() }
+        object Loading : State() { override fun toString(): String = this::class.simpleName ?: super.toString() }
         data class Content(
             val news: News,
             val collapsedComments: Set<ItemId> = emptySet(),
