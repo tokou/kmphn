@@ -21,10 +21,10 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material.DropdownMenu
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextLayoutResult
@@ -48,7 +48,7 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
 
     NewsDetailScaffold(
         modifier = modifier,
-        onBack = component::onBack
+        onBack = component::onBack,
     ) {
         val m = model
         when (m) {
@@ -80,16 +80,56 @@ fun NewsDetailScaffold(
     onBack: () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+    val onMore = { showMenu = true }
     Scaffold(
         modifier = modifier,
-        topBar = { NewsDetailBar(showBack = showBack, onBack = onBack) },
+        topBar = { NewsDetailBar(showBack = showBack, onBack = onBack, onMore = onMore) },
         content = content
     )
+
+    Box(Modifier.fillMaxSize().wrapContentSize(Alignment.TopEnd)) {
+        if (showMenu) PopupMenu(
+            menuItems = listOf("Hello", "World"),
+            onClickCallbacks = listOf({}, {}),
+            showMenu = showMenu,
+            onDismiss = { showMenu = false }
+        )
+    }
+}
+
+@Composable
+fun PopupMenu(
+    modifier: Modifier = Modifier,
+    menuItems: List<String>,
+    onClickCallbacks: List<() -> Unit>,
+    showMenu: Boolean,
+    onDismiss: () -> Unit,
+) {
+    DropdownMenu(
+        expanded = showMenu,
+        modifier = modifier.background(MaterialTheme.colors.primarySurface),
+        onDismissRequest = { onDismiss() }
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides medium) {
+            menuItems.forEachIndexed { index, item ->
+                DropdownMenuItem(onClick = {
+                    onDismiss()
+                    onClickCallbacks[index]
+                }) {
+                    val color = MaterialTheme.colors.contentColorFor(
+                        MaterialTheme.colors.primarySurface
+                    ).copy(alpha = medium)
+                    Text(text = item, color = color)
+                }
+            }
+        }
+    }
 }
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit) = TopAppBar(
+fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit, onMore: () -> Unit) = TopAppBar(
     title = {},
     navigationIcon = {
         AnimatedVisibility(showBack) {
@@ -102,7 +142,7 @@ fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit) = TopAppBar(
         IconButton(onClick = {}) {
             Icon(Icons.Filled.Share, contentDescription = "Share")
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = onMore) {
             Icon(Icons.Filled.MoreVert, contentDescription = "More")
         }
     },

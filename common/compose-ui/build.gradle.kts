@@ -2,7 +2,7 @@ import org.jetbrains.compose.compose
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.compose") version "0.4.0-build174"
+    id("org.jetbrains.compose") version "0.4.0-build176"
     kotlin("multiplatform")
     id("com.android.library")
 }
