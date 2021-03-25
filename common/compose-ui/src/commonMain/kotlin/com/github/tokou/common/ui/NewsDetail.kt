@@ -41,6 +41,14 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
             Model.Loading -> Box(modifier = Modifier.fillMaxSize()) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
+            Model.Error -> Box(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.align(Alignment.Center)) {
+                    Text("Error", style = MaterialTheme.typography.h6)
+                    Button(onClick = component::onRetry) {
+                        Text("Retry", style = MaterialTheme.typography.button)
+                    }
+                }
+            }
             is Model.Content -> NewsDetailContent(m, component::onCommentClicked)
         }
     }

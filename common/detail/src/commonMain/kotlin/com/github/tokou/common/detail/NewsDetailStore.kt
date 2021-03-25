@@ -9,6 +9,7 @@ import com.github.tokou.common.utils.UserId
 interface NewsDetailStore : Store<Intent, State, Label> {
 
     sealed class Intent {
+        object Refresh : Intent()
         data class ToggleComment(val id: ItemId) : Intent()
     }
 

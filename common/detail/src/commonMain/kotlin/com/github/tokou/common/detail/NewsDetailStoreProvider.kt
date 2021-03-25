@@ -49,11 +49,18 @@ class NewsDetailStoreProvider(
             }
     }
 
+    object NoContent : Error()
+
     private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>() {
-        override suspend fun executeAction(action: Unit, getState: () -> State) = coroutineScope {
+
+        suspend fun load() = coroutineScope {
             repository
                 .updates
-                .map(Result::Loaded)
+                .map { r -> r
+                    .map { Result.Loaded(it) }
+                    .recover { if (it == NoContent) Result.Loading else Result.NotFound }
+                    .getOrThrow()
+                }
                 .flowOn(Dispatchers.Default)
                 .onEach(::dispatch)
                 .onStart { dispatch(Result.Loading) }
@@ -61,8 +68,17 @@ class NewsDetailStoreProvider(
             repository.load(id)
         }
 
+        override suspend fun executeAction(action: Unit, getState: () -> State) {
+            load()
+        }
+
         override suspend fun executeIntent(intent: Intent, getState: () -> State) = when (intent) {
             is Intent.ToggleComment -> toggleComment(intent.id, getState())
+            Intent.Refresh -> refresh(getState())
+        }
+
+        private suspend fun refresh(state: State) {
+            load()
         }
 
         private fun toggleComment(id: ItemId, state: State) = when (state) {
@@ -76,7 +92,7 @@ class NewsDetailStoreProvider(
     }
 
     interface Repository {
-        val updates: Flow<News>
+        val updates: Flow<kotlin.Result<News>>
         suspend fun load(id: Long)
     }
 }

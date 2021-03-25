@@ -8,12 +8,14 @@ interface NewsDetail {
 
     fun onCommentClicked(comment: Comment.Content)
     fun onBack()
+    fun onRetry()
 
     sealed class Output {
         object Back : Output()
     }
 
     sealed class Model {
+        object Error : Model()
         object Loading : Model()
         data class Content(val header: Header, val comments: List<Comment>) : Model()
     }

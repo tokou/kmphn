@@ -35,20 +35,23 @@ class NewsDetailRepository(
         comments = kids.map { NewsDetailStore.Comment.Loading(it) }
     )
 
-    private val _state = MutableStateFlow<NewsDetailStore.News?>(null)
-    override val updates: Flow<NewsDetailStore.News> = _state.filterNotNull()
+    // TODO: find a way to express "empty"
+    private val _state = MutableStateFlow<Result<NewsDetailStore.News>>(Result.failure(
+        NewsDetailStoreProvider.NoContent
+    ))
+    override val updates: Flow<Result<NewsDetailStore.News>> = _state
 
-    override suspend fun load(id: Long) {
+    override suspend fun load(id: Long) = try {
 
         val dbItem = database.itemQueries.selectById(id).executeAsOneOrNull()
-        _state.value = dbItem?.asNewsDetail()
+        dbItem?.asNewsDetail()?.let { _state.value = Result.success(it) }
 
-        val apiItem = api.fetchItem(id) ?: return
+        val apiItem = api.fetchItem(id) ?: throw NoSuchElementException()
         val updatedDbItem = apiItem.asDbItem()
         database.itemQueries.insert(updatedDbItem)
 
         var item = updatedDbItem.asNewsDetail()
-        _state.value = item
+        _state.value = Result.success(item)
 
         val loadedComments = mutableMapOf<ItemId, NewsDetailStore.Comment.Content>()
 
@@ -62,10 +65,12 @@ class NewsDetailRepository(
         fun update(comment: NewsDetailStore.Comment.Content) {
             loadedComments[comment.id] = comment
             item = item.copy(comments = updateTree(item.comments))
-            _state.value = item
+            _state.value = Result.success(item)
         }
 
         loadComments(item.comments, ::update)
+    } catch (e: Throwable) {
+        _state.value = Result.failure(e)
     }
 
     private suspend fun loadComments(

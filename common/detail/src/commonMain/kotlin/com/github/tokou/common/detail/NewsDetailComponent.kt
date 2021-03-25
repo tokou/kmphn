@@ -64,7 +64,7 @@ class NewsDetailComponent(
             comments = it.news.comments.map { c -> c.asModel(it.collapsedComments, it.news.user) }.withSingleLoading()
         )
         NewsDetailStore.State.Loading -> NewsDetail.Model.Loading
-        NewsDetailStore.State.Error -> TODO()
+        NewsDetailStore.State.Error -> NewsDetail.Model.Error
     } }
 
     private val store =
@@ -80,6 +80,10 @@ class NewsDetailComponent(
 
     override fun onBack() {
         onOutput(NewsDetail.Output.Back)
+    }
+
+    override fun onRetry() {
+        store.accept(NewsDetailStore.Intent.Refresh)
     }
 
     override fun onCommentClicked(comment: NewsDetail.Comment.Content) {
