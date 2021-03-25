@@ -54,8 +54,11 @@ class NewsDetailComponent(
                 time = "$time hrs",
                 isOp = user == op,
                 isSelected = selectedItem == id,
-                children = comments.map { c -> c.asModel(selectedItem, collapsedIds, op) }.withSingleLoading(),
-                text = text,
+                children = comments
+                    .withoutDeleted()
+                    .map { c -> c.asModel(selectedItem, collapsedIds, op) }
+                    .withSingleLoading(),
+                text = mapContent(text),
             )
         }
     }
@@ -64,10 +67,16 @@ class NewsDetailComponent(
         if (none { it is NewsDetail.Comment.Loading }) this
         else filterIsInstance<NewsDetail.Comment.Content>() + NewsDetail.Comment.Loading
 
+    private fun List<NewsDetailStore.Comment>.withoutDeleted(): List<NewsDetailStore.Comment> =
+        filterNot { if (it is NewsDetailStore.Comment.Content) it.deleted else false }
+
     private val stateToModel: suspend (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
         is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
             header = it.news.asHeader(),
-            comments = it.news.comments.map { c -> c.asModel(it.selectedComment, it.collapsedComments, it.news.user) }.withSingleLoading()
+            comments = it.news.comments
+                .withoutDeleted()
+                .map { c -> c.asModel(it.selectedComment, it.collapsedComments, it.news.user) }
+                .withSingleLoading()
         )
         NewsDetailStore.State.Loading -> NewsDetail.Model.Loading
         NewsDetailStore.State.Error -> NewsDetail.Model.Error
