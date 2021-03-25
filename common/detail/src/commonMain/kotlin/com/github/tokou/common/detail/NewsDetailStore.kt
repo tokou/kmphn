@@ -5,6 +5,7 @@ import com.github.tokou.common.detail.NewsDetailStore.*
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.Timestamp
 import com.github.tokou.common.utils.UserId
+import kotlinx.datetime.Instant
 
 interface NewsDetailStore : Store<Intent, State, Label> {
 
@@ -29,7 +30,7 @@ interface NewsDetailStore : Store<Intent, State, Label> {
         val text: String?,
         val link: String?,
         val user: UserId?,
-        val time: Timestamp,
+        val time: Instant,
         val comments: List<Comment>,
         val points: Long,
         val descendants: Long,
@@ -42,7 +43,7 @@ interface NewsDetailStore : Store<Intent, State, Label> {
         data class Content(
             override val id: Long,
             val user: UserId,
-            val time: Timestamp,
+            val time: Instant,
             val text: String,
             val comments: List<Comment>,
             val deleted: Boolean

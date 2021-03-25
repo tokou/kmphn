@@ -6,11 +6,16 @@ import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.arkivanov.decompose.ComponentContext
 import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.Timestamp
 import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.Flow
+import kotlinx.datetime.periodUntil
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.Clock
 
 // https://news.ycombinator.com/formatdoc
 fun String.parseText(): List<NewsDetail.Text> {
@@ -49,6 +54,18 @@ fun String.parseText(): List<NewsDetail.Text> {
     return all.toList().ifEmpty { listOf(NewsDetail.Text.Plain(decoded)) }
 }
 
+fun Instant.format(): String {
+    val period = periodUntil(Clock.System.now(), TimeZone.currentSystemDefault())
+    fun plural(n: Int) = if (n == 1) "" else "s"
+    return when {
+        period.years > 0 -> period.years.let { "$it year${plural(it)}" }
+        period.months > 0 -> period.months.let { "$it month${plural(it)}" }
+        period.days > 0 -> period.days.let { "$it day${plural(it)}" }
+        period.hours > 0 -> period.hours.let { "$it hour${plural(it)}" }
+        else -> period.minutes.let { "$it minute${plural(it)}" }
+    }
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class NewsDetailComponent(
     componentContext: ComponentContext,
@@ -64,7 +81,7 @@ class NewsDetailComponent(
         text = text,
         link = link,
         user = user.orEmpty(),
-        time = time.toString(),
+        time = time.format(),
         commentsCount = descendants.toString(),
         points = points.toString()
     )
@@ -81,13 +98,13 @@ class NewsDetailComponent(
                 user = user,
                 isOp = user == op,
                 isSelected = selectedItem == id,
-                time = "$time hrs",
+                time = time.format(),
                 childrenCount = if (childrenCount > 0) childrenCount.toString() else "",
             )
             else NewsDetail.Comment.Content.Expanded(
                 id = id,
                 user = user,
-                time = "$time hrs",
+                time = time.format(),
                 isOp = user == op,
                 isSelected = selectedItem == id,
                 children = comments

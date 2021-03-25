@@ -40,6 +40,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
                 implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
+                api("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
             }
         }
         val commonTest by getting

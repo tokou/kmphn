@@ -8,6 +8,7 @@ import com.github.tokou.common.utils.ItemId
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
 
 
 class NewsDetailRepository(
@@ -21,7 +22,7 @@ class NewsDetailRepository(
         text = content,
         link = link,
         user = user.orEmpty(),
-        time = created,
+        time = Instant.fromEpochSeconds(created),
         comments = kids.map { NewsDetailStore.Comment.Loading(it) },
         points = score ?: 0,
         descendants = descendants ?: 0,
@@ -30,7 +31,7 @@ class NewsDetailRepository(
     private fun Comment.asNewsComment() = NewsDetailStore.Comment.Content(
         id = id,
         user = user.orEmpty(),
-        time = created,
+        time = Instant.fromEpochSeconds(created),
         text = content.orEmpty(),
         comments = kids.map { NewsDetailStore.Comment.Loading(it) },
         deleted = deleted,
