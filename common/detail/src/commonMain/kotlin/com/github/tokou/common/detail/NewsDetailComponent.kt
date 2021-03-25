@@ -6,7 +6,6 @@ import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.arkivanov.decompose.ComponentContext
 import com.github.tokou.common.utils.ItemId
-import com.github.tokou.common.utils.Timestamp
 import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -156,5 +155,19 @@ class NewsDetailComponent(
 
     override fun onCommentClicked(id: ItemId) {
         store.accept(NewsDetailStore.Intent.ToggleComment(id))
+    }
+
+    override fun onUserClicked(id: UserId) {
+        // TODO: implement user screen
+        onOutput(NewsDetail.Output.Link("https://news.ycombinator.com/user?id=$id"))
+    }
+
+    override fun onLinkClicked(uri: String, forceExternal: Boolean) {
+        val hnLink = "https?://news\\.ycombinator\\.com/item\\?id=(\\d+)".toRegex()
+        val itemId = hnLink.find(uri)?.groupValues?.get(1)?.toLongOrNull()
+        val output =
+            if (forceExternal || itemId == null) NewsDetail.Output.Link(uri)
+            else NewsDetail.Output.Item(itemId)
+        onOutput(output)
     }
 }

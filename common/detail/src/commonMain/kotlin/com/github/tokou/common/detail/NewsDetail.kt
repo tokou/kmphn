@@ -1,6 +1,7 @@
 package com.github.tokou.common.detail
 
 import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.UserId
 import kotlinx.coroutines.flow.Flow
 
 interface NewsDetail {
@@ -8,11 +9,15 @@ interface NewsDetail {
     val models: Flow<Model>
 
     fun onCommentClicked(id: ItemId)
+    fun onUserClicked(id: UserId)
+    fun onLinkClicked(uri: String, forceExternal: Boolean = false)
     fun onBack()
     fun onRetry()
 
     sealed class Output {
         object Back : Output()
+        data class Item(val id: ItemId) : Output()
+        data class Link(val uri: String) : Output()
     }
 
     sealed class Model {

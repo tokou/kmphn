@@ -63,7 +63,12 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
                     }
                 }
             }
-            is Model.Content -> NewsDetailContent(m, component::onCommentClicked)
+            is Model.Content -> NewsDetailContent(
+                content = m,
+                onCommentClicked = component::onCommentClicked,
+                onUserClicked = component::onUserClicked,
+                onLinkClicked = component::onLinkClicked,
+            )
         }
     }
 }
@@ -105,7 +110,12 @@ fun NewsDetailBar(showBack: Boolean = true, onBack: () -> Unit) = TopAppBar(
 
 
 @Composable
-fun NewsDetailContent(content: Model.Content, onCommentClicked: (ItemId) -> Unit) {
+fun NewsDetailContent(
+    content: Model.Content,
+    onCommentClicked: (ItemId) -> Unit,
+    onUserClicked: (UserId) -> Unit,
+    onLinkClicked: (String, Boolean) -> Unit
+) {
     val state = rememberLazyListState()
 
     Box(Modifier.fillMaxSize()) {
@@ -114,10 +124,14 @@ fun NewsDetailContent(content: Model.Content, onCommentClicked: (ItemId) -> Unit
             state = state,
             comments = content.comments,
             onCommentClicked = onCommentClicked,
-            onUserClicked = {},
-            onLinkClicked = {},
+            onUserClicked = onUserClicked,
+            onLinkClicked = onLinkClicked,
         ) {
-            NewsHeader(header = content.header)
+            NewsHeader(
+                header = content.header,
+                onUserClicked = onUserClicked,
+                onLinkClicked = onLinkClicked
+            )
         }
         VerticalScrollbar(
             modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
@@ -132,7 +146,12 @@ fun NewsDetailContent(content: Model.Content, onCommentClicked: (ItemId) -> Unit
 }
 
 @Composable
-fun NewsHeader(modifier: Modifier = Modifier, header: Header) {
+fun NewsHeader(
+    modifier: Modifier = Modifier,
+    header: Header,
+    onLinkClicked: (String, Boolean) -> Unit,
+    onUserClicked: (UserId) -> Unit
+) {
     Surface(
         color = MaterialTheme.colors.primarySurface,
         modifier = modifier.fillMaxWidth(),
@@ -155,7 +174,7 @@ fun NewsHeader(modifier: Modifier = Modifier, header: Header) {
                         Text(
                             user,
                             style = MaterialTheme.typography.body2,
-                            modifier = Modifier.alignByBaseline()
+                            modifier = Modifier.alignByBaseline().clickable { onUserClicked(user) }
                         )
                         Spacer(Modifier.width(12.dp))
                         Text(
@@ -173,10 +192,22 @@ fun NewsHeader(modifier: Modifier = Modifier, header: Header) {
                 }
                 Spacer(Modifier.height(16.dp))
                 link?.let {
-                    Text(it, style = MaterialTheme.typography.body1, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.body1,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.clickable { onLinkClicked(it, false) }
+                    )
                     Spacer(Modifier.height(8.dp))
                 }
-                Text(hnLink, style = MaterialTheme.typography.body1, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = hnLink,
+                    style = MaterialTheme.typography.body1,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.clickable { onLinkClicked(hnLink, true) }
+                )
                 text?.let {
                     Spacer(Modifier.height(16.dp))
                     Surface(color = MaterialTheme.colors.primary.copy(0.2f)) {
@@ -191,10 +222,12 @@ fun NewsHeader(modifier: Modifier = Modifier, header: Header) {
 fun LazyListScope.commentTree(
     comments: List<Comment>,
     padding: Dp = 0.dp,
-    onCommentClicked: (ItemId) -> Unit
+    onCommentClicked: (ItemId) -> Unit,
+    onUserClicked: (UserId) -> Unit,
+    onLinkClicked: (String, Boolean) -> Unit,
 ) {
     comments.forEach { c ->
-        commentRow(c, padding, onCommentClicked)
+        commentRow(c, padding, onCommentClicked, onUserClicked, onLinkClicked)
     }
 }
 
@@ -218,7 +251,8 @@ fun CommentLoader() {
 @Composable
 fun CommentCollapsed(
     comment: Comment.Content.Collapsed,
-    onCommentClicked: (ItemId) -> Unit
+    onCommentClicked: (ItemId) -> Unit,
+    onUserClicked: (UserId) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -227,7 +261,7 @@ fun CommentCollapsed(
             .fillMaxWidth()
     ) {
         CompositionLocalProvider(LocalContentAlpha provides medium) {
-            CommentHeader(comment) {
+            CommentHeader(comment, onUserClicked) {
                 Spacer(Modifier.width(16.dp))
                 CompositionLocalProvider(LocalContentAlpha provides high) {
                     Text(
@@ -242,14 +276,18 @@ fun CommentCollapsed(
 }
 
 @Composable
-fun CommentHeader(comment: Comment.Content, content: @Composable (RowScope) -> Unit = {}) {
+fun CommentHeader(
+    comment: Comment.Content,
+    onUserClicked: (UserId) -> Unit,
+    content: @Composable (RowScope) -> Unit = {}
+) {
     Row {
         val color = if (comment.isOp) MaterialTheme.colors.primarySurface else Color.Transparent
         Surface(color = color) {
             Text(
                 text = comment.user,
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.padding(4.dp),
+                modifier = Modifier.padding(4.dp).clickable { onUserClicked(comment.user) },
                 color = if (comment.isOp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.primary
             )
         }
@@ -264,7 +302,12 @@ fun CommentHeader(comment: Comment.Content, content: @Composable (RowScope) -> U
 }
 
 @Composable
-fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId) -> Unit) {
+fun CommentExpanded(
+    comment: Comment.Content.Expanded,
+    onCommentClicked: (ItemId) -> Unit,
+    onUserClicked: (UserId) -> Unit,
+    onLinkClicked: (String, Boolean) -> Unit,
+) {
     Column(
         modifier = Modifier
             .clickable { onCommentClicked(comment.id) }
@@ -272,10 +315,9 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
             .padding(top = 12.dp, bottom = 16.dp)
             .fillMaxWidth()
     ) {
-        CommentHeader(comment)
+        CommentHeader(comment, onUserClicked)
         Spacer(Modifier.height(8.dp))
         val urlAnnotation = "url"
-        val uriHandler = LocalUriHandler.current
         val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
         val pressedLink = remember { mutableStateOf<String?>(null) }
         val underline = SpanStyle(color = MaterialTheme.colors.primary, textDecoration = TextDecoration.Underline)
@@ -323,7 +365,7 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
         }
         fun handleLinkTap(pos: Offset) { pos.correspondingAnnotation {
             pressedLink.value = null
-            if (it.tag == urlAnnotation) uriHandler.openUri(it.item)
+            if (it.tag == urlAnnotation) onLinkClicked(it.item, false)
         } }
         Text(
             text = text,
@@ -377,18 +419,31 @@ val step = 16.dp
 fun LazyListScope.commentRow(
     comment: Comment,
     padding: Dp,
-    onCommentClicked: (ItemId) -> Unit
+    onCommentClicked: (ItemId) -> Unit,
+    onUserClicked: (UserId) -> Unit,
+    onLinkClicked: (String, Boolean) -> Unit,
 ) {
-    item {
+    val key = when (comment) {
+        Comment.Loading -> null
+        is Comment.Content.Collapsed -> comment.id
+        is Comment.Content.Expanded -> comment.id
+    }
+    item(key) {
         when (comment) {
             Comment.Loading -> CommentRow(padding) { CommentLoader() }
-            is Comment.Content.Collapsed -> CommentRow(padding, comment.isSelected) { CommentCollapsed(comment, onCommentClicked) }
+            is Comment.Content.Collapsed -> CommentRow(padding, comment.isSelected) { CommentCollapsed(comment, onCommentClicked, onUserClicked) }
             is Comment.Content.Expanded -> CommentRow(padding, comment.isSelected) {
-                CommentExpanded(comment, onCommentClicked)
+                CommentExpanded(comment, onCommentClicked, onUserClicked, onLinkClicked)
             }
         }
     }
-    if (comment is Comment.Content.Expanded) commentTree(comment.children, padding + step, onCommentClicked)
+    if (comment is Comment.Content.Expanded) commentTree(
+        comments = comment.children,
+        padding = padding + step,
+        onCommentClicked = onCommentClicked,
+        onUserClicked = onUserClicked,
+        onLinkClicked = onLinkClicked,
+    )
 }
 
 @Composable
@@ -398,13 +453,18 @@ fun NewsComments(
     state: LazyListState = rememberLazyListState(),
     onCommentClicked: (ItemId) -> Unit,
     onUserClicked: (UserId) -> Unit,
-    onLinkClicked: (String) -> Unit,
+    onLinkClicked: (String, Boolean) -> Unit,
     header: @Composable () -> Unit = {}
 ) {
 
     LazyColumn(modifier = modifier, state = state) {
         item { header() }
-        commentTree(comments, onCommentClicked = onCommentClicked)
+        commentTree(
+            comments = comments,
+            onCommentClicked = onCommentClicked,
+            onUserClicked = onUserClicked,
+            onLinkClicked = onLinkClicked
+        )
     }
 }
 

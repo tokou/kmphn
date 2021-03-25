@@ -26,16 +26,19 @@ interface NewsRoot {
 
 class NewsRootComponent(
     componentContext: ComponentContext,
+    private val uriHandler: (String) -> Unit,
     private val newsMain: (ComponentContext, (NewsMain.Output) -> Unit) -> NewsMain,
     private val newsDetail: (ComponentContext, itemId: Long, (NewsDetail.Output) -> Unit) -> NewsDetail,
 ): NewsRoot, ComponentContext by componentContext {
 
     constructor(
         componentContext: ComponentContext,
+        uriHandler: (String) -> Unit,
         storeFactory: StoreFactory,
         database: NewsDatabase
     ) : this(
         componentContext = componentContext,
+        uriHandler = uriHandler,
         newsMain = { context, output -> NewsMainComponent(context, output) },
         newsDetail = { context, itemId, output ->
             NewsDetailComponent(
@@ -66,6 +69,8 @@ class NewsRootComponent(
 
     private fun detailOutput() = { output: NewsDetail.Output -> when (output) {
         is NewsDetail.Output.Back -> router.pop()
+        is NewsDetail.Output.Item -> router.push(Configuration.Detail(output.id))
+        is NewsDetail.Output.Link -> uriHandler(output.uri)
     } }
 
     override val routerState: Value<RouterState<*, Child>> = router.state

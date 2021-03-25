@@ -23,13 +23,15 @@ val icon: BufferedImage = ImageIO.read(object {}::class.java.getResource("/icon.
 
 fun main() = Window(title = "HN", icon = icon) { App() }
 
-val uriHandler = object : UriHandler {
-    override fun openUri(uri: String) {
-        if (Desktop.isDesktopSupported()) {
-            val desktop = Desktop.getDesktop()!!
-            desktop.browse(URI(uri))
-        }
+fun openLink(uri: String) {
+    if (Desktop.isDesktopSupported()) {
+        val desktop = Desktop.getDesktop()!!
+        desktop.browse(URI(uri))
     }
+}
+
+val uriHandler = object : UriHandler {
+    override fun openUri(uri: String) = openLink(uri)
 }
 
 @Composable
@@ -39,6 +41,7 @@ fun App() {
             val rootComponent = rememberRootComponent {
                 NewsRootComponent(
                     componentContext = it,
+                    uriHandler = ::openLink,
                     storeFactory = LoggingStoreFactory(DefaultStoreFactory),
                     database = createDatabase(inMemoryDatabaseDriver())
                 )
