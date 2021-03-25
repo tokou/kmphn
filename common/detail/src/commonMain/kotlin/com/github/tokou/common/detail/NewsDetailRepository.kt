@@ -21,18 +21,19 @@ class NewsDetailRepository(
         text = content,
         link = link,
         user = user.orEmpty(),
-        time = 0,
+        time = created,
         comments = kids.map { NewsDetailStore.Comment.Loading(it) },
-        points = 0,
-        descendants = 0
+        points = score ?: 0,
+        descendants = descendants ?: 0,
     )
 
     private fun Comment.asNewsComment() = NewsDetailStore.Comment.Content(
         id = id,
         user = user.orEmpty(),
-        time = 0,
+        time = created,
         text = content.orEmpty(),
-        comments = kids.map { NewsDetailStore.Comment.Loading(it) }
+        comments = kids.map { NewsDetailStore.Comment.Loading(it) },
+        deleted = deleted,
     )
 
     // TODO: find a way to express "empty"
@@ -104,9 +105,10 @@ class NewsDetailRepository(
         return Comment(
             id = id,
             user = by,
-            created = time.toString(),
+            created = time,
             content = text,
-            parentId = 0,
+            parentId = parent,
+            deleted = deleted,
             kids = kids
         )
     }
@@ -129,14 +131,27 @@ class NewsDetailRepository(
             is NewsApi.Item.Job -> url
             else -> null
         }
+        val score = when (this) {
+            is NewsApi.Item.Story -> score
+            is NewsApi.Item.Poll -> score
+            is NewsApi.Item.PollOption -> score
+            else -> null
+        }
+        val descendants = when (this) {
+            is NewsApi.Item.Story -> descendants
+            is NewsApi.Item.Poll -> descendants
+            else -> null
+        }
         return Item(
             id = id,
             user = by,
-            created = time.toString(),
+            created = time,
             content = content,
             title = title,
             link = link,
             kids = kids,
+            score = score,
+            descendants = descendants,
             type = this::class.simpleName!!
         )
     }

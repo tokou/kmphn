@@ -3,11 +3,13 @@ import kotlin.collections.List;
 CREATE TABLE IF NOT EXISTS item(
 id INTEGER NOT NULL PRIMARY KEY,
 user TEXT,
-created TEXT NOT NULL,
+created INTEGER NOT NULL,
 content TEXT,
 title TEXT,
 kids TEXT as List<Long> NOT NULL DEFAULT "[]",
 link TEXT,
+score INTEGER,
+descendants INTEGER,
 type TEXT NOT NULL
 );
 

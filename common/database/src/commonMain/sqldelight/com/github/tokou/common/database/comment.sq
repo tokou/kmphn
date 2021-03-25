@@ -3,14 +3,15 @@ import kotlin.collections.List;
 CREATE TABLE IF NOT EXISTS comment(
 id INTEGER NOT NULL PRIMARY KEY,
 user TEXT,
-created TEXT NOT NULL,
+created INTEGER NOT NULL,
 kids TEXT as List<Long> NOT NULL DEFAULT "[]",
 content TEXT,
+deleted INTEGER as Boolean NOT NULL DEFAULT 0,
 parentId INTEGER REFERENCES comment(id)
 );
 
 insert:
-INSERT INTO comment (id, user, created, kids, content, parentId) VALUES ?;
+INSERT INTO comment (id, user, created, kids, content, deleted, parentId) VALUES ?;
 
 selectById:
 SELECT * FROM comment WHERE id = ?;

@@ -44,7 +44,8 @@ interface NewsDetailStore : Store<Intent, State, Label> {
             val user: UserId,
             val time: Timestamp,
             val text: String,
-            val comments: List<Comment>
+            val comments: List<Comment>,
+            val deleted: Boolean
         ) : Comment() {
             val childrenCount: Int = comments.size + comments.sumBy { (it as? Content)?.childrenCount ?: 1 }
         }
