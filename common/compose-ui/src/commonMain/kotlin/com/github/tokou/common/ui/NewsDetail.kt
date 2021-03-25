@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha.high
+import androidx.compose.material.ContentAlpha.medium
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.github.tokou.common.detail.NewsDetail
@@ -133,18 +136,46 @@ fun NewsHeader(modifier: Modifier = Modifier, header: Header) {
                     text = title,
                     style = MaterialTheme.typography.subtitle1
                 )
-                Row {
-                    Text(points)
-                    Spacer(Modifier.width(12.dp))
-                    Text(user)
-                    Spacer(Modifier.width(12.dp))
-                    Text(time)
-                    Spacer(Modifier.width(12.dp))
-                    Text(commentsCount)
+                Spacer(Modifier.height(16.dp))
+                CompositionLocalProvider(LocalContentAlpha provides medium) {
+                    Row {
+                        Text(
+                            points,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            user,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            time,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                        Spacer(Modifier.width(12.dp))
+                        Text(
+                            commentsCount,
+                            style = MaterialTheme.typography.body2,
+                            modifier = Modifier.alignByBaseline()
+                        )
+                    }
                 }
-                text?.let { Text(it) }
-                link?.let { Text(it) }
-                Text(hnLink)
+                Spacer(Modifier.height(16.dp))
+                link?.let {
+                    Text(it, style = MaterialTheme.typography.body1, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Spacer(Modifier.height(8.dp))
+                }
+                Text(hnLink, style = MaterialTheme.typography.body1, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                text?.let {
+                    Spacer(Modifier.height(16.dp))
+                    Surface(color = MaterialTheme.colors.primary.copy(0.2f)) {
+                        Text(it, style = MaterialTheme.typography.body1)
+                    }
+                }
             }
         }
     }
@@ -185,14 +216,43 @@ fun CommentCollapsed(
     Row(
         modifier = Modifier
             .clickable { onCommentClicked(comment.id) }
-            .padding(16.dp)
+            .padding(horizontal = 16.dp, vertical = 12.dp)
             .fillMaxWidth()
     ) {
-        Text(text = comment.user)
-        Spacer(Modifier.width(32.dp))
-        Text(text = comment.time)
+        CompositionLocalProvider(LocalContentAlpha provides medium) {
+            CommentHeader(comment) {
+                Spacer(Modifier.width(16.dp))
+                CompositionLocalProvider(LocalContentAlpha provides high) {
+                    Text(
+                        text = comment.childrenCount,
+                        style = MaterialTheme.typography.body1,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CommentHeader(comment: Comment.Content, content: @Composable (RowScope) -> Unit = {}) {
+    Row {
+        val color = if (comment.isOp) MaterialTheme.colors.primarySurface else Color.Transparent
+        Surface(color = color) {
+            Text(
+                text = comment.user,
+                style = MaterialTheme.typography.body1,
+                modifier = Modifier.padding(4.dp),
+                color = if (comment.isOp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.primary
+            )
+        }
         Spacer(Modifier.width(16.dp))
-        Text(text = comment.childrenCount)
+        Text(
+            text = comment.time,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.padding(4.dp)
+        )
+        content(this)
     }
 }
 
@@ -201,15 +261,12 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
     Column(
         modifier = Modifier
             .clickable { onCommentClicked(comment.id) }
-            .padding(16.dp)
+            .padding(horizontal = 16.dp)
+            .padding(top = 12.dp, bottom = 16.dp)
             .fillMaxWidth()
     ) {
-        Row {
-            Text(text = comment.user)
-            Spacer(Modifier.width(32.dp))
-            Text(text = comment.time)
-        }
-        Spacer(Modifier.height(16.dp))
+        CommentHeader(comment)
+        Spacer(Modifier.height(8.dp))
         val underline = SpanStyle(color = MaterialTheme.colors.primary, textDecoration = TextDecoration.Underline)
         val emphasis = SpanStyle(fontStyle = FontStyle.Italic)
         val code = SpanStyle(fontFamily = FontFamily.Monospace)
@@ -241,7 +298,7 @@ fun CommentExpanded(comment: Comment.Content.Expanded, onCommentClicked: (ItemId
         Text(
             text = text,
             onTextLayout = { layoutResult.value = it },
-            modifier = Modifier
+            style = MaterialTheme.typography.body1
         )
     }
 }
