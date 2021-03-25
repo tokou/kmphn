@@ -18,7 +18,8 @@ interface NewsDetailStore : Store<Intent, State, Label> {
         object Loading : State()
         data class Content(
             val news: News,
-            val collapsedComments: Set<ItemId> = emptySet()
+            val collapsedComments: Set<ItemId> = emptySet(),
+            val selectedComment: ItemId? = null,
         ) : State()
     }
 

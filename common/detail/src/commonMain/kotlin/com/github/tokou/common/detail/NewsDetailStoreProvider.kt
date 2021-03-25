@@ -26,7 +26,7 @@ class NewsDetailStoreProvider(
 
     private sealed class Result {
         data class Loaded(val item: News) : Result()
-        data class Toggled(val collapsedComments: Set<ItemId>) : Result()
+        data class Toggled(val itemId: ItemId, val collapsedComments: Set<ItemId>) : Result()
         object NotFound : Result()
         object Loading : Result()
     }
@@ -36,7 +36,7 @@ class NewsDetailStoreProvider(
             when (this) {
                 is State.Content -> when (result) {
                     is Result.Loaded -> copy(news = result.item)
-                    is Result.Toggled -> copy(collapsedComments = result.collapsedComments)
+                    is Result.Toggled -> copy(collapsedComments = result.collapsedComments, selectedComment = result.itemId)
                     Result.NotFound -> State.Error
                     Result.Loading -> State.Loading
                 }
@@ -85,7 +85,7 @@ class NewsDetailStoreProvider(
             is State.Content -> {
                 val collapsed = state.collapsedComments
                 val toggled = if (collapsed.contains(id)) collapsed - id else collapsed + id
-                dispatch(Result.Toggled(toggled))
+                dispatch(Result.Toggled(id, toggled))
             }
             else -> {}
         }

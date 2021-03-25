@@ -226,10 +226,21 @@ fun CommentPadding(padding: Dp) {
 }
 
 @Composable
-fun CommentRow(padding: Dp = 0.dp, content: @Composable () -> Unit) {
+fun CommentRow(padding: Dp = 0.dp, isSelected: Boolean = false, content: @Composable () -> Unit) {
     Row(modifier = Modifier.height(IntrinsicSize.Max).fillMaxWidth()) {
         CommentPadding(padding)
-        content()
+        Box(Modifier) {
+            Column {
+                Divider(color = Color.Black.copy(alpha = 0.09f))
+                content()
+            }
+            if (isSelected) Box(
+                modifier = Modifier
+                    .background(MaterialTheme.colors.primary)
+                    .fillMaxHeight()
+                    .width(4.dp)
+            )
+        }
     }
 }
 
@@ -241,14 +252,11 @@ fun LazyListScope.commentRow(
     onCommentClicked: (Comment.Content) -> Unit
 ) {
     item {
-        CommentRow(padding) {
-            Column {
-                Divider(color = Color.Black.copy(alpha = 0.09f))
-                when (comment) {
-                    is Comment.Loading -> CommentLoader()
-                    is Comment.Content.Collapsed -> CommentCollapsed(comment, onCommentClicked)
-                    is Comment.Content.Expanded -> CommentExpanded(comment, onCommentClicked)
-                }
+        when (comment) {
+            Comment.Loading -> CommentRow(padding) { CommentLoader() }
+            is Comment.Content.Collapsed -> CommentRow(padding, comment.isSelected) { CommentCollapsed(comment, onCommentClicked) }
+            is Comment.Content.Expanded -> CommentRow(padding, comment.isSelected) {
+                CommentExpanded(comment, onCommentClicked)
             }
         }
     }

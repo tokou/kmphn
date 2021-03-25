@@ -42,12 +42,14 @@ interface NewsDetail {
             abstract val user: String
             abstract val time: String
             abstract val isOp: Boolean
+            abstract val isSelected: Boolean
 
             data class Expanded(
                 override val id: Long,
                 override val user: String,
                 override val time: String,
                 override val isOp: Boolean,
+                override val isSelected: Boolean,
                 val children: List<Comment>,
                 val text: String
             ) : Content()
@@ -57,6 +59,7 @@ interface NewsDetail {
                 override val user: String,
                 override val time: String,
                 override val isOp: Boolean,
+                override val isSelected: Boolean,
                 val childrenCount: String
             ) : Content()
         }

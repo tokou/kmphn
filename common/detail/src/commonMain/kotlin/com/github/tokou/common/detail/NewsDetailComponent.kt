@@ -33,22 +33,28 @@ class NewsDetailComponent(
         points = points.toString()
     )
 
-    private fun NewsDetailStore.Comment.asModel(collapsedIds: Set<ItemId>, op: UserId?): NewsDetail.Comment = when (this) {
+    private fun NewsDetailStore.Comment.asModel(
+        selectedItem: ItemId?,
+        collapsedIds: Set<ItemId>,
+        op: UserId?
+    ): NewsDetail.Comment = when (this) {
         is NewsDetailStore.Comment.Loading -> NewsDetail.Comment.Loading
         is NewsDetailStore.Comment.Content -> {
             if (collapsedIds.contains(id)) NewsDetail.Comment.Content.Collapsed(
                 id = id,
                 user = user,
                 isOp = user == op,
+                isSelected = selectedItem == id,
                 time = "$time hrs",
-                childrenCount = if (childrenCount > 0) childrenCount.toString() else ""
+                childrenCount = if (childrenCount > 0) childrenCount.toString() else "",
             )
             else NewsDetail.Comment.Content.Expanded(
                 id = id,
                 user = user,
                 time = "$time hrs",
                 isOp = user == op,
-                children = comments.map { c -> c.asModel(collapsedIds, op) }.withSingleLoading(),
+                isSelected = selectedItem == id,
+                children = comments.map { c -> c.asModel(selectedItem, collapsedIds, op) }.withSingleLoading(),
                 text = text,
             )
         }
@@ -61,7 +67,7 @@ class NewsDetailComponent(
     private val stateToModel: suspend (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
         is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
             header = it.news.asHeader(),
-            comments = it.news.comments.map { c -> c.asModel(it.collapsedComments, it.news.user) }.withSingleLoading()
+            comments = it.news.comments.map { c -> c.asModel(it.selectedComment, it.collapsedComments, it.news.user) }.withSingleLoading()
         )
         NewsDetailStore.State.Loading -> NewsDetail.Model.Loading
         NewsDetailStore.State.Error -> NewsDetail.Model.Error
