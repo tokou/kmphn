@@ -195,81 +195,86 @@ fun NewsHeader(
         color = MaterialTheme.colors.primarySurface,
         modifier = modifier.fillMaxWidth(),
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column {
             with(header) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.subtitle1
-                )
-                Spacer(Modifier.height(14.dp))
-                CompositionLocalProvider(LocalContentAlpha provides medium) {
-                    Row {
-                        Surface(color = MaterialTheme.colors.primaryVariant.copy(medium)) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.subtitle1
+                    )
+                    Spacer(Modifier.height(14.dp))
+                    CompositionLocalProvider(LocalContentAlpha provides medium) {
+                        Row {
+                            Surface(color = MaterialTheme.colors.primaryVariant.copy(medium)) {
+                                Text(
+                                    text = points,
+                                    style = MaterialTheme.typography.body2,
+                                    modifier = Modifier.padding(4.dp).align(Alignment.CenterVertically)
+                                )
+                            }
+                            Spacer(Modifier.width(12.dp))
                             Text(
-                                text = points,
+                                text = user,
                                 style = MaterialTheme.typography.body2,
-                                modifier = Modifier.padding(4.dp).align(Alignment.CenterVertically)
+                                modifier = Modifier.align(Alignment.CenterVertically).clickable { onUserClicked(user) }
+                            )
+                            Spacer(Modifier.width(12.dp))
+                            Text(
+                                text = time,
+                                style = MaterialTheme.typography.body2,
+                                modifier = Modifier.align(Alignment.CenterVertically)
+                            )
+                            Spacer(Modifier.width(12.dp))
+                            CompositionLocalProvider(LocalContentAlpha provides medium) {
+                                Icon(Icons.Filled.Comment, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
+                            }
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = commentsCount,
+                                style = MaterialTheme.typography.body2,
+                                modifier = Modifier.align(Alignment.CenterVertically)
                             )
                         }
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            text = user,
-                            style = MaterialTheme.typography.body2,
-                            modifier = Modifier.align(Alignment.CenterVertically).clickable { onUserClicked(user) }
-                        )
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            text = time,
-                            style = MaterialTheme.typography.body2,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        Spacer(Modifier.width(12.dp))
-                        CompositionLocalProvider(LocalContentAlpha provides medium) {
-                            Icon(Icons.Filled.Comment, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
-                        }
-                        Spacer(Modifier.width(4.dp))
-                        Text(
-                            text = commentsCount,
-                            style = MaterialTheme.typography.body2,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
                     }
-                }
-                Spacer(Modifier.height(14.dp))
-                link?.let {
+                    Spacer(Modifier.height(14.dp))
+                    link?.let {
+                        Row {
+                            CompositionLocalProvider(LocalContentAlpha provides medium) {
+                                Icon(Icons.Filled.OpenInNew, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
+                            }
+                            Spacer(Modifier.width(4.dp))
+                            Text(
+                                text = it,
+                                style = MaterialTheme.typography.body1,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                modifier = Modifier.clickable { onLinkClicked(it, false) }.align(Alignment.CenterVertically)
+                            )
+                        }
+                        Spacer(Modifier.height(8.dp))
+                    }
                     Row {
                         CompositionLocalProvider(LocalContentAlpha provides medium) {
                             Icon(Icons.Filled.OpenInNew, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
                         }
                         Spacer(Modifier.width(4.dp))
                         Text(
-                            text = it,
+                            text = hnLink,
                             style = MaterialTheme.typography.body1,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
-                            modifier = Modifier.clickable { onLinkClicked(it, false) }.align(Alignment.CenterVertically)
+                            modifier = Modifier.clickable { onLinkClicked(hnLink, true) }.align(Alignment.CenterVertically)
                         )
                     }
-                    Spacer(Modifier.height(8.dp))
-                }
-                Row {
-                    CompositionLocalProvider(LocalContentAlpha provides medium) {
-                        Icon(Icons.Filled.OpenInNew, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
-                    }
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                        text = hnLink,
-                        style = MaterialTheme.typography.body1,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.clickable { onLinkClicked(hnLink, true) }.align(Alignment.CenterVertically)
-                    )
                 }
                 text?.let {
-                    Spacer(Modifier.height(16.dp))
-                    Surface(color = MaterialTheme.colors.primary.copy(0.2f)) {
-                        Text(it, style = MaterialTheme.typography.body1)
+                    Surface(
+                        color = MaterialTheme.colors.surface.copy(alpha = 0.6f),
+                        contentColor = MaterialTheme.colors.onSurface
+                    ) {
+                        RichText(modifier = Modifier.padding(16.dp), text = it, onLinkClicked = { _, _ -> })
                     }
+                    Spacer(Modifier.height(8.dp))
                 }
             }
         }
@@ -389,65 +394,74 @@ fun CommentExpanded(
             CommentHeader(comment, onUserClicked)
         }
         Spacer(Modifier.height(8.dp))
-        val urlAnnotation = "url"
-        val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-        val pressedLink = remember { mutableStateOf<String?>(null) }
-        val underline = SpanStyle(color = MaterialTheme.colors.primary, textDecoration = TextDecoration.Underline)
-        val emphasis = SpanStyle(fontStyle = FontStyle.Italic)
-        val code = SpanStyle(fontFamily = FontFamily.Monospace)
-        val background = SpanStyle(background = MaterialTheme.colors.primary.copy(alpha = 0.1f))
+        RichText(text = comment.text, onLinkClicked = onLinkClicked)
+    }
+}
 
-        val text = buildAnnotatedString {
-            for (t in comment.text) {
-                when (t) {
-                    is Text.Plain -> append(t.text)
-                    is Text.Emphasis -> {
-                        pushStyle(emphasis)
-                        append(t.text)
-                        pop()
-                    }
-                    is Text.Link -> {
-                        pushStyle(underline)
-                        if (t.link == pressedLink.value) pushStyle(background)
-                        pushStringAnnotation(urlAnnotation, t.link)
-                        append(t.text)
-                        pop()
-                        if (t.link == pressedLink.value) pop()
-                        pop()
-                    }
-                    is Text.Code -> {
-                        pushStyle(code)
-                        append(t.text)
-                        pop()
-                    }
+@Composable
+fun RichText(
+    modifier: Modifier = Modifier,
+    text: List<Text>,
+    onLinkClicked: (String, Boolean) -> Unit
+) {
+    val urlAnnotation = "url"
+    val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+    val pressedLink = remember { mutableStateOf<String?>(null) }
+    val underline = SpanStyle(color = MaterialTheme.colors.primary, textDecoration = TextDecoration.Underline)
+    val emphasis = SpanStyle(fontStyle = FontStyle.Italic)
+    val code = SpanStyle(fontFamily = FontFamily.Monospace)
+    val background = SpanStyle(background = MaterialTheme.colors.primary.copy(alpha = 0.1f))
+
+    val annotatedString = buildAnnotatedString {
+        for (t in text) {
+            when (t) {
+                is Text.Plain -> append(t.text)
+                is Text.Emphasis -> {
+                    pushStyle(emphasis)
+                    append(t.text)
+                    pop()
+                }
+                is Text.Link -> {
+                    pushStyle(underline)
+                    if (t.link == pressedLink.value) pushStyle(background)
+                    pushStringAnnotation(urlAnnotation, t.link)
+                    append(t.text)
+                    pop()
+                    if (t.link == pressedLink.value) pop()
+                    pop()
+                }
+                is Text.Code -> {
+                    pushStyle(code)
+                    append(t.text)
+                    pop()
                 }
             }
         }
-        fun Offset.correspondingAnnotation(f: (AnnotatedString.Range<String>) -> Unit) {
-            layoutResult.value?.let {
-                val position = it.getOffsetForPosition(this)
-                text
-                    .getStringAnnotations(position, position)
-                    .firstOrNull()
-                    ?.let(f)
-            }
-        }
-        val handleLinkPress: suspend PressGestureScope.(Offset) -> Unit = { pos ->
-            pos.correspondingAnnotation { if (it.tag == urlAnnotation) pressedLink.value = it.item }
-        }
-        fun handleLinkTap(pos: Offset) { pos.correspondingAnnotation {
-            pressedLink.value = null
-            if (it.tag == urlAnnotation) onLinkClicked(it.item, false)
-        } }
-        Text(
-            text = text,
-            onTextLayout = { layoutResult.value = it },
-            style = MaterialTheme.typography.body1,
-            modifier = Modifier.pointerInput(Unit) {
-                detectTapGestures(onTap = ::handleLinkTap, onPress = handleLinkPress)
-            }
-        )
     }
+    fun Offset.correspondingAnnotation(f: (AnnotatedString.Range<String>) -> Unit) {
+        layoutResult.value?.let {
+            val position = it.getOffsetForPosition(this)
+            annotatedString
+                .getStringAnnotations(position, position)
+                .firstOrNull()
+                ?.let(f)
+        }
+    }
+    val handleLinkPress: suspend PressGestureScope.(Offset) -> Unit = { pos ->
+        pos.correspondingAnnotation { if (it.tag == urlAnnotation) pressedLink.value = it.item }
+    }
+    fun handleLinkTap(pos: Offset) { pos.correspondingAnnotation {
+        pressedLink.value = null
+        if (it.tag == urlAnnotation) onLinkClicked(it.item, false)
+    } }
+    Text(
+        text = annotatedString,
+        onTextLayout = { layoutResult.value = it },
+        style = MaterialTheme.typography.body1,
+        modifier = modifier.pointerInput(Unit) {
+            detectTapGestures(onTap = ::handleLinkTap, onPress = handleLinkPress)
+        }
+    )
 }
 
 @Composable

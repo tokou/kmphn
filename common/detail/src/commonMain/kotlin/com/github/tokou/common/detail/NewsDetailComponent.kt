@@ -1,69 +1,17 @@
 package com.github.tokou.common.detail
 
+import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
-import com.arkivanov.decompose.ComponentContext
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.periodUntil
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.Clock
+import kotlinx.coroutines.flow.map
 
-// https://news.ycombinator.com/formatdoc
-fun String.parseText(): List<NewsDetail.Text> {
-    val encoding = mapOf(
-        "<p>" to "\n\n",
-        "</p>" to "",
-        "</pre>" to "</pre>",
-        "&#x27;" to "'",
-        "&gt;" to ">",
-        "&lt;" to "<",
-        "&quot;" to "'",
-        "&amp;" to "&",
-        "&#x2F;" to "/",
-    )
-    val decoded = encoding.entries.fold(this) { t, (k, v) -> t.replace(k, v) }
-    val tags = "(<pre><code>((?:.|\n)*?)</code></pre>|<i>(.*?)</i>|<a href=\"(.*?)\" rel=\"nofollow\">(.*?)</a>)".toRegex()
-    val matches = tags.findAll(decoded)
-    val formatted = matches.map {
-        val values = it.groupValues.drop(2)
-        it.range to when {
-            values[1].isNotBlank() -> NewsDetail.Text.Emphasis(values[1])
-            values[0].isNotBlank() -> NewsDetail.Text.Code(values[0])
-            else -> NewsDetail.Text.Link(values[3], values[2])
-        }
-    }
-    var current = 0
-    val all = formatted.flatMap { (range, element) ->
-        val p = NewsDetail.Text.Plain(decoded.subSequence(current, range.first).toString())
-        val prev = if (current < range.first) listOf(p) else emptyList()
-        current = range.last + 1
-        val isLast = formatted.last().second == element
-        val n = NewsDetail.Text.Plain(decoded.subSequence(current, decoded.length).toString())
-        val next = if (isLast && current < decoded.length) listOf(n) else emptyList()
-        prev + listOf(element) + next
-    }
-    return all.toList().ifEmpty { listOf(NewsDetail.Text.Plain(decoded)) }
-}
-
-fun Instant.format(): String {
-    val period = periodUntil(Clock.System.now(), TimeZone.currentSystemDefault())
-    fun plural(n: Int) = if (n == 1) "" else "s"
-    return when {
-        period.years > 0 -> period.years.let { "$it year${plural(it)}" }
-        period.months > 0 -> period.months.let { "$it month${plural(it)}" }
-        period.days > 0 -> period.days.let { "$it day${plural(it)}" }
-        period.hours > 0 -> period.hours.let { "$it hour${plural(it)}" }
-        else -> period.minutes.let { "$it minute${plural(it)}" }
-    }
-}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NewsDetailComponent(
@@ -78,7 +26,7 @@ class NewsDetailComponent(
     private fun NewsDetailStore.News.asHeader() = NewsDetail.Header(
         id = id,
         title = title.orEmpty(),
-        text = text,
+        text = text?.parseText(),
         link = link,
         user = user.orEmpty(),
         time = time.format(),

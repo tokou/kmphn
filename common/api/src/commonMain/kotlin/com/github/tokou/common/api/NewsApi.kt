@@ -74,6 +74,7 @@ class NewsApi(private val baseUrl: String, private val client: HttpClient) {
             override val time: Timestamp = 0,
             override val dead: Boolean = false,
             override val kids: List<ItemId> = emptyList(),
+            val text: String? = null,
             val descendants: Long = 0,
             val score: Long = 0,
             val title: String? = null,

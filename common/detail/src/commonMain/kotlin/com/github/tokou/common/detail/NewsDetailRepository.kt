@@ -119,6 +119,7 @@ class NewsDetailRepository(
             is NewsApi.Item.Comment -> text
             is NewsApi.Item.Job -> text
             is NewsApi.Item.Poll -> text
+            is NewsApi.Item.Story -> text
             else -> null
         }
         val title = when (this) {
