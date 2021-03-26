@@ -21,7 +21,7 @@ class NewsMainComponent(
     private val onOutput: (NewsMain.Output) -> Unit
 ): NewsMain, ComponentContext by componentContext {
 
-    private fun NewsMainStore.News.asModel(): NewsMain.News = NewsMain.News(
+    private fun NewsMainStore.News.asModel(): NewsMain.Item = NewsMain.Item(
         id = id,
         title = title.orEmpty(),
         link = link,

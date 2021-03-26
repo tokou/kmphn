@@ -1,4 +1,4 @@
-package com.github.tokou.common.ui
+package com.github.tokou.common.ui.theme
 
 import androidx.compose.runtime.Composable
 

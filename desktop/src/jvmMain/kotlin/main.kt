@@ -13,7 +13,7 @@ import com.github.tokou.common.api.createApi
 import com.github.tokou.common.database.createDatabase
 import com.github.tokou.common.database.inMemoryDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
-import com.github.tokou.common.ui.NewsRoot
+import com.github.tokou.common.ui.root.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
 import java.awt.Desktop
 import java.awt.image.BufferedImage
