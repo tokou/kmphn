@@ -10,6 +10,7 @@ import com.github.tokou.common.utils.ItemId
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
+@OptIn(FlowPreview::class)
 class NewsDetailStoreProvider(
     private val storeFactory: StoreFactory,
     private val repository: Repository,
@@ -56,7 +57,7 @@ class NewsDetailStoreProvider(
         suspend fun load() = coroutineScope {
             repository
                 .updates
-                .conflate()
+                .debounce(200)
                 .map { r -> r
                     .map { Result.Loaded(it) }
                     .recover { if (it == NoContent) Result.Loading else Result.NotFound }

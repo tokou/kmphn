@@ -72,6 +72,8 @@ class NewsDetailRepository(
 
         loadComments(item.comments, ::update)
     } catch (e: Throwable) {
+        println(e)
+        e.printStackTrace()
         _state.value = Result.failure(e)
     }
 
