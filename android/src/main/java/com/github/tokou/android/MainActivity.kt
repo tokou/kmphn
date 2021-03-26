@@ -1,5 +1,7 @@
 package com.github.tokou.android
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +24,7 @@ class MainActivity : AppCompatActivity() {
                 val rootComponent = rememberRootComponent {
                     NewsRootComponent(
                         componentContext = it,
+                        uriHandler = { uri -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri))) },
                         storeFactory = LoggingStoreFactory(DefaultStoreFactory),
                         api = createApi(),
                         database = createDatabase(peristentDatabaseDriver(this))
