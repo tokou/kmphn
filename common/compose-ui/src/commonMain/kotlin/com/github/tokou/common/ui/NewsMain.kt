@@ -10,34 +10,49 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MenuOpen
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Sync
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import com.github.tokou.common.main.NewsMain
+import com.github.tokou.common.main.NewsMain.*
 import com.github.tokou.common.platform.MARGIN_SCROLLBAR
 import com.github.tokou.common.platform.VerticalScrollbar
 import com.github.tokou.common.platform.rememberScrollbarAdapter
+import kotlinx.coroutines.launch
 
 @Composable
 fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
-    val model by component.models.collectAsState(NewsMain.Model(emptyList()))
+    val model by component.models.collectAsState(Model.Loading)
+    val scope = rememberCoroutineScope()
+    val onRefresh: () -> Unit = { scope.launch { component.onRefresh() } }
 
     Scaffold(
-        topBar = { NewsBar(onRefresh = component::onRefresh) },
+        topBar = { NewsBar(onRefresh = onRefresh) },
         modifier = modifier,
     ) {
-        NewsList(
-            news = model.news,
-            onLinkClick = { component.onNewsSelected(it.id) },
-            onItemClick = { component.onNewsSecondarySelected(it.id) }
-        )
+        val m = model
+        when (m) {
+            Model.Loading -> Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            Model.Error -> Box(modifier = Modifier.fillMaxSize()) {
+                Column(modifier = Modifier.align(Alignment.Center)) {
+                    Text("Error", style = MaterialTheme.typography.h6)
+                    Button(onClick = onRefresh) {
+                        Text("Retry", style = MaterialTheme.typography.button)
+                    }
+                }
+            }
+            is Model.Content -> NewsList(
+                news = m.news,
+                onLinkClick = { component.onNewsSelected(it.id) },
+                onItemClick = { component.onNewsSecondarySelected(it.id) }
+            )
+
+        }
     }
 }
 
@@ -52,7 +67,7 @@ fun NewsBar(onRefresh: () -> Unit) = TopAppBar(
         }
     },
     actions = {
-        IconButton(onClick = {}) {
+        IconButton(onClick = onRefresh) {
             Icon(Icons.Filled.Sync, contentDescription = "Refresh")
         }
         IconButton(onClick = {}) {
@@ -67,7 +82,7 @@ fun NewsBar(onRefresh: () -> Unit) = TopAppBar(
 )
 
 @Composable
-fun NewsList(news: List<NewsMain.News>, onLinkClick: (NewsMain.News) -> Unit, onItemClick: (NewsMain.News) -> Unit) {
+fun NewsList(news: List<News>, onLinkClick: (News) -> Unit, onItemClick: (News) -> Unit) {
 
     Box(Modifier.fillMaxSize()) {
         val state = rememberLazyListState()
@@ -96,9 +111,9 @@ fun NewsList(news: List<NewsMain.News>, onLinkClick: (NewsMain.News) -> Unit, on
 @Composable
 fun NewsRow(
     modifier: Modifier = Modifier,
-    item: NewsMain.News,
-    onItemClick: (NewsMain.News) -> Unit = {},
-    onLinkClick: (NewsMain.News) -> Unit = {},
+    item: News,
+    onItemClick: (News) -> Unit = {},
+    onLinkClick: (News) -> Unit = {},
 ) {
     Row(modifier = modifier.height(IntrinsicSize.Max)) {
         Column(
