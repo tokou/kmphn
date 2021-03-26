@@ -41,7 +41,15 @@ class NewsRootComponent(
     ) : this(
         componentContext = componentContext,
         uriHandler = uriHandler,
-        newsMain = { context, output -> NewsMainComponent(context, output) },
+        newsMain = { context, output ->
+            NewsMainComponent(
+                componentContext = context,
+                storeFactory = storeFactory,
+                api = api,
+                database = database,
+                onOutput = output
+            )
+       },
         newsDetail = { context, itemId, output ->
             NewsDetailComponent(
                 componentContext = context,
@@ -68,6 +76,7 @@ class NewsRootComponent(
 
     private fun mainOutput() = { output: NewsMain.Output -> when (output) {
         is NewsMain.Output.Selected -> router.push(Configuration.Detail(output.id))
+        is NewsMain.Output.Link -> uriHandler(output.uri)
     } }
 
     private fun detailOutput() = { output: NewsDetail.Output -> when (output) {

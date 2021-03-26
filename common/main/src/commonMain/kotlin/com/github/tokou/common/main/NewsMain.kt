@@ -1,28 +1,30 @@
 package com.github.tokou.common.main
 
+import com.github.tokou.common.utils.ItemId
 import kotlinx.coroutines.flow.Flow
 
 interface NewsMain {
 
     val models: Flow<Model>
 
-    fun onNewsSelected(id: Long)
-    fun onNewsSecondarySelected(id: Long)
+    fun onNewsSelected(id: ItemId, link: String?)
+    fun onNewsSecondarySelected(id: ItemId)
     fun onLoadMoreSelected()
-    suspend fun onRefresh()
+    fun onRefresh()
 
     sealed class Output {
-        data class Selected(val id: Long) : Output()
+        data class Selected(val id: ItemId) : Output()
+        data class Link(val uri: String) : Output()
     }
 
     sealed class Model {
         object Error : Model()
         object Loading : Model()
-        data class Content(val news: List<News>) : Model()
+        data class Content(val news: List<News>, val isLoadingMore: Boolean) : Model()
     }
 
     data class News(
-        val id: Long,
+        val id: ItemId,
         val title: String,
         val link: String? = null,
         val user: String,
