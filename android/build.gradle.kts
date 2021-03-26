@@ -18,6 +18,7 @@ dependencies {
     implementation(project(":common:api"))
     implementation(project(":common:root"))
     implementation(project(":common:utils"))
+    implementation("androidx.browser:browser:1.3.0")
     implementation("androidx.activity:activity-compose:1.3.0-alpha04")
     implementation("com.arkivanov.decompose:decompose:0.1.9")
     implementation("com.arkivanov.decompose:extensions-compose-jetbrains:0.1.9")
