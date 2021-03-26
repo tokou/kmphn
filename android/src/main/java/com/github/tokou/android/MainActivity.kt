@@ -16,7 +16,9 @@ import com.github.tokou.common.ui.root.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeHelper.ensureRuntimeTheme(this)
         super.onCreate(savedInstanceState)
 
         setContent {
@@ -25,6 +27,7 @@ class MainActivity : AppCompatActivity() {
                     NewsRootComponent(
                         componentContext = it,
                         uriHandler = { uri -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(uri))) },
+                        uriHandler = tabsHelper.createUriHandler(color),
                         storeFactory = LoggingStoreFactory(DefaultStoreFactory),
                         api = createApi(),
                         database = createDatabase(peristentDatabaseDriver(this))

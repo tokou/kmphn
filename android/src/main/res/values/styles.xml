@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#FF6200EE</item>
+        <item name="colorPrimaryDark">#FF3700B3</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="android:Theme.Material.Light.DarkActionBar">
+        <item name="runtimeTheme">@style/AppTheme</item>
+        <item name="android:colorPrimary">#FF6200EE</item>
+        <item name="android:colorPrimaryDark">#FF3700B3</item>
+        <item name="android:actionBarStyle">@style/AppTheme.Splash.ActionBar</item>
+    </style>
+
+    <style name="AppTheme.Splash.ActionBar" parent="android:Widget.Material.ActionBar.Solid">
+        <item name="android:displayOptions">none</item>
+    </style>
+</resources>
