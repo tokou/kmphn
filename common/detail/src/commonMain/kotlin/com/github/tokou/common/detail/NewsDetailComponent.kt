@@ -7,6 +7,7 @@ import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.UserId
+import com.github.tokou.common.utils.format
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
