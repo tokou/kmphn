@@ -12,16 +12,15 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha.disabled
 import androidx.compose.material.ContentAlpha.high
 import androidx.compose.material.ContentAlpha.medium
+import androidx.compose.material.DropdownMenu
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.material.DropdownMenu
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
@@ -202,52 +201,70 @@ fun NewsHeader(
                     text = title,
                     style = MaterialTheme.typography.subtitle1
                 )
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(14.dp))
                 CompositionLocalProvider(LocalContentAlpha provides medium) {
                     Row {
+                        Surface(color = MaterialTheme.colors.primaryVariant.copy(medium)) {
+                            Text(
+                                text = points,
+                                style = MaterialTheme.typography.body2,
+                                modifier = Modifier.padding(4.dp).align(Alignment.CenterVertically)
+                            )
+                        }
+                        Spacer(Modifier.width(12.dp))
                         Text(
-                            points,
+                            text = user,
                             style = MaterialTheme.typography.body2,
-                            modifier = Modifier.alignByBaseline()
+                            modifier = Modifier.align(Alignment.CenterVertically).clickable { onUserClicked(user) }
                         )
                         Spacer(Modifier.width(12.dp))
                         Text(
-                            user,
+                            text = time,
                             style = MaterialTheme.typography.body2,
-                            modifier = Modifier.alignByBaseline().clickable { onUserClicked(user) }
+                            modifier = Modifier.align(Alignment.CenterVertically)
                         )
                         Spacer(Modifier.width(12.dp))
+                        CompositionLocalProvider(LocalContentAlpha provides medium) {
+                            Icon(Icons.Filled.Comment, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
+                        }
+                        Spacer(Modifier.width(4.dp))
                         Text(
-                            time,
+                            text = commentsCount,
                             style = MaterialTheme.typography.body2,
-                            modifier = Modifier.alignByBaseline()
-                        )
-                        Spacer(Modifier.width(12.dp))
-                        Text(
-                            commentsCount,
-                            style = MaterialTheme.typography.body2,
-                            modifier = Modifier.alignByBaseline()
+                            modifier = Modifier.align(Alignment.CenterVertically)
                         )
                     }
                 }
-                Spacer(Modifier.height(16.dp))
+                Spacer(Modifier.height(14.dp))
                 link?.let {
+                    Row {
+                        CompositionLocalProvider(LocalContentAlpha provides medium) {
+                            Icon(Icons.Filled.OpenInNew, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
+                        }
+                        Spacer(Modifier.width(4.dp))
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.body1,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.clickable { onLinkClicked(it, false) }.align(Alignment.CenterVertically)
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
+                Row {
+                    CompositionLocalProvider(LocalContentAlpha provides medium) {
+                        Icon(Icons.Filled.OpenInNew, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
+                    }
+                    Spacer(Modifier.width(4.dp))
                     Text(
-                        text = it,
+                        text = hnLink,
                         style = MaterialTheme.typography.body1,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.clickable { onLinkClicked(it, false) }
+                        modifier = Modifier.clickable { onLinkClicked(hnLink, true) }.align(Alignment.CenterVertically)
                     )
-                    Spacer(Modifier.height(8.dp))
                 }
-                Text(
-                    text = hnLink,
-                    style = MaterialTheme.typography.body1,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.clickable { onLinkClicked(hnLink, true) }
-                )
                 text?.let {
                     Spacer(Modifier.height(16.dp))
                     Surface(color = MaterialTheme.colors.primary.copy(0.2f)) {
@@ -300,7 +317,7 @@ fun CommentCollapsed(
             .padding(horizontal = 16.dp, vertical = 12.dp)
             .fillMaxWidth()
     ) {
-        CompositionLocalProvider(LocalContentAlpha provides medium) {
+        CompositionLocalProvider(LocalContentAlpha provides disabled) {
             CommentHeader(comment, onUserClicked) {
                 Spacer(Modifier.width(16.dp))
                 CompositionLocalProvider(LocalContentAlpha provides high) {
@@ -323,19 +340,32 @@ fun CommentHeader(
 ) {
     Row {
         val color = if (comment.isOp) MaterialTheme.colors.primarySurface else Color.Transparent
+        val textColor = if (comment.isOp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.primary
+        val padding = if (comment.isOp) 4.dp else 0.dp
+        if (!comment.isOp) {
+            Icon(
+                imageVector = Icons.Filled.PermIdentity,
+                contentDescription = null,
+                modifier = Modifier.size(20.dp).align(Alignment.CenterVertically),
+                tint = MaterialTheme.colors.primary.copy(alpha = LocalContentAlpha.current)
+            )
+            Spacer(Modifier.width(4.dp))
+        }
         Surface(color = color) {
             Text(
                 text = comment.user,
                 style = MaterialTheme.typography.body1,
-                modifier = Modifier.padding(4.dp).clickable { onUserClicked(comment.user) },
-                color = if (comment.isOp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.primary
+                modifier = Modifier.padding(padding).clickable { onUserClicked(comment.user) }.align(Alignment.CenterVertically),
+                color = textColor
             )
         }
         Spacer(Modifier.width(16.dp))
+        Icon(Icons.Filled.HourglassBottom, null, Modifier.size(16.dp).align(Alignment.CenterVertically))
+        Spacer(Modifier.width(4.dp))
         Text(
             text = comment.time,
             style = MaterialTheme.typography.body1,
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         content(this)
     }
@@ -355,7 +385,9 @@ fun CommentExpanded(
             .padding(top = 12.dp, bottom = 16.dp)
             .fillMaxWidth()
     ) {
-        CommentHeader(comment, onUserClicked)
+        CompositionLocalProvider(LocalContentAlpha provides medium) {
+            CommentHeader(comment, onUserClicked)
+        }
         Spacer(Modifier.height(8.dp))
         val urlAnnotation = "url"
         val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
