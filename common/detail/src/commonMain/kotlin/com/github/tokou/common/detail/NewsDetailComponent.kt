@@ -69,6 +69,7 @@ fun Instant.format(): String {
 class NewsDetailComponent(
     componentContext: ComponentContext,
     storeFactory: StoreFactory,
+    api: NewsApi,
     database: NewsDatabase,
     itemId: Long,
     private val onOutput: (NewsDetail.Output) -> Unit
@@ -138,7 +139,7 @@ class NewsDetailComponent(
         instanceKeeper.getStore {
             NewsDetailStoreProvider(
                 storeFactory = storeFactory,
-                repository = NewsDetailRepository(database, NewsApi),
+                repository = NewsDetailRepository(database, api),
                 id = itemId
             ).provide()
         }

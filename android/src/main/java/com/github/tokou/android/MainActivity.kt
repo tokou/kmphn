@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.github.tokou.common.api.createApi
 import com.github.tokou.common.database.createDatabase
 import com.github.tokou.common.database.peristentDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
                     NewsRootComponent(
                         componentContext = it,
                         storeFactory = LoggingStoreFactory(DefaultStoreFactory),
+                        api = createApi(),
                         database = createDatabase(peristentDatabaseDriver(this))
                     )
                 }

@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.UriHandler
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.github.tokou.common.api.createApi
 import com.github.tokou.common.database.createDatabase
 import com.github.tokou.common.database.inMemoryDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
@@ -43,6 +44,7 @@ fun App() {
                     componentContext = it,
                     uriHandler = ::openLink,
                     storeFactory = LoggingStoreFactory(DefaultStoreFactory),
+                    api = createApi(),
                     database = createDatabase(inMemoryDatabaseDriver())
                 )
             }

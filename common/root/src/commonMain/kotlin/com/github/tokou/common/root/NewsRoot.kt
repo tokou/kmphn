@@ -14,6 +14,7 @@ import com.github.tokou.common.main.NewsMain
 import com.github.tokou.common.main.NewsMainComponent
 import com.github.tokou.common.root.NewsRoot.Child
 import com.arkivanov.decompose.ComponentContext
+import com.github.tokou.common.api.NewsApi
 
 interface NewsRoot {
     val routerState: Value<RouterState<*, Child>>
@@ -35,6 +36,7 @@ class NewsRootComponent(
         componentContext: ComponentContext,
         uriHandler: (String) -> Unit,
         storeFactory: StoreFactory,
+        api: NewsApi,
         database: NewsDatabase
     ) : this(
         componentContext = componentContext,
@@ -44,6 +46,7 @@ class NewsRootComponent(
             NewsDetailComponent(
                 componentContext = context,
                 storeFactory = storeFactory,
+                api = api,
                 database = database,
                 itemId = itemId,
                 onOutput = output,

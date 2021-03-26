@@ -41,6 +41,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
                 implementation(project(":common:main"))
                 implementation(project(":common:database"))
+                implementation(project(":common:api"))
                 implementation(project(":common:detail"))
                 implementation(project(":common:utils"))
                 implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")

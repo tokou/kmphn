@@ -19,6 +19,7 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation(project(":common:compose-ui"))
+                implementation(project(":common:api"))
                 implementation(project(":common:database"))
                 implementation(project(":common:root"))
                 implementation(project(":common:utils"))

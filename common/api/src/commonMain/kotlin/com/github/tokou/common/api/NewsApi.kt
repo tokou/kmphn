@@ -13,6 +13,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 
+fun createApi(): NewsApi {
+    val baseUrl = "https://hacker-news.firebaseio.com/v0"
+    val client = createHttpClient(createJson(), true)
+    return NewsApi(baseUrl, client)
+}
+
 fun createJson() = Json {
     ignoreUnknownKeys = true
 }
@@ -23,15 +29,12 @@ fun createHttpClient(json: Json, enableNetworkLogs: Boolean) = HttpClient {
     }
     install(Logging) {
         logger = Logger.DEFAULT
-        level = if (enableNetworkLogs) LogLevel.INFO else LogLevel.NONE
+        level = if (enableNetworkLogs) LogLevel.ALL else LogLevel.NONE
     }
 }
 
 // https://hackernews.api-docs.io/v0/overview/introduction
-object NewsApi {
-
-    private val baseUrl = "https://hacker-news.firebaseio.com/v0"
-    private val client = createHttpClient(createJson(), true)
+class NewsApi(private val baseUrl: String, private val client: HttpClient) {
 
     @Serializable
     data class Updates(val items: List<Long>, val profiles: List<String>)
