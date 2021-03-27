@@ -89,7 +89,7 @@ class NewsRootComponent(
 
     private sealed class Configuration : Parcelable {
         @Parcelize
-        object Main : Configuration()
+        object Main : Configuration() { override fun toString(): String = this::class.simpleName ?: super.toString() }
 
         @Parcelize
         data class Detail(val itemId: Long) : Configuration()
