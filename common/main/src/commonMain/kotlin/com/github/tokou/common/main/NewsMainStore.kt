@@ -19,6 +19,7 @@ interface NewsMainStore : Store<Intent, State, Label> {
         data class Content(
             val news: List<News>,
             val isLoadingMore: Boolean = false,
+            val canLoadMore: Boolean = true,
         ) : State()
     }
 

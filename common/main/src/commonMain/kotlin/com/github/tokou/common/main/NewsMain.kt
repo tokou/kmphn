@@ -20,7 +20,11 @@ interface NewsMain {
     sealed class Model {
         object Error : Model()
         object Loading : Model()
-        data class Content(val items: List<Item>, val isLoadingMore: Boolean) : Model()
+        data class Content(
+            val items: List<Item>,
+            val isLoadingMore: Boolean,
+            val canLoadMore: Boolean
+        ) : Model()
     }
 
     data class Item(

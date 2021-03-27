@@ -32,7 +32,11 @@ class NewsMainComponent(
     )
 
     private val stateToModel: suspend (NewsMainStore.State) -> NewsMain.Model = { when (it) {
-        is NewsMainStore.State.Content -> NewsMain.Model.Content(it.news.map { n -> n.asModel() }, it.isLoadingMore)
+        is NewsMainStore.State.Content -> NewsMain.Model.Content(
+            items = it.news.map { n -> n.asModel() },
+            isLoadingMore = it.isLoadingMore,
+            canLoadMore = it.canLoadMore
+        )
         NewsMainStore.State.Loading -> NewsMain.Model.Loading
         NewsMainStore.State.Error -> NewsMain.Model.Error
     } }

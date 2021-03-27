@@ -24,7 +24,7 @@ class NewsMainStoreProvider(
     ) {}
 
     private sealed class Result {
-        data class Loaded(val news: List<News>) : Result()
+        data class Loaded(val news: List<News>, val askedCount: Int) : Result()
         object NotFound : Result() { override fun toString(): String = this::class.simpleName ?: super.toString() }
         object Loading : Result() { override fun toString(): String = this::class.simpleName ?: super.toString() }
         object LoadingMore : Result() { override fun toString(): String = this::class.simpleName ?: super.toString() }
@@ -34,7 +34,11 @@ class NewsMainStoreProvider(
         override fun State.reduce(result: Result): State =
             when (this) {
                 is State.Content -> when (result) {
-                    is Result.Loaded -> copy(news = news + result.news, isLoadingMore = false)
+                    is Result.Loaded -> copy(
+                        news = news + result.news,
+                        isLoadingMore = false,
+                        canLoadMore = result.news.size == result.askedCount
+                    )
                     Result.NotFound -> State.Error
                     Result.Loading -> State.Loading
                     Result.LoadingMore -> copy(isLoadingMore = true)
@@ -52,11 +56,13 @@ class NewsMainStoreProvider(
 
     private inner class ExecutorImpl : SuspendExecutor<Intent, Unit, State, Result, Label>() {
 
+        private val pageSize = 30
+
         suspend fun load() = coroutineScope {
             repository
                 .updates
                 .map { r -> r
-                    .map { Result.Loaded(it) }
+                    .map { Result.Loaded(it, pageSize) }
                     .recover { if (it == NoContent) Result.Loading else Result.NotFound }
                     .getOrThrow()
                 }
@@ -64,7 +70,7 @@ class NewsMainStoreProvider(
                 .onEach(::dispatch)
                 .onStart { dispatch(Result.Loading) }
                 .launchIn(this)
-            repository.load(emptySet())
+            repository.load(emptySet(), pageSize)
         }
 
         override suspend fun executeAction(action: Unit, getState: () -> State) {
@@ -78,12 +84,12 @@ class NewsMainStoreProvider(
 
         private suspend fun loadMore(state: State) = state.contentCase {
             dispatch(Result.LoadingMore)
-            repository.load(news.map { it.id }.toSet())
+            repository.load(news.map { it.id }.toSet(), pageSize)
         }
 
         private suspend fun refresh(state: State) {
             dispatch(Result.Loading)
-            repository.load(emptySet())
+            repository.load(emptySet(), pageSize)
         }
 
         private suspend fun State.contentCase(f: suspend State.Content.() -> Unit) = when (this) {
@@ -94,6 +100,6 @@ class NewsMainStoreProvider(
 
     interface Repository {
         val updates: Flow<kotlin.Result<List<News>>>
-        suspend fun load(loaded: Set<ItemId>)
+        suspend fun load(loaded: Set<ItemId>, loadCount: Int)
     }
 }

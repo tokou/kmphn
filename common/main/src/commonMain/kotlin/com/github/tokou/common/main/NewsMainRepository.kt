@@ -32,11 +32,9 @@ class NewsMainRepository(
     ))
     override val updates: Flow<Result<List<NewsMainStore.News>>> = _state
 
-    private val pageSize = 30
+    override suspend fun load(loaded: Set<ItemId>, loadCount: Int) = try {
 
-    override suspend fun load(loaded: Set<ItemId>) = try {
-
-        val itemIds = api.fetchTopStoriesIds().filterNot { it in loaded }.take(pageSize)
+        val itemIds = api.fetchTopStoriesIds().filterNot { it in loaded }.take(loadCount)
 
         val loadedItems = mutableMapOf<ItemId, NewsMainStore.News>()
 

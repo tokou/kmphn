@@ -23,6 +23,7 @@ import com.github.tokou.common.platform.rememberScrollbarAdapter
 fun NewsList(
     item: List<Item>,
     isLoadingMore: Boolean,
+    canLoadMore: Boolean,
     onLinkClick: Callback,
     onItemClick: Callback,
     onLoadMore: () -> Unit,
@@ -36,7 +37,7 @@ fun NewsList(
                 NewsRow(item = item, onLinkClick = onLinkClick, onItemClick = onItemClick)
                 Divider()
             }
-            item {
+            if (canLoadMore) item {
                 LoadMore(isLoadingMore = isLoadingMore, onLoadMore = onLoadMore)
             }
         }
