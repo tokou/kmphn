@@ -1,22 +1,21 @@
 package com.github.tokou.common.detail
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.periodUntil
-
 // https://news.ycombinator.com/formatdoc
 fun String.parseText(): List<NewsDetail.Text> {
     val encoding = mapOf(
         "<p>" to "\n\n",
         "</p>" to "",
         "</pre>" to "</pre>",
-        "&#x27;" to "'",
         "&gt;" to ">",
+        "&#62;" to ">",
         "&lt;" to "<",
+        "&#60;" to "<",
+        "&#x27;" to "'",
         "&quot;" to "'",
+        "&#38;" to "&",
         "&amp;" to "&",
         "&#x2F;" to "/",
+        "&#47;" to "/",
     )
     val decoded = encoding.entries.fold(this) { t, (k, v) -> t.replace(k, v) }
     val tags = "(<pre><code>((?:.|\n)*?)</code></pre>|<i>(.*?)</i>|<a href=\"(.*?)\" rel=\"nofollow\">(.*?)</a>)".toRegex()

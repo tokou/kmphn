@@ -109,7 +109,7 @@ fun NewsHeader(
                         color = MaterialTheme.colors.surface.copy(alpha = 0.6f),
                         contentColor = MaterialTheme.colors.onSurface
                     ) {
-                        RichText(modifier = Modifier.padding(16.dp), text = it, onLinkClicked = { _, _ -> })
+                        RichText(modifier = Modifier.padding(16.dp).fillMaxWidth(), text = it, onLinkClicked = onLinkClicked)
                     }
                     Spacer(Modifier.height(8.dp))
                 }
