@@ -13,7 +13,7 @@ import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.github.tokou.common.api.createApi
 import com.github.tokou.common.database.createDatabase
-import com.github.tokou.common.database.inMemoryDatabaseDriver
+import com.github.tokou.common.database.persistentDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.root.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
@@ -57,7 +57,7 @@ fun App() {
                     uriHandler = ::openLink,
                     storeFactory = DefaultStoreFactory.logging(),
                     api = createApi(),
-                    database = createDatabase(inMemoryDatabaseDriver())
+                    database = createDatabase(persistentDatabaseDriver())
                 )
             }
             CompositionLocalProvider(LocalUriHandler provides uriHandler) {

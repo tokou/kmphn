@@ -1,9 +1,11 @@
 import kotlin.collections.List;
+import kotlinx.datetime.Instant;
 
-CREATE TABLE IF NOT EXISTS item(
+CREATE TABLE IF NOT EXISTS item (
 id INTEGER NOT NULL PRIMARY KEY,
 user TEXT,
-created INTEGER NOT NULL,
+created INTEGER AS Instant NOT NULL,
+updated INTEGER AS Instant NOT NULL,
 content TEXT,
 title TEXT,
 kids TEXT as List<Long> NOT NULL DEFAULT "[]",
@@ -14,7 +16,9 @@ type TEXT NOT NULL
 );
 
 insert:
-INSERT OR REPLACE INTO item(id, user, created, content, title, link, type) VALUES ?;
+INSERT OR REPLACE
+INTO item (id, user, created, updated, content, title, kids, link, score, descendants, type)
+VALUES ?;
 
 selectAll:
 SELECT * FROM item;
@@ -24,3 +28,6 @@ DELETE FROM item;
 
 selectById:
 SELECT * FROM item WHERE id = ?;
+
+selectByIds:
+SELECT * FROM item WHERE id IN ?;

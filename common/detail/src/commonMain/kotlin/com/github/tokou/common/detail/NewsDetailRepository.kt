@@ -8,6 +8,7 @@ import com.github.tokou.common.utils.ItemId
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 
@@ -22,7 +23,7 @@ class NewsDetailRepository(
         text = content,
         link = link,
         user = user.orEmpty(),
-        time = Instant.fromEpochSeconds(created),
+        time = created,
         comments = kids.map { NewsDetailStore.Comment.Loading(it) },
         points = score ?: 0,
         descendants = descendants ?: 0,
@@ -31,7 +32,7 @@ class NewsDetailRepository(
     private fun Comment.asNewsComment() = NewsDetailStore.Comment.Content(
         id = id,
         user = user.orEmpty(),
-        time = Instant.fromEpochSeconds(created),
+        time = created,
         text = content.orEmpty(),
         comments = kids.map { NewsDetailStore.Comment.Loading(it) },
         deleted = deleted,
@@ -70,7 +71,7 @@ class NewsDetailRepository(
             _state.value = Result.success(item)
         }
 
-        loadComments(item.comments, ::update)
+        loadComments(item.comments, ::update, id)
     } catch (e: Throwable) {
         println(e)
         e.printStackTrace()
@@ -79,7 +80,8 @@ class NewsDetailRepository(
 
     private suspend fun loadComments(
         comments: List<NewsDetailStore.Comment>,
-        update: (comment: NewsDetailStore.Comment.Content) -> Unit
+        update: (comment: NewsDetailStore.Comment.Content) -> Unit,
+        itemId: ItemId
     ): Unit = coroutineScope {
 
         for (l in comments.filterIsInstance<NewsDetailStore.Comment.Loading>()) {
@@ -88,33 +90,33 @@ class NewsDetailRepository(
                 if (dbComment != null) {
                     val comment = dbComment.asNewsComment()
                     update(comment)
-                    loadComments(comment.comments, update)
+                    loadComments(comment.comments, update, itemId)
                     return@launch
                 }
 
                 val apiComment = api.fetchItem(l.id) as? NewsApi.Item.Comment ?: return@launch
-                val updatedDbComment = apiComment.asDbComment()
+                val updatedDbComment = apiComment.asDbComment(itemId)
                 database.commentQueries.insert(updatedDbComment)
 
                 val comment = updatedDbComment.asNewsComment()
                 update(comment)
-                loadComments(comment.comments, update)
+                loadComments(comment.comments, update, itemId)
             }
         }
     }
 
-
-    private fun NewsApi.Item.Comment.asDbComment(): Comment {
-        return Comment(
-            id = id,
-            user = by,
-            created = time,
-            content = text,
-            parentId = parent,
-            deleted = deleted,
-            kids = kids
-        )
-    }
+    private fun NewsApi.Item.Comment.asDbComment(itemId: ItemId): Comment = Comment(
+        id = id,
+        itemId = itemId,
+        parentId = if (parent != itemId) parent else null,
+        user = by,
+        created = Instant.fromEpochSeconds(time),
+        updated = Clock.System.now(),
+        content = text,
+        deleted = deleted,
+        dead = dead,
+        kids = kids
+    )
 
     private fun NewsApi.Item.asDbItem(): Item {
         val content = when (this) {
@@ -149,7 +151,8 @@ class NewsDetailRepository(
         return Item(
             id = id,
             user = by,
-            created = time,
+            created = Instant.fromEpochSeconds(time),
+            updated = Clock.System.now(),
             content = content,
             title = title,
             link = link,

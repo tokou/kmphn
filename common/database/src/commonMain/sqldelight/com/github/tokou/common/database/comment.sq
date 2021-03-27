@@ -1,17 +1,31 @@
 import kotlin.collections.List;
+import kotlinx.datetime.Instant;
+
+PRAGMA foreign_keys = 1;
 
 CREATE TABLE IF NOT EXISTS comment(
 id INTEGER NOT NULL PRIMARY KEY,
+itemId INTEGER NOT NULL REFERENCES item(id),
+parentId INTEGER REFERENCES comment(id),
 user TEXT,
-created INTEGER NOT NULL,
+created INTEGER AS Instant NOT NULL,
+updated INTEGER AS Instant NOT NULL,
 kids TEXT as List<Long> NOT NULL DEFAULT "[]",
 content TEXT,
 deleted INTEGER as Boolean NOT NULL DEFAULT 0,
-parentId INTEGER REFERENCES comment(id)
+dead INTEGER as Boolean NOT NULL DEFAULT 0
 );
 
+CREATE INDEX IF NOT EXISTS idx_comment_parentId ON comment (parentId);
+CREATE INDEX IF NOT EXISTS idx_comment_itemId ON comment (itemId);
+
 insert:
-INSERT INTO comment (id, user, created, kids, content, deleted, parentId) VALUES ?;
+INSERT
+INTO comment (id, itemId, parentId, user, created, updated, kids, content, deleted, dead)
+VALUES ?;
+
+selectByItem:
+SELECT * FROM comment WHERE parentId = ?;
 
 selectById:
 SELECT * FROM comment WHERE id = ?;
