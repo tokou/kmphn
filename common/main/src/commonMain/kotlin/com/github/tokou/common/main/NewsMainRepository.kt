@@ -4,10 +4,11 @@ import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.Item
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.utils.ItemId
-import kotlinx.coroutines.coroutineScope
+import com.github.tokou.common.utils.logger
+import com.github.tokou.common.utils.runLogging
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 
@@ -21,44 +22,54 @@ class NewsMainRepository(
         title = title,
         link = link,
         user = user,
-        time = Instant.fromEpochSeconds(created),
+        time = created,
         points = score ?: 0,
         descendants = descendants ?: 0,
     )
 
-    // TODO: find a way to express "empty"
-    private val _state = MutableStateFlow<Result<List<NewsMainStore.News>>>(Result.failure(
-        NewsMainStoreProvider.NoContent
-    ))
+    private val _state = MutableSharedFlow<Result<List<NewsMainStore.News>>>(1)
     override val updates: Flow<Result<List<NewsMainStore.News>>> = _state
 
     override suspend fun load(loaded: Set<ItemId>, loadCount: Int) = try {
 
         val itemIds = api.fetchTopStoriesIds().filterNot { it in loaded }.take(loadCount)
 
-        val loadedItems = mutableMapOf<ItemId, NewsMainStore.News>()
-
-        coroutineScope {
-            itemIds.map { id ->
-                launch {
-                    val dbItem = database.itemQueries.selectById(id).executeAsOneOrNull()
-                    dbItem?.asNewsMain()?.let { loadedItems[id] = it }
-
-                    val apiItem = api.fetchItem(id) ?: return@launch
-                    val updatedDbItem = apiItem.asDbItem()
-                    database.itemQueries.insert(updatedDbItem)
-
-                    val item = updatedDbItem.asNewsMain()
-                    loadedItems[id] = item
-                }
-            }.joinAll()
+        fun update(items: List<NewsMainStore.News>) {
+            val result = items.sortedBy { itemIds.indexOf(it.id) }
+            _state.tryEmit(Result.success(result))
         }
-        _state.value = Result.success(loadedItems.values.toList())
 
+        suspend fun loadFromDb(ids: List<ItemId>) = runLogging("loadFromDb", "Error while selecting items") {
+            val dbItems = database.itemQueries.selectByIds(ids).executeAsList()
+            if (dbItems.size < ids.size) return@runLogging
+            update(dbItems.map { it.asNewsMain() })
+        }
+
+        suspend fun loadFromApi(id: ItemId): NewsMainStore.News? {
+            val apiItem = runLogging("loadFromApi", "Error while fetching item") {
+                api.fetchItem(id)
+            } ?: return null
+            val updatedDbItem = apiItem.asDbItem()
+            runLogging("loadFromApi", "Error while upserting item") {
+                database.itemQueries.insert(updatedDbItem)
+            }
+            return updatedDbItem.asNewsMain()
+        }
+
+        suspend fun loadFromApi(ids: List<ItemId>) = coroutineScope {
+            val items = ids
+                .map { id -> async { loadFromApi(id) } }
+                .awaitAll()
+                .filterNotNull()
+            update(items)
+        }
+
+        loadFromDb(itemIds)
+        loadFromApi(itemIds)
     } catch (e: Throwable) {
-        println(e)
-        e.printStackTrace()
-        _state.value = Result.failure(e)
+        logger.e("REPO", e) { "Error while loading" }
+        _state.tryEmit(Result.failure(e))
+        Unit
     }
 
     private fun NewsApi.Item.asDbItem(): Item {
@@ -94,7 +105,8 @@ class NewsMainRepository(
         return Item(
             id = id,
             user = by,
-            created = time,
+            created = Instant.fromEpochSeconds(time),
+            updated = Clock.System.now(),
             content = content,
             title = title,
             link = link,
