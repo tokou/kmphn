@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.primarySurface
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
+import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.arkivanov.mvikotlin.logging.logger.Logger
 import com.arkivanov.mvikotlin.logging.store.LoggingStoreFactory
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
 import com.github.tokou.common.api.createApi
@@ -14,6 +16,7 @@ import com.github.tokou.common.database.peristentDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.root.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
+import com.github.tokou.common.utils.logger
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                     NewsRootComponent(
                         componentContext = it,
                         uriHandler = tabsHelper.createUriHandler(color),
-                        storeFactory = LoggingStoreFactory(DefaultStoreFactory),
+                        storeFactory = DefaultStoreFactory.logging(),
                         api = createApi(),
                         database = createDatabase(peristentDatabaseDriver(this))
                     )
@@ -40,3 +43,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+
+private val storeLogger = object : Logger {
+    override fun log(text: String) {
+        logger.d("STORE") { text }
+    }
+}
+
+private fun StoreFactory.logging(): LoggingStoreFactory = LoggingStoreFactory(this, storeLogger)

@@ -3,6 +3,8 @@ package com.github.tokou.common.api
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.Timestamp
 import com.github.tokou.common.utils.UserId
+import com.github.tokou.common.utils.logNetwork
+import com.github.tokou.common.utils.logger as Logger
 import io.ktor.client.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
@@ -15,7 +17,7 @@ import kotlinx.serialization.json.Json
 
 fun createApi(): NewsApi {
     val baseUrl = "https://hacker-news.firebaseio.com/v0"
-    val client = createHttpClient(createJson(), true)
+    val client = createHttpClient(createJson())
     return NewsApi(baseUrl, client)
 }
 
@@ -23,13 +25,17 @@ fun createJson() = Json {
     ignoreUnknownKeys = true
 }
 
-fun createHttpClient(json: Json, enableNetworkLogs: Boolean) = HttpClient {
+fun createHttpClient(json: Json) = HttpClient {
     install(JsonFeature) {
         serializer = KotlinxSerializer(json)
     }
     install(Logging) {
-        logger = Logger.DEFAULT
-        level = if (enableNetworkLogs) LogLevel.ALL else LogLevel.NONE
+        logger = object : Logger {
+            override fun log(message: String) {
+                Logger.d("KTOR") { message }
+            }
+        }
+        level = if (logNetwork) LogLevel.ALL else LogLevel.NONE
     }
 }
 

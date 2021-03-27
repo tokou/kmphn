@@ -50,6 +50,7 @@ kotlin {
                 implementation("io.ktor:ktor-client-json:1.5.2")
                 implementation("io.ktor:ktor-client-logging:1.5.2")
                 implementation("io.ktor:ktor-client-serialization:1.5.2")
+                implementation(project(":common:utils"))
             }
         }
         val commonTest by getting

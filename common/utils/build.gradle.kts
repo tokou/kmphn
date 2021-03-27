@@ -41,6 +41,7 @@ kotlin {
                 implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
                 api("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
+                api("co.touchlab:kermit:0.1.7")
             }
         }
         val commonTest by getting
