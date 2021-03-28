@@ -4,8 +4,8 @@ import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.Timestamp
 import com.github.tokou.common.utils.UserId
 import com.github.tokou.common.utils.logNetwork
-import com.github.tokou.common.utils.logger as Logger
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
@@ -13,6 +13,7 @@ import io.ktor.client.request.*
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import com.github.tokou.common.utils.logger as Logger
 
 
 fun createApi(): NewsApi {
@@ -36,6 +37,9 @@ fun createHttpClient(json: Json) = HttpClient {
             }
         }
         level = if (logNetwork) LogLevel.ALL else LogLevel.NONE
+    }
+    defaultRequest {
+        header("Connection", "close")
     }
 }
 

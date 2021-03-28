@@ -5,13 +5,9 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
-import com.github.tokou.common.utils.ItemId
-import com.github.tokou.common.utils.UserId
-import com.github.tokou.common.utils.format
-import com.github.tokou.common.utils.getStore
+import com.github.tokou.common.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -84,14 +80,14 @@ class NewsDetailComponent(
         NewsDetailStore.State.Error -> NewsDetail.Model.Error
     } }
 
-    private val store =
-        instanceKeeper.getStore {
-            NewsDetailStoreProvider(
-                storeFactory = storeFactory,
-                repository = NewsDetailRepository(database, api),
-                id = itemId
-            ).provide()
-        }
+    // TODO: Going back to same detail page hangs is this is uncommented
+    private val store = //instanceKeeper.getStore {
+        NewsDetailStoreProvider(
+            storeFactory = storeFactory,
+            repository = NewsDetailRepository(database, api),
+            id = itemId
+        ).provide()
+    //}
 
     override val models: Flow<NewsDetail.Model> = store.states.map(stateToModel)
 

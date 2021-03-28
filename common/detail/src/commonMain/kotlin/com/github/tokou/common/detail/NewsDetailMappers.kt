@@ -18,7 +18,7 @@ fun String.parseText(): List<NewsDetail.Text> {
         "&#47;" to "/",
     )
     val decoded = encoding.entries.fold(this) { t, (k, v) -> t.replace(k, v) }
-    val tags = "(<pre><code>((?:.|\n)*?)</code></pre>|<i>(.*?)</i>|<a href=\"(.*?)\" rel=\"nofollow\">(.*?)</a>)".toRegex()
+    val tags = "(<pre><code>((?:.|\n)*?)</code></pre>|<i>((?:.|\n)*?)</i>|<a href=\"(.*?)\" rel=\"nofollow\">(.*?)</a>)".toRegex()
     val matches = tags.findAll(decoded)
     val formatted = matches.map {
         val values = it.groupValues.drop(2)

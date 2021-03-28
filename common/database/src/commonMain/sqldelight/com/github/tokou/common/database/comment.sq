@@ -25,7 +25,7 @@ INTO comment (id, itemId, parentId, user, created, updated, kids, content, delet
 VALUES ?;
 
 selectByItem:
-SELECT * FROM comment WHERE parentId = ?;
+SELECT * FROM comment WHERE itemId = ?;
 
 selectById:
 SELECT * FROM comment WHERE id = ?;
