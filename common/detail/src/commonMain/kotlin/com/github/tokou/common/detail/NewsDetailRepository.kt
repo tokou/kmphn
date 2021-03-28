@@ -5,13 +5,21 @@ import com.github.tokou.common.database.Comment
 import com.github.tokou.common.database.Item
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.logger
+import com.github.tokou.common.utils.runLogging
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 
+@OptIn(ExperimentalTime::class)
 class NewsDetailRepository(
     private val database: NewsDatabase,
     private val api: NewsApi
@@ -38,23 +46,45 @@ class NewsDetailRepository(
         deleted = deleted,
     )
 
-    // TODO: find a way to express "empty"
-    private val _state = MutableStateFlow<Result<NewsDetailStore.News>>(Result.failure(
-        NewsDetailStoreProvider.NoContent
-    ))
+    private val _state = MutableSharedFlow<Result<NewsDetailStore.News>>(1)
     override val updates: Flow<Result<NewsDetailStore.News>> = _state
 
-    override suspend fun load(id: Long) = try {
+    private fun List<NewsDetailStore.Comment>.refreshFrom(
+        comments: Map<ItemId, NewsDetailStore.Comment.Content>
+    ): List<NewsDetailStore.Comment> = map { old ->
+        comments[old.id]?.let { it.copy(comments = it.comments.refreshFrom(comments)) } ?: old
+    }
 
-        val dbItem = database.itemQueries.selectById(id).executeAsOneOrNull()
-        dbItem?.asNewsDetail()?.let { _state.value = Result.success(it) }
+    private suspend fun loadFromDb(id: ItemId) {
+        val dbItem = runLogging("loadFromDb", "Error loading item") {
+            database.itemQueries.selectById(id).executeAsOneOrNull()
+        }
+        val item = dbItem?.asNewsDetail() ?: return
+        _state.tryEmit(Result.success(item))
 
-        val apiItem = api.fetchItem(id) ?: throw NoSuchElementException()
+        val dbComments = runLogging("loadFromDb", "Error loading comments") {
+            database.commentQueries.selectByItem(id).executeAsList()
+        }
+        val comments = dbComments?.map { it.asNewsComment() }?.associateBy { it.id } ?: emptyMap()
+
+        val withComments = item.copy(comments = item.comments.refreshFrom(comments))
+        _state.tryEmit(Result.success(withComments))
+    }
+
+    override suspend fun load(id: ItemId) = try {
+        loadFromDb(id)
+
+        val apiItem = runLogging("load", "Error while fetching item $id") {
+            api.fetchItem(id) ?: throw NoSuchElementException()
+        }!!
+
         val updatedDbItem = apiItem.asDbItem()
-        database.itemQueries.insert(updatedDbItem)
+        runLogging("load", "Error while inserting item") {
+            database.itemQueries.insert(updatedDbItem)
+        }
 
         var item = updatedDbItem.asNewsDetail()
-        _state.value = Result.success(item)
+        _state.tryEmit(Result.success(item))
 
         val loadedComments = mutableMapOf<ItemId, NewsDetailStore.Comment.Content>()
 
@@ -68,15 +98,19 @@ class NewsDetailRepository(
         fun update(comment: NewsDetailStore.Comment.Content) {
             loadedComments[comment.id] = comment
             item = item.copy(comments = updateTree(item.comments))
-            _state.value = Result.success(item)
+            _state.tryEmit(Result.success(item))
         }
 
         loadComments(item.comments, ::update, id)
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Throwable) {
-        println(e)
-        e.printStackTrace()
-        _state.value = Result.failure(e)
+        logger.e("REPO", e) { "Error while loading" }
+        _state.tryEmit(Result.failure(e))
+        Unit
     }
+
+    private val commentStaleDuration = 5.toDuration(DurationUnit.MINUTES)
 
     private suspend fun loadComments(
         comments: List<NewsDetailStore.Comment>,
@@ -85,18 +119,28 @@ class NewsDetailRepository(
     ): Unit = coroutineScope {
 
         for (l in comments.filterIsInstance<NewsDetailStore.Comment.Loading>()) {
-            launch {
-                val dbComment = database.commentQueries.selectById(l.id).executeAsOneOrNull()
+            if (isActive) launch {
+                val dbComment = runLogging("loadComments", "Error while getting comment") {
+                    database.commentQueries.selectById(l.id).executeAsOneOrNull()
+                }
                 if (dbComment != null) {
                     val comment = dbComment.asNewsComment()
                     update(comment)
-                    loadComments(comment.comments, update, itemId)
-                    return@launch
+                    val age = Clock.System.now() - dbComment.updated
+                    if (age < commentStaleDuration) {
+                        loadComments(comment.comments, update, itemId)
+                        return@launch
+                    }
                 }
 
-                val apiComment = api.fetchItem(l.id) as? NewsApi.Item.Comment ?: return@launch
+                val apiComment = runLogging("loadComments", "Error while fetching comment") {
+                    api.fetchItem(l.id) as? NewsApi.Item.Comment
+                } ?: return@launch
+
                 val updatedDbComment = apiComment.asDbComment(itemId)
-                database.commentQueries.insert(updatedDbComment)
+                runLogging("loadComments", "Error while inserting updated comment") {
+                    database.commentQueries.insert(updatedDbComment)
+                }
 
                 val comment = updatedDbComment.asNewsComment()
                 update(comment)
