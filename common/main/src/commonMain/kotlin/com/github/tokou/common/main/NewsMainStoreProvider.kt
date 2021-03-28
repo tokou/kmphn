@@ -7,9 +7,11 @@ import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.github.tokou.common.main.NewsMainStore.*
 import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.subscribe
 import com.github.tokou.common.utils.logger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import kotlin.coroutines.CoroutineContext
 
 class NewsMainStoreProvider(
     private val storeFactory: StoreFactory,
@@ -78,16 +80,8 @@ internal class ExecutorImpl(
     private val pageSize: Int = 30
 ) : SuspendExecutor<Intent, Unit, State, Outcome, Label>() {
 
-    private fun Flow<Result<List<News>>>.subscribe(
-        scope: CoroutineScope,
-        handle: suspend (Result<List<News>>) -> Outcome
-    ) = map(handle)
-        .flowOn(Dispatchers.Default)
-        .onEach(::dispatch)
-        .launchIn(scope)
-
     override suspend fun executeAction(action: Unit, getState: () -> State) = coroutineScope {
-        repository.updates.subscribe(this) { r -> r
+        repository.updates.subscribe(this, ::dispatch) { r -> r
             .map { Outcome.Loaded(it, pageSize) }
             .recover { Outcome.NotFound } // TODO: better error handling
             .getOrThrow()
