@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.cancellation.CancellationException
 
 suspend fun <T, R> T.runLogging(tag: String, message: String, block: suspend T.() -> R): R? {
@@ -25,6 +26,7 @@ fun <T, R> Flow<Result<T>>.subscribe(
 ) = map(handle)
     .flowOn(flowOn)
     .onEach(dispatch)
-    .onStart { logger.d("SUBSCRIBE") { "onStart" } }
-    .onCompletion { logger.d("SUBSCRIBE") { "onCompletion" } }
     .launchIn(scope)
+
+fun <T> runBlocking(block: suspend CoroutineScope.() -> T): T =
+    runBlocking(EmptyCoroutineContext, block)

@@ -45,15 +45,31 @@ kotlin {
                 implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
             }
         }
-        val commonTest by getting
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
+                implementation("com.arkivanov.mvikotlin:mvikotlin-main:2.0.1")
+                implementation("app.cash.turbine:turbine:0.4.1")
+            }
+        }
         val androidMain by getting
         val androidTest by getting {
             dependencies {
-                implementation("junit:junit:4.13.2")
+                implementation(kotlin("test-junit"))
             }
         }
-        val desktopMain by getting
-        val desktopTest by getting
+        val desktopMain by getting {
+            dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.4.3")
+            }
+        }
+        val desktopTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
     }
 
     tasks.withType<KotlinCompile> {
