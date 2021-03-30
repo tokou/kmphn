@@ -1,0 +1,10 @@
+import ProjectDescription
+import ProjectDescriptionHelpers
+
+// MARK: - Project
+
+let project = Project.app(
+    name: "App",
+    platform: .iOS,
+    additionalTargets: []
+)

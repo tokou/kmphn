@@ -9,6 +9,14 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.0-alpha12")
         classpath("com.squareup.sqldelight:gradle-plugin:1.4.4")
     }
+    // Workaround for https://github.com/openbakery/gradle-xcodePlugin/issues/444
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "com.squareup.okhttp" && requested.name == "okhttp") {
+                useTarget("com.squareup.okhttp3:okhttp:4.9.1")
+            }
+        }
+    }
 }
 
 group = "com.github.tokou"
