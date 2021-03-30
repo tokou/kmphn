@@ -1,76 +1,20 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-}
-
-group = "com.github.tokou"
-version = "1.0.0"
-
-repositories {
-    google()
-}
-
-android {
-    // Workaround for https://youtrack.jetbrains.com/issue/KT-43944
-    configurations {
-        create("androidTestApi")
-        create("androidTestDebugApi")
-        create("androidTestReleaseApi")
-        create("testApi")
-        create("testDebugApi")
-        create("testReleaseApi")
-    }
-    compileSdkVersion(30)
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
-    }
+    id("multiplatform-setup")
+    id("multiplatform-android-setup")
 }
 
 kotlin {
-    android()
-    jvm("desktop")
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("com.arkivanov.decompose:decompose:0.1.9")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+                implementation(Deps.ArkIvanov.Decompose.decompose)
+                implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
+                implementation(Deps.ArkIvanov.MviKotlin.mvikotlinExtensionsCoroutines)
+                implementation(Deps.JetBrains.KotlinX.Coroutines.core)
                 implementation(project(":common:api"))
                 implementation(project(":common:database"))
                 implementation(project(":common:utils"))
-                implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")
-                implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
-                implementation("com.squareup.sqldelight:coroutines-extensions:1.4.4")
             }
-        }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
-            }
-        }
-        val androidMain by getting
-        val androidTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
-        val desktopMain by getting
-        val desktopTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "11"
-            freeCompilerArgs.plus("-Xopt-in=kotlin.RequiresOptIn")
         }
     }
 }

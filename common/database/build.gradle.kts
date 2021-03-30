@@ -1,17 +1,8 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization") version "1.4.30"
-    id("com.android.library")
+    id("multiplatform-setup")
+    id("multiplatform-android-setup")
+    kotlin("plugin.serialization")
     id("com.squareup.sqldelight")
-}
-
-group = "com.github.tokou"
-version = "1.0.0"
-
-repositories {
-    google()
 }
 
 sqldelight {
@@ -20,63 +11,37 @@ sqldelight {
     }
 }
 
-android {
-    // Workaround for https://youtrack.jetbrains.com/issue/KT-43944
-    configurations {
-        create("androidTestApi")
-        create("androidTestDebugApi")
-        create("androidTestReleaseApi")
-        create("testApi")
-        create("testDebugApi")
-        create("testReleaseApi")
-    }
-    compileSdkVersion(30)
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    defaultConfig {
-        minSdkVersion(21)
-        targetSdkVersion(30)
-    }
-}
-
 kotlin {
-    android()
-    jvm("desktop")
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.1.0")
-                implementation("io.ktor:ktor-client-core:1.5.2")
-                implementation("io.ktor:ktor-client-json:1.5.2")
-                implementation("io.ktor:ktor-client-logging:1.5.2")
-                implementation("io.ktor:ktor-client-serialization:1.5.2")
+                implementation(Deps.ArkIvanov.Decompose.decompose)
+                implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
+                implementation(Deps.ArkIvanov.MviKotlin.mvikotlinExtensionsCoroutines)
+                implementation(Deps.JetBrains.KotlinX.Coroutines.core)
+                implementation(Deps.JetBrains.KotlinX.Serialization.core)
+                implementation(Deps.JetBrains.Ktor.clientCore)
+                implementation(Deps.JetBrains.Ktor.clientJson)
+                implementation(Deps.JetBrains.Ktor.clientSerialization)
+                implementation(Deps.JetBrains.Ktor.clientLogging)
                 implementation(project(":common:utils"))
             }
         }
-        val commonTest by getting
         val androidMain by getting {
             dependencies {
-                implementation("com.squareup.sqldelight:android-driver:1.4.4")
-                implementation("com.squareup.sqldelight:sqlite-driver:1.4.4")
-            }
-        }
-        val androidTest by getting {
-            dependencies {
-                implementation("junit:junit:4.13.2")
+                implementation(Deps.Squareup.SqlDelight.androidDriver)
+                implementation(Deps.Squareup.SqlDelight.sqliteDriver)
             }
         }
         val desktopMain by getting {
             dependencies {
-                implementation("com.squareup.sqldelight:sqlite-driver:1.4.4")
+                implementation(Deps.Squareup.SqlDelight.sqliteDriver)
             }
         }
-        val desktopTest by getting
-    }
-
-    tasks.withType<KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "11"
-            freeCompilerArgs.plus("-Xopt-in=kotlin.RequiresOptIn")
+        val iosMain by getting {
+            dependencies {
+                implementation(Deps.Squareup.SqlDelight.nativeDriver)
+            }
         }
     }
 }

@@ -1,15 +1,13 @@
 
 plugins {
-    id("org.jetbrains.compose") version "0.4.0-build176"
+    id("org.jetbrains.compose")
     id("com.android.application")
     kotlin("android")
 }
 
-group = "com.github.tokou"
-version = "1.0.0"
-
 repositories {
     google()
+    jcenter()
 }
 
 dependencies {
@@ -18,20 +16,22 @@ dependencies {
     implementation(project(":common:api"))
     implementation(project(":common:root"))
     implementation(project(":common:utils"))
-    implementation("androidx.browser:browser:1.3.0")
-    implementation("androidx.activity:activity-compose:1.3.0-alpha04")
-    implementation("com.arkivanov.decompose:decompose:0.1.9")
-    implementation("com.arkivanov.decompose:extensions-compose-jetbrains:0.1.9")
-    implementation("com.arkivanov.mvikotlin:mvikotlin:2.0.1")
-    implementation("com.arkivanov.mvikotlin:mvikotlin-main:2.0.1")
-    implementation("com.arkivanov.mvikotlin:mvikotlin-logging:2.0.1")
-    implementation("com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:2.0.1")
+    implementation(Deps.ArkIvanov.Decompose.decompose)
+    implementation(Deps.ArkIvanov.Decompose.extensionsCompose)
+    implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
+    implementation(Deps.ArkIvanov.MviKotlin.mvikotlinMain)
+    implementation(Deps.ArkIvanov.MviKotlin.mvikotlinLogging)
+    implementation(Deps.ArkIvanov.MviKotlin.mvikotlinExtensionsCoroutines)
     implementation(compose.material)
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
+    implementation(Deps.AndroidX.AppCompat.browser)
+    implementation(Deps.AndroidX.AppCompat.appCompat)
+    implementation(Deps.AndroidX.Activity.activityCompose)
+    coreLibraryDesugaring(Deps.Android.Tools.desugarJdk)
 }
 
 android {
     compileSdkVersion(30)
+
     defaultConfig {
         applicationId = "com.github.tokou.android"
         minSdkVersion(21)
@@ -39,9 +39,11 @@ android {
         versionCode = 1
         versionName = "1.0.0"
     }
+
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
