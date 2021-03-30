@@ -35,7 +35,8 @@ class NewsMainComponent(
         is NewsMainStore.State.Content -> NewsMain.Model.Content(
             items = it.news.map { n -> n.asModel() },
             isLoadingMore = it.isLoadingMore,
-            canLoadMore = it.canLoadMore
+            isRefreshing = it.isRefreshing,
+            canLoadMore = it.canLoadMore,
         )
         NewsMainStore.State.Loading -> NewsMain.Model.Loading
         NewsMainStore.State.Error -> NewsMain.Model.Error
@@ -64,7 +65,7 @@ class NewsMainComponent(
         store.accept(NewsMainStore.Intent.LoadMore)
     }
 
-    override fun onRefresh() {
-        store.accept(NewsMainStore.Intent.Refresh)
+    override fun onRefresh(fromPull: Boolean) {
+        store.accept(NewsMainStore.Intent.Refresh(keepContent = fromPull))
     }
 }

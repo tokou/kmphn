@@ -9,7 +9,7 @@ import kotlinx.datetime.Instant
 interface NewsMainStore : Store<Intent, State, Label> {
 
     sealed class Intent {
-        object Refresh : Intent() { override fun toString(): String = this::class.simpleName ?: super.toString() }
+        data class Refresh(val keepContent: Boolean) : Intent()
         object LoadMore : Intent() { override fun toString(): String = this::class.simpleName ?: super.toString() }
     }
 
@@ -19,6 +19,7 @@ interface NewsMainStore : Store<Intent, State, Label> {
         data class Content(
             val news: List<News>,
             val isLoadingMore: Boolean = false,
+            val isRefreshing: Boolean = false,
             val canLoadMore: Boolean = true,
         ) : State()
     }

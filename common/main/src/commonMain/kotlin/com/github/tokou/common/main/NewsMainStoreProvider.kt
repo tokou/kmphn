@@ -8,10 +8,8 @@ import com.arkivanov.mvikotlin.extensions.coroutines.SuspendExecutor
 import com.github.tokou.common.main.NewsMainStore.*
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.subscribe
-import com.github.tokou.common.utils.logger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlin.coroutines.CoroutineContext
 
 class NewsMainStoreProvider(
     private val storeFactory: StoreFactory,
@@ -36,8 +34,8 @@ class NewsMainStoreProvider(
 
 internal sealed class Outcome {
     data class Loaded(val news: List<News>, val askedCount: Int) : Outcome()
+    data class Loading(val keepContent: Boolean) : Outcome()
     object NotFound : Outcome() { override fun toString(): String = this::class.simpleName ?: super.toString() }
-    object Loading : Outcome() { override fun toString(): String = this::class.simpleName ?: super.toString() }
     object LoadingMore : Outcome() { override fun toString(): String = this::class.simpleName ?: super.toString() }
     object LoadedMore : Outcome() { override fun toString(): String = this::class.simpleName ?: super.toString() }
 }
@@ -48,13 +46,13 @@ internal object ReducerImpl : Reducer<State, Outcome> {
             is State.Content -> when (result) {
                 is Outcome.Loaded -> updateContent(result.news)
                 Outcome.NotFound -> State.Error
-                Outcome.Loading -> State.Loading
+                is Outcome.Loading -> if (result.keepContent) copy(isRefreshing = true) else State.Loading
                 Outcome.LoadingMore -> copy(isLoadingMore = true)
                 Outcome.LoadedMore -> copy(isLoadingMore = false)
             }
             else -> when (result) {
                 is Outcome.Loaded -> State.Content(news = result.news)
-                Outcome.Loading -> State.Loading
+                is Outcome.Loading -> State.Loading
                 else -> State.Error
             }
         }
@@ -70,7 +68,8 @@ internal object ReducerImpl : Reducer<State, Outcome> {
         val loaded = result.filter { it.id in diffIds }
         return copy(
             news = updated + loaded,
-            canLoadMore = newIds.isNotEmpty()
+            canLoadMore = newIds.isNotEmpty(),
+            isRefreshing = false,
         )
     }
 }
@@ -90,8 +89,8 @@ internal class ExecutorImpl(
     }
 
     override suspend fun executeIntent(intent: Intent, getState: () -> State) = when (intent) {
-        Intent.Refresh -> refresh(getState())
-        Intent.LoadMore -> loadMore(getState())
+        is Intent.Refresh -> refresh(keepContent = intent.keepContent, state = getState())
+        Intent.LoadMore -> loadMore(state = getState())
     }
 
     private suspend fun loadMore(state: State) = state.contentCase {
@@ -100,8 +99,8 @@ internal class ExecutorImpl(
         dispatch(Outcome.LoadedMore)
     }
 
-    private suspend fun refresh(state: State) = state.contentCase {
-        dispatch(Outcome.Loading)
+    private suspend fun refresh(keepContent: Boolean, state: State) = state.contentCase {
+        dispatch(Outcome.Loading(keepContent))
         repository.load(emptySet(), pageSize)
     }
 

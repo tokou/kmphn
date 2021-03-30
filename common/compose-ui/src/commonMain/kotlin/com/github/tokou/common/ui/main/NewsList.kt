@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.ContentAlpha.medium
 import androidx.compose.runtime.Composable
@@ -15,30 +16,40 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.github.tokou.common.main.NewsMain.Item
+import com.github.tokou.common.platform.SwipeToRefreshLayout
 import com.github.tokou.common.platform.VerticalScrollbar
 import com.github.tokou.common.platform.rememberScrollbarAdapter
+import com.github.tokou.common.ui.utils.RefreshIndicator
 
 
 @Composable
 fun NewsList(
     item: List<Item>,
     isLoadingMore: Boolean,
+    isRefreshing: Boolean,
     canLoadMore: Boolean,
     onLinkClick: Callback,
     onItemClick: Callback,
     onLoadMore: () -> Unit,
+    onRefresh: (Boolean) -> Unit,
 ) {
 
     Box(Modifier.fillMaxSize()) {
         val state = rememberLazyListState()
 
-        LazyColumn(modifier = Modifier.fillMaxWidth(), state = state) {
-            items(items = item) { item ->
-                NewsRow(item = item, onLinkClick = onLinkClick, onItemClick = onItemClick)
-                Divider()
-            }
-            if (canLoadMore) item {
-                LoadMore(isLoadingMore = isLoadingMore, onLoadMore = onLoadMore)
+        SwipeToRefreshLayout(
+            refreshingState = isRefreshing,
+            onRefresh = { onRefresh(true) },
+            refreshIndicator = { RefreshIndicator() }
+        ) {
+            LazyColumn(modifier = Modifier.fillMaxWidth(), state = state) {
+                items(items = item) { item ->
+                    NewsRow(item = item, onLinkClick = onLinkClick, onItemClick = onItemClick)
+                    Divider()
+                }
+                if (canLoadMore) item {
+                    LoadMore(isLoadingMore = isLoadingMore, onLoadMore = onLoadMore)
+                }
             }
         }
         VerticalScrollbar(
@@ -51,7 +62,6 @@ fun NewsList(
         )
     }
 }
-
 
 @Composable
 private fun LoadMore(

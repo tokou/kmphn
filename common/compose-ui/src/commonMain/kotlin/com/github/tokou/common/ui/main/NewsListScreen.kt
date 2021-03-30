@@ -38,10 +38,12 @@ fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
             is Model.Content -> NewsList(
                 item = m.items,
                 isLoadingMore = m.isLoadingMore,
+                isRefreshing = m.isRefreshing,
                 canLoadMore = m.canLoadMore,
                 onLinkClick = { component.onNewsSelected(it.id, it.link) },
                 onItemClick = { component.onNewsSecondarySelected(it.id) },
-                onLoadMore = component::onLoadMoreSelected
+                onLoadMore = component::onLoadMoreSelected,
+                onRefresh = component::onRefresh
             )
 
         }

@@ -10,7 +10,7 @@ interface NewsMain {
     fun onNewsSelected(id: ItemId, link: String?)
     fun onNewsSecondarySelected(id: ItemId)
     fun onLoadMoreSelected()
-    fun onRefresh()
+    fun onRefresh(fromPull: Boolean = false)
 
     sealed class Output {
         data class Selected(val id: ItemId) : Output()
@@ -23,6 +23,7 @@ interface NewsMain {
         data class Content(
             val items: List<Item>,
             val isLoadingMore: Boolean,
+            val isRefreshing: Boolean,
             val canLoadMore: Boolean
         ) : Model()
     }
