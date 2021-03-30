@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="material_light_primary_500">#FF6200EE</color>
-    <color name="material_light_primary_700">#FF3700B3</color>
+    <color name="safety_orange">#ffff6600</color>
+    <color name="tenne">#ffbf4c00</color>
+    <color name="nero_16">#ff292929</color>
+    <color name="nero_12">#ff212121</color>
+    <color name="black_7">#ff121212</color>
 </resources>

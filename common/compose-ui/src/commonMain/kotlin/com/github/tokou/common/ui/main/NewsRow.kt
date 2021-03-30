@@ -101,7 +101,7 @@ private fun RightColumn() {
                 text = item.comments,
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 style = MaterialTheme.typography.subtitle2,
-                color = MaterialTheme.colors.primarySurface,
+                color = MaterialTheme.colors.primary,
             )
             Spacer(Modifier.weight(1f))
             Text(

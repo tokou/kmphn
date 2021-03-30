@@ -22,11 +22,9 @@ fun NewsBar(onRefresh: () -> Unit) = TopAppBar(
 
 @Composable
 private fun Title() {
-    Column(modifier = Modifier.clickable { }.padding(8.dp)) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Text("Hacker News", style = MaterialTheme.typography.subtitle1)
-            Text("Frontpage", style = MaterialTheme.typography.subtitle2)
-        }
+    Column(modifier = Modifier.clickable { }.padding(6.dp)) {
+        Text("Hacker News", style = MaterialTheme.typography.subtitle1)
+        Text("Frontpage", style = MaterialTheme.typography.subtitle2)
     }
 }
 

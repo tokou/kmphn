@@ -32,6 +32,7 @@ fun NewsComments(
             onUserClicked = onUserClicked,
             onLinkClicked = onLinkClicked
         )
+        item { CommentDivider() }
     }
 }
 

@@ -5,9 +5,10 @@ import androidx.compose.runtime.Composable
 import com.github.tokou.common.platform.PlatformTheme
 
 @Composable
-fun AppTheme(content: @Composable () -> Unit) {
+fun AppTheme(darkTheme: Boolean, content: @Composable () -> Unit) {
     PlatformTheme {
         MaterialTheme(
+            colors = if (darkTheme) AppDarkColors else AppColors,
             typography = AppTypography(),
             content = content,
         )

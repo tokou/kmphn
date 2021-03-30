@@ -1,10 +1,13 @@
 package com.github.tokou.android
 
 import android.os.Bundle
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.primarySurface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.extensions.compose.jetbrains.rememberRootComponent
 import com.arkivanov.mvikotlin.core.store.StoreFactory
 import com.arkivanov.mvikotlin.logging.logger.Logger
@@ -16,6 +19,7 @@ import com.github.tokou.common.database.peristentDatabaseDriver
 import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.root.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
+import com.github.tokou.common.ui.theme.Nero
 import com.github.tokou.common.utils.logger
 
 class MainActivity : AppCompatActivity() {
@@ -27,20 +31,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         tabsHelper.bind()
         setContent {
-            AppTheme {
-                val color = MaterialTheme.colors.primarySurface
-                val rootComponent = rememberRootComponent {
-                    NewsRootComponent(
-                        componentContext = it,
-                        uriHandler = tabsHelper.createUriHandler(color),
-                        storeFactory = DefaultStoreFactory.logging(),
-                        api = createApi(),
-                        database = createDatabase(peristentDatabaseDriver(this))
-                    )
-                }
-                NewsRoot(component = rootComponent)
-            }
+            App { color -> tabsHelper.createUriHandler(color)  }
         }
+    }
+}
+
+@Composable
+fun ComponentActivity.App(uriHandler: (Color) -> (String) -> Unit) {
+    AppTheme(isSystemInDarkTheme()) {
+        val colors = MaterialTheme.colors
+        val color = if (colors.isLight) colors.primaryVariant else Nero
+        val rootComponent = rememberRootComponent {
+            NewsRootComponent(
+                componentContext = it,
+                uriHandler = { uri -> uriHandler(color)(uri) },
+                storeFactory = DefaultStoreFactory.logging(),
+                api = createApi(),
+                database = createDatabase(peristentDatabaseDriver(this))
+            )
+        }
+        NewsRoot(component = rootComponent)
     }
 }
 

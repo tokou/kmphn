@@ -25,6 +25,7 @@ fun NewsHeader(
     Surface(
         color = MaterialTheme.colors.primarySurface,
         modifier = modifier.fillMaxWidth(),
+        elevation = AppBarDefaults.TopAppBarElevation,
     ) {
         Column {
             with(header) {
