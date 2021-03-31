@@ -12,8 +12,4 @@ actual fun inMemoryDatabaseDriver(): SqlDriver {
 }
 
 fun peristentDatabaseDriver(context: Context): SqlDriver =
-    AndroidSqliteDriver(
-        schema = NewsDatabase.Schema,
-        context = context,
-        name = "NewsDatabase.db"
-    ).logging()
+    AndroidSqliteDriver(NewsDatabase.Schema, context, "NewsDatabase.db").logging()

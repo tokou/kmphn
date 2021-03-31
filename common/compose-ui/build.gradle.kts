@@ -13,7 +13,7 @@ android {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(Deps.ArkIvanov.Decompose.decompose)
                 implementation(Deps.ArkIvanov.Decompose.extensionsCompose)
@@ -24,7 +24,7 @@ kotlin {
                 implementation(project(":common:utils"))
             }
         }
-        val desktopMain by getting {
+        desktopMain {
             dependencies {
                 api(compose.desktop.common)
             }

@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(Deps.ArkIvanov.Decompose.decompose)
                 implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
@@ -16,13 +16,13 @@ kotlin {
                 implementation(project(":common:utils"))
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(Deps.ArkIvanov.MviKotlin.mvikotlinMain)
                 implementation(Deps.CashApp.Turbine.turbine)
             }
         }
-        val desktopMain by getting {
+        desktopMain {
             dependencies {
                 implementation(Deps.JetBrains.KotlinX.Coroutines.swing)
             }

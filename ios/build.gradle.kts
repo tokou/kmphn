@@ -13,6 +13,10 @@ xcodebuild {
     setDestination(Destination("iPhone 12 Pro Max"))
 }
 
+dependencies {
+    default(project(":common:root"))
+}
+
 tasks.create<Exec>("tuistGenerate") {
     commandLine("tuist", "generate")
 }

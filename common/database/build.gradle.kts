@@ -13,13 +13,14 @@ sqldelight {
 
 kotlin {
     sourceSets {
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 implementation(Deps.ArkIvanov.Decompose.decompose)
                 implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
                 implementation(Deps.ArkIvanov.MviKotlin.mvikotlinExtensionsCoroutines)
                 implementation(Deps.JetBrains.KotlinX.Coroutines.core)
                 implementation(Deps.JetBrains.KotlinX.Serialization.core)
+                implementation(Deps.JetBrains.KotlinX.Serialization.json)
                 implementation(Deps.JetBrains.Ktor.clientCore)
                 implementation(Deps.JetBrains.Ktor.clientJson)
                 implementation(Deps.JetBrains.Ktor.clientSerialization)
@@ -27,18 +28,18 @@ kotlin {
                 implementation(project(":common:utils"))
             }
         }
-        val androidMain by getting {
+        androidMain {
             dependencies {
                 implementation(Deps.Squareup.SqlDelight.androidDriver)
                 implementation(Deps.Squareup.SqlDelight.sqliteDriver)
             }
         }
-        val desktopMain by getting {
+        desktopMain {
             dependencies {
                 implementation(Deps.Squareup.SqlDelight.sqliteDriver)
             }
         }
-        val iosMain by getting {
+        iosMain {
             dependencies {
                 implementation(Deps.Squareup.SqlDelight.nativeDriver)
             }

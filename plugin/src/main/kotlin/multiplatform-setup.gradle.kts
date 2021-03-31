@@ -1,4 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompile
+@file:Suppress("UNUSED_VARIABLE")
+
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -9,24 +10,13 @@ plugins {
 kotlin {
     jvm("desktop")
     android()
-    iosX64("ios")
-    iosArm64("iosArm64")
-    iosArm32("iosArm32")
+    ios()
 
     sourceSets {
-        val iosMain by getting
-        val iosArm64Main by getting {
-            dependsOn(iosMain)
-        }
-        val iosArm32Main by getting {
-            dependsOn(iosMain)
-        }
-
         val commonTest by getting {
             dependencies {
                 implementation(Deps.JetBrains.Kotlin.testCommon)
                 implementation(Deps.JetBrains.Kotlin.testAnnotationsCommon)
-                implementation(Deps.JetBrains.KotlinX.Coroutines.test)
             }
         }
 

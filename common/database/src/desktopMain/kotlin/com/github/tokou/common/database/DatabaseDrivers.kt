@@ -2,7 +2,6 @@ package com.github.tokou.common.database
 
 import com.github.tokou.common.utils.logger
 import com.squareup.sqldelight.db.SqlDriver
-import com.squareup.sqldelight.logs.LogSqliteDriver
 import com.squareup.sqldelight.sqlite.driver.JdbcSqliteDriver
 import java.io.File
 

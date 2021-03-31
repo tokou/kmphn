@@ -109,7 +109,7 @@ object Deps {
 
     object TouchLab {
         object Kermit {
-            const val kermit = "co.touchlab:kermit:0.1.7"
+            const val kermit = "co.touchlab:kermit:0.1.8"
         }
     }
 
