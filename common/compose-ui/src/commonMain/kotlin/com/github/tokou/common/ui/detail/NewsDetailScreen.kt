@@ -8,16 +8,16 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetail.Model
 
 @Composable
 fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
-    val model by component.models.collectAsState(Model.Loading)
+    val model by component.models.asState()
 
     NewsDetailScaffold(
         modifier = modifier,

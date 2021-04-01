@@ -82,6 +82,7 @@ object Deps {
             const val mvikotlinLogging = "com.arkivanov.mvikotlin:mvikotlin-logging:$VERSION"
             const val mvikotlinTimeTravel = "com.arkivanov.mvikotlin:mvikotlin-timetravel:$VERSION"
             const val mvikotlinExtensionsCoroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$VERSION"
+            const val rx = "com.arkivanov.mvikotlin:rx:$VERSION"
         }
 
         object Decompose {

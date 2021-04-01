@@ -1,12 +1,12 @@
 package com.github.tokou.common.detail
 
+import com.arkivanov.decompose.value.Value
 import com.github.tokou.common.utils.ItemId
 import com.github.tokou.common.utils.UserId
-import kotlinx.coroutines.flow.Flow
 
 interface NewsDetail {
 
-    val models: Flow<Model>
+    val models: Value<Model>
 
     fun onCommentClicked(id: ItemId)
     fun onUserClicked(id: UserId)

@@ -1,13 +1,14 @@
 package com.github.tokou.common.detail
 
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.operator.map
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
+import com.github.tokou.common.detail.NewsDetail.*
 import com.github.tokou.common.utils.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -17,10 +18,10 @@ class NewsDetailComponent(
     api: NewsApi,
     database: NewsDatabase,
     itemId: Long,
-    private val onOutput: (NewsDetail.Output) -> Unit
+    private val onOutput: (Output) -> Unit
 ): NewsDetail, ComponentContext by componentContext {
 
-    private fun NewsDetailStore.News.asHeader() = NewsDetail.Header(
+    private fun NewsDetailStore.News.asHeader() = Header(
         id = id,
         title = title.orEmpty(),
         text = text?.parseText(),
@@ -35,10 +36,10 @@ class NewsDetailComponent(
         selectedItem: ItemId?,
         collapsedIds: Set<ItemId>,
         op: UserId?
-    ): NewsDetail.Comment = when (this) {
-        is NewsDetailStore.Comment.Loading -> NewsDetail.Comment.Loading
+    ): Comment = when (this) {
+        is NewsDetailStore.Comment.Loading -> Comment.Loading
         is NewsDetailStore.Comment.Content -> {
-            if (collapsedIds.contains(id)) NewsDetail.Comment.Content.Collapsed(
+            if (collapsedIds.contains(id)) Comment.Content.Collapsed(
                 id = id,
                 user = user,
                 isOp = user == op,
@@ -46,7 +47,7 @@ class NewsDetailComponent(
                 time = time.format(),
                 childrenCount = if (childrenCount > 0) childrenCount.toString() else "",
             )
-            else NewsDetail.Comment.Content.Expanded(
+            else Comment.Content.Expanded(
                 id = id,
                 user = user,
                 time = time.format(),
@@ -61,23 +62,23 @@ class NewsDetailComponent(
         }
     }
 
-    private fun List<NewsDetail.Comment>.withSingleLoading(): List<NewsDetail.Comment> =
-        if (none { it is NewsDetail.Comment.Loading }) this
-        else filterIsInstance<NewsDetail.Comment.Content>() + NewsDetail.Comment.Loading
+    private fun List<Comment>.withSingleLoading(): List<Comment> =
+        if (none { it is Comment.Loading }) this
+        else filterIsInstance<Comment.Content>() + Comment.Loading
 
     private fun List<NewsDetailStore.Comment>.withoutDeleted(): List<NewsDetailStore.Comment> =
         filterNot { if (it is NewsDetailStore.Comment.Content) it.deleted else false }
 
-    private val stateToModel: suspend (NewsDetailStore.State) -> NewsDetail.Model = { when (it) {
-        is NewsDetailStore.State.Content -> NewsDetail.Model.Content(
+    private val stateToModel: (NewsDetailStore.State) -> Model = { when (it) {
+        is NewsDetailStore.State.Content -> Model.Content(
             header = it.news.asHeader(),
             comments = it.news.comments
                 .withoutDeleted()
                 .map { c -> c.asModel(it.selectedComment, it.collapsedComments, it.news.user) }
                 .withSingleLoading()
         )
-        NewsDetailStore.State.Loading -> NewsDetail.Model.Loading
-        NewsDetailStore.State.Error -> NewsDetail.Model.Error
+        NewsDetailStore.State.Loading -> Model.Loading
+        NewsDetailStore.State.Error -> Model.Error
     } }
 
     // TODO: Going back to same detail page hangs is this is uncommented
@@ -89,10 +90,10 @@ class NewsDetailComponent(
         ).provide()
     //}
 
-    override val models: Flow<NewsDetail.Model> = store.states.map(stateToModel)
+    override val models: Value<Model> = store.asValue().map(stateToModel)
 
     override fun onBack() {
-        onOutput(NewsDetail.Output.Back)
+        onOutput(Output.Back)
     }
 
     override fun onRetry() {
@@ -105,15 +106,15 @@ class NewsDetailComponent(
 
     override fun onUserClicked(id: UserId) {
         // TODO: implement user screen
-        onOutput(NewsDetail.Output.Link("https://news.ycombinator.com/user?id=$id"))
+        onOutput(Output.Link("https://news.ycombinator.com/user?id=$id"))
     }
 
     override fun onLinkClicked(uri: String, forceExternal: Boolean) {
         val hnLink = "https?://news\\.ycombinator\\.com/item\\?id=(\\d+)".toRegex()
         val itemId = hnLink.find(uri)?.groupValues?.get(1)?.toLongOrNull()
         val output =
-            if (forceExternal || itemId == null) NewsDetail.Output.Link(uri)
-            else NewsDetail.Output.Item(itemId)
+            if (forceExternal || itemId == null) Output.Link(uri)
+            else Output.Item(itemId)
         onOutput(output)
     }
 }

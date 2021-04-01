@@ -8,9 +8,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(Deps.JetBrains.KotlinX.Coroutines.core) {
-                    version { strictly(Deps.JetBrains.KotlinX.Coroutines.VERSION) }
-                }
+                implementation(Deps.JetBrains.KotlinX.Coroutines.core)
                 implementation(Deps.JetBrains.KotlinX.Serialization.core)
                 implementation(Deps.JetBrains.KotlinX.Serialization.json)
                 implementation(Deps.JetBrains.Ktor.clientCore)

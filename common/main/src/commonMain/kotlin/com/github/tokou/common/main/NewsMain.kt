@@ -1,11 +1,11 @@
 package com.github.tokou.common.main
 
+import com.arkivanov.decompose.value.Value
 import com.github.tokou.common.utils.ItemId
-import kotlinx.coroutines.flow.Flow
 
 interface NewsMain {
 
-    val models: Flow<Model>
+    val models: Value<Model>
 
     fun onNewsSelected(id: ItemId, link: String?)
     fun onNewsSecondarySelected(id: ItemId)

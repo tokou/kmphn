@@ -5,18 +5,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import com.github.tokou.common.main.NewsMain
-import com.github.tokou.common.main.NewsMain.*
+import com.github.tokou.common.main.NewsMain.Item
+import com.github.tokou.common.main.NewsMain.Model
 
 typealias Callback = (Item) -> Unit
 
 @Composable
 fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
-    val model by component.models.collectAsState(Model.Loading)
+    val model by component.models.asState()
 
     Scaffold(
         topBar = { NewsBar(onRefresh = component::onRefresh) },

@@ -1,16 +1,17 @@
 package com.github.tokou.common.main
 
 import com.arkivanov.mvikotlin.core.store.StoreFactory
-import com.arkivanov.mvikotlin.extensions.coroutines.states
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.value.Value
+import com.arkivanov.decompose.value.operator.map
 import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
+import com.github.tokou.common.main.NewsMain.*
 import com.github.tokou.common.utils.ItemId
+import com.github.tokou.common.utils.asValue
 import com.github.tokou.common.utils.format
 import com.github.tokou.common.utils.getStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NewsMainComponent(
@@ -18,10 +19,10 @@ class NewsMainComponent(
     storeFactory: StoreFactory,
     api: NewsApi,
     database: NewsDatabase,
-    private val onOutput: (NewsMain.Output) -> Unit
+    private val onOutput: (Output) -> Unit
 ): NewsMain, ComponentContext by componentContext {
 
-    private fun NewsMainStore.News.asModel(): NewsMain.Item = NewsMain.Item(
+    private fun NewsMainStore.News.asModel(): Item = Item(
         id = id,
         title = title.orEmpty(),
         link = link,
@@ -31,15 +32,15 @@ class NewsMainComponent(
         points = points.toString()
     )
 
-    private val stateToModel: suspend (NewsMainStore.State) -> NewsMain.Model = { when (it) {
-        is NewsMainStore.State.Content -> NewsMain.Model.Content(
+    private val stateToModel: (NewsMainStore.State) -> Model = { when (it) {
+        is NewsMainStore.State.Content -> Model.Content(
             items = it.news.map { n -> n.asModel() },
             isLoadingMore = it.isLoadingMore,
             isRefreshing = it.isRefreshing,
             canLoadMore = it.canLoadMore,
         )
-        NewsMainStore.State.Loading -> NewsMain.Model.Loading
-        NewsMainStore.State.Error -> NewsMain.Model.Error
+        NewsMainStore.State.Loading -> Model.Loading
+        NewsMainStore.State.Error -> Model.Error
     } }
 
     private val store =
@@ -50,15 +51,15 @@ class NewsMainComponent(
             ).provide()
         }
 
-    override val models: Flow<NewsMain.Model> = store.states.map(stateToModel)
+    override val models: Value<Model> = store.asValue().map(stateToModel)
 
     override fun onNewsSelected(id: ItemId, link: String?) {
-        if (link != null) onOutput(NewsMain.Output.Link(link))
-        else onOutput(NewsMain.Output.Selected(id))
+        if (link != null) onOutput(Output.Link(link))
+        else onOutput(Output.Selected(id))
     }
 
     override fun onNewsSecondarySelected(id: ItemId, ) {
-        onOutput(NewsMain.Output.Selected(id))
+        onOutput(Output.Selected(id))
     }
 
     override fun onLoadMoreSelected() {
