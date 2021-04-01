@@ -14,24 +14,29 @@ import com.github.tokou.common.root.NewsRootComponent
 import com.github.tokou.common.ui.root.NewsRoot
 import com.github.tokou.common.ui.theme.AppTheme
 
-fun main() = Window(title = "HN", icon = appIcon) { App() }
+fun main() = Window(title = "HN", icon = appIcon) { ThemedFrame { App() } }
+
+@Composable
+fun ThemedFrame(content: @Composable () -> Unit) {
+    AppTheme(isMacInDarkMode()) {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            content()
+        }
+    }
+}
 
 @Composable
 fun App() {
-    Surface(modifier = Modifier.fillMaxSize()) {
-        AppTheme(isMacInDarkMode()) {
-            val rootComponent = rememberRootComponent {
-                NewsRootComponent(
-                    componentContext = it,
-                    uriHandler = ::openLink,
-                    storeFactory = DefaultStoreFactory.logging(),
-                    api = createApi(),
-                    database = createDatabase(persistentDatabaseDriver())
-                )
-            }
-            CompositionLocalProvider(LocalUriHandler provides uriHandler) {
-                NewsRoot(component = rootComponent)
-            }
-        }
+    val rootComponent = rememberRootComponent {
+        NewsRootComponent(
+            componentContext = it,
+            uriHandler = ::openLink,
+            storeFactory = DefaultStoreFactory.logging(),
+            api = createApi(),
+            database = createDatabase(persistentDatabaseDriver())
+        )
+    }
+    CompositionLocalProvider(LocalUriHandler provides uriHandler) {
+        NewsRoot(component = rootComponent)
     }
 }

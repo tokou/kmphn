@@ -25,9 +25,7 @@ fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
     ) {
         val m = model
         when (m) {
-            Model.Loading -> Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            }
+            Model.Loading -> Loader()
             Model.Error -> Box(modifier = Modifier.fillMaxSize()) {
                 Column(modifier = Modifier.align(Alignment.Center)) {
                     Text("Error", style = MaterialTheme.typography.h6)
