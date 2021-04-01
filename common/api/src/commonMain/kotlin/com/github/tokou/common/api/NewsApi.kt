@@ -10,20 +10,24 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
+import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import com.github.tokou.common.utils.logger as Logger
 
 
-fun createApi(): NewsApi {
-    val baseUrl = "https://hacker-news.firebaseio.com/v0"
-    val client = createHttpClient(createJson())
-    return NewsApi(baseUrl, client)
+private val json = Json {
+    ignoreUnknownKeys = true
 }
 
-fun createJson() = Json {
-    ignoreUnknownKeys = true
+fun createApi(): NewsApi {
+    val baseUrl = "https://hacker-news.firebaseio.com/v0"
+    val client = createHttpClient(json)
+    return NewsApi(baseUrl, client)
 }
 
 fun createHttpClient(json: Json) = HttpClient {
@@ -144,5 +148,8 @@ class NewsApi(private val baseUrl: String, private val client: HttpClient) {
     suspend fun fetchShowStoriesIds() = client.get<List<Long>>("$baseUrl/showstories.json")
     suspend fun fetchUpdates() = client.get<Updates>("$baseUrl/updates.json")
     suspend fun fetchUser(id: String) = client.get<User?>("$baseUrl/user/$id.json")
-    suspend fun fetchItem(id: Long) = client.get<Item?>("$baseUrl/item/$id.json")
+    // https://github.com/Kotlin/kotlinx.serialization/issues/1000#issuecomment-678983701
+    suspend fun fetchItem(id: Long) = client.get<String?>("$baseUrl/item/$id.json")?.let {
+        json.decodeFromString(Item.serializer(), it)
+    }
 }

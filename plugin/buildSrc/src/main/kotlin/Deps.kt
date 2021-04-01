@@ -47,6 +47,8 @@ object Deps {
             const val clientLogging = "io.ktor:ktor-client-logging:$VERSION"
             const val clientSerialization = "io.ktor:ktor-client-serialization:$VERSION"
             const val clientOkhttp = "io.ktor:ktor-client-okhttp:$VERSION"
+            const val clientIos = "io.ktor:ktor-client-ios:$VERSION"
+            const val clientCurl = "io.ktor:ktor-client-curl:$VERSION"
         }
     }
 

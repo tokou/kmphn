@@ -32,5 +32,10 @@ kotlin {
                 implementation(Deps.Slf4j.simple)
             }
         }
+        iosMain {
+            dependencies {
+                implementation(Deps.JetBrains.Ktor.clientIos)
+            }
+        }
     }
 }
