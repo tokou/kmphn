@@ -24,7 +24,7 @@ import com.github.tokou.common.ui.utils.RefreshIndicator
 
 @Composable
 fun NewsList(
-    item: List<Item>,
+    items: List<Item>,
     isLoadingMore: Boolean,
     isRefreshing: Boolean,
     canLoadMore: Boolean,
@@ -43,7 +43,7 @@ fun NewsList(
             refreshIndicator = { RefreshIndicator() }
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth(), state = state) {
-                items(items = item) { item ->
+                items(items = items) { item ->
                     NewsRow(item = item, onLinkClick = onLinkClick, onItemClick = onItemClick)
                     Divider()
                 }
@@ -56,7 +56,7 @@ fun NewsList(
             modifier = Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
             adapter = rememberScrollbarAdapter(
                 scrollState = state,
-                itemCount = item.size,
+                itemCount = items.size,
                 averageItemSize = 96.dp
             )
         )

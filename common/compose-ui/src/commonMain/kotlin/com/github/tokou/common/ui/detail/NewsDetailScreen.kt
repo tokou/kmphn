@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetail.Model
+import com.github.tokou.common.ui.main.ErrorLayout
 
 @Composable
 fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
@@ -25,7 +26,7 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
     ) {
         when (val m = model) {
             Model.Loading -> Loading()
-            Model.Error -> Error(component::onRetry)
+            Model.Error -> ErrorLayout(text = "Error", onClick = component::onRetry)
             is Model.Content -> NewsDetailContent(
                 content = m,
                 onCommentClicked = component::onCommentClicked,
@@ -40,17 +41,5 @@ fun NewsDetailScreen(modifier: Modifier = Modifier, component: NewsDetail) {
 private fun Loading() {
     Box(modifier = Modifier.fillMaxSize()) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-    }
-}
-
-@Composable
-private fun Error(onRetry: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier.align(Alignment.Center)) {
-            Text("Error", style = MaterialTheme.typography.h6)
-            Button(onClick = onRetry) {
-                Text("Retry", style = MaterialTheme.typography.button)
-            }
-        }
     }
 }

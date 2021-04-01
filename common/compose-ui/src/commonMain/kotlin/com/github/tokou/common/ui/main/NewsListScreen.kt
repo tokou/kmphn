@@ -1,12 +1,8 @@
 package com.github.tokou.common.ui.main
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.*
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.asState
 import com.github.tokou.common.main.NewsMain
@@ -26,16 +22,9 @@ fun NewsListScreen(modifier: Modifier = Modifier, component: NewsMain) {
         val m = model
         when (m) {
             Model.Loading -> Loader()
-            Model.Error -> Box(modifier = Modifier.fillMaxSize()) {
-                Column(modifier = Modifier.align(Alignment.Center)) {
-                    Text("Error", style = MaterialTheme.typography.h6)
-                    Button(onClick = component::onRefresh) {
-                        Text("Retry", style = MaterialTheme.typography.button)
-                    }
-                }
-            }
+            Model.Error -> ErrorLayout(text = "Error", onClick = component::onRefresh)
             is Model.Content -> NewsList(
-                item = m.items,
+                items = m.items,
                 isLoadingMore = m.isLoadingMore,
                 isRefreshing = m.isRefreshing,
                 canLoadMore = m.canLoadMore,
