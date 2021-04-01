@@ -1,10 +1,11 @@
 import SwiftUI
+import Hackernews
 
 @main
-struct HnApp: App {
+struct HackernewsApp: App {
     var body: some Scene {
         WindowGroup {
-            Text("Hello HN!")
+            ContentView()
         }
     }
 }
