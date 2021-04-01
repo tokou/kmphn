@@ -13,8 +13,8 @@ object Deps {
 
         object KotlinX {
             object Coroutines {
-                private const val VERSION = "1.4.3"
-                const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$VERSION"
+                const val VERSION = "1.4.3-native-mt"
+                const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3-native-mt"
                 const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$VERSION"
                 const val swing = "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$VERSION"
             }
