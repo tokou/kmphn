@@ -59,8 +59,14 @@ let testTarget = Target(
 
 let targets = [mainTarget, testTarget]
 
+let updatedSettings: SettingsDictionary = [
+    "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": .string("YES")
+]
+let settings = Settings(base: updatedSettings)
+
 let project = Project(
     name: name,
     organizationName: organizationName,
+    settings: settings,
     targets: targets
 )
