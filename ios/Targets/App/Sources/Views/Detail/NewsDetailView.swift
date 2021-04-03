@@ -15,9 +15,7 @@ struct NewsDetailView: View {
     var body: some View {
         let model = models.value
         switch model {
-        case is NewsDetailModel.Content:
-            // case let content is NewsMainModel.Content causes a segfault
-            let content = model as! NewsDetailModel.Content
+        case let content as NewsDetailModel.Content:
             VStack {
                 HStack {
                     Text("Content")
