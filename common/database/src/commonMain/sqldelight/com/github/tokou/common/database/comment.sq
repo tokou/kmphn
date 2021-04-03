@@ -20,7 +20,7 @@ CREATE INDEX IF NOT EXISTS idx_comment_parentId ON comment (parentId);
 CREATE INDEX IF NOT EXISTS idx_comment_itemId ON comment (itemId);
 
 insert:
-INSERT
+INSERT OR REPLACE
 INTO comment (id, itemId, parentId, user, created, updated, kids, content, deleted, dead)
 VALUES ?;
 
