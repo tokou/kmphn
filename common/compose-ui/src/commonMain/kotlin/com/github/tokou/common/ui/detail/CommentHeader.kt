@@ -34,7 +34,7 @@ private fun RowScope.CommentUser(
     isOp: Boolean = false,
     onUserClicked: (UserId) -> Unit = {}
 ) {
-    val color = if (isOp) MaterialTheme.colors.primarySurface else Color.Transparent
+    val color = if (isOp) MaterialTheme.colors.primary else Color.Transparent
     val textColor = if (isOp) MaterialTheme.colors.onPrimary else MaterialTheme.colors.primary
     val padding = if (isOp) 4.dp else 0.dp
 
