@@ -5,10 +5,23 @@ struct NewsBarView: View {
     let onRefresh: () -> ()
 
     var body: some View {
-        HStack {
-            Text("Hacker News")
-            Button("Refresh", action: onRefresh)
-        }
+        TopAppBar(
+            title: {
+                Text("Hacker News")
+                    .font(theme.typography.subtitle1)
+                    .foregroundColor(theme.colors.onPrimary)
+                    .frame(maxWidth: .infinity)
+                    .padding(.leading, 55)
+            },
+            navigation: { EmptyView() },
+            actions: {
+                Button(action: onRefresh) {
+                    Image(systemName: "arrow.2.circlepath")
+                        .foregroundColor(theme.colors.onPrimary.mediumOpacity())
+                        .padding(16)
+                }
+            }
+        )
     }
 }
 

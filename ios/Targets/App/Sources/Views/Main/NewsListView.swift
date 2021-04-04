@@ -7,15 +7,19 @@ struct NewsListView: View {
     let onItemClick: Callback
 
     var body: some View {
-        List(items) { item in
-            NewsRowView(item: item, onItemClick: onItemClick, onLinkClick: onLinkClick)
+        List {
+            ForEach(items) { item in
+                NewsRowView(item: item, onItemClick: onItemClick, onLinkClick: onLinkClick)
+                    .listRowInsets(.init())
+            }
         }
+        .listStyle(PlainListStyle())
         .buttonStyle(PlainButtonStyle())
     }
 }
 
 struct NewsListView_Previews: PreviewProvider {
-    static let itemStubs = [NewsRowView_Previews.itemStub]
+    static let itemStubs = [NewsRowView_Previews.item()]
     
     static var previews: some View {
         NewsListView(items: itemStubs, onLinkClick: { _ in }, onItemClick: { _ in })

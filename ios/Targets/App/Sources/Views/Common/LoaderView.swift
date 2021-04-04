@@ -3,7 +3,7 @@ import Hackernews
 
 struct LoaderView: View {
     var body: some View {
-        ProgressView()
+        ProgressView().frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

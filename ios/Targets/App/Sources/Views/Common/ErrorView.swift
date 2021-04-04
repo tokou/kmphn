@@ -7,7 +7,10 @@ struct ErrorView: View {
     let onClick: () -> ()
     
     var body: some View {
-        Text("")
+        VStack {
+            Text("Error")
+            Button(actionTitle, action: onClick)
+        }.frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

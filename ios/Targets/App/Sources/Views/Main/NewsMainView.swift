@@ -15,7 +15,7 @@ struct NewsMainView: View {
     var body: some View {
         let model = models.value
         let refresh = { component.onRefresh(fromPull: false) }
-        VStack {
+        VStack(spacing: 0) {
             NewsBarView(onRefresh: refresh)
             NewsContentView(
                 model: model,
