@@ -2,13 +2,13 @@ import SwiftUI
 import Hackernews
 
 struct ErrorView: View {
-    let text: String
-    let actionTitle: String = "Retry"
+    var text: String = "Error"
+    var actionTitle: String = "Retry"
     let onClick: () -> ()
     
     var body: some View {
         VStack {
-            Text("Error")
+            Text(text)
             Button(actionTitle, action: onClick)
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
     }

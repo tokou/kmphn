@@ -25,7 +25,7 @@ struct NewsContentView: View {
         case is NewsMainModel.Loading:
             LoaderView()
         case is NewsMainModel.Error:
-            ErrorView(text: "Error", onClick: onRefresh)
+            ErrorView(onClick: onRefresh)
         default:
             fatalError()
         }

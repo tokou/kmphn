@@ -25,7 +25,6 @@ struct NewsBarView: View {
                     Button(action: {}) {
                         Image(systemName: "ellipsis")
                             .foregroundColor(theme.colors.onPrimary)
-                            .padding(12)
                     }.frame(minWidth: buttonSize, minHeight: buttonSize)
                 }
             }
