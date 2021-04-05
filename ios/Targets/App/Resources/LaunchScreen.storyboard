@@ -17,11 +17,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zm2-4J-tkN" userLabel="Header">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="91"/>
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="88"/>
                                 <color key="backgroundColor" red="0.73999999999999999" green="0.29599999999999999" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kg3-2g-95B" userLabel="Bar">
-                                <rect key="frame" x="0.0" y="47" width="414" height="44"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                                 <color key="backgroundColor" red="1" green="0.40000000000000002" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="C7U-Lz-ayb"/>
@@ -31,7 +31,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="kg3-2g-95B" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="3" id="1Ko-ug-g2q"/>
+                            <constraint firstItem="kg3-2g-95B" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="1Ko-ug-g2q"/>
                             <constraint firstItem="zm2-4J-tkN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Jny-pr-Y4z"/>
                             <constraint firstItem="zm2-4J-tkN" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" id="MWY-bu-NvR"/>
                             <constraint firstItem="zm2-4J-tkN" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="Rs7-66-xOd"/>

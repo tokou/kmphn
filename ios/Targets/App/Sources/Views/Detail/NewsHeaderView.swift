@@ -48,9 +48,8 @@ struct NewsHeaderView: View {
             .foregroundColor(theme.colors.onPrimary.mediumOpacity())
             .buttonStyle(PlainButtonStyle())
             if let text = header.text {
-                RichText(text: text, onLinkClicked: onLinkClicked)
+                RichTextView(text: text, onLinkClicked: onLinkClicked)
                     .padding(16)
-                    .frame(maxWidth: .infinity, alignment: .leading)
                     .background(theme.colors.surface.mediumOpacity())
                 Spacer()
                     .frame(height: 8)
