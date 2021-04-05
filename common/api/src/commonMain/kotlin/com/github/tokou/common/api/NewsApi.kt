@@ -147,7 +147,7 @@ class NewsApi(private val baseUrl: String, private val client: HttpClient) {
     suspend fun fetchUser(id: String) = client.get<User?>("$baseUrl/user/$id.json")
     // https://github.com/Kotlin/kotlinx.serialization/issues/1000#issuecomment-678983701
     suspend fun fetchItem(id: Long) = client.get<String?>("$baseUrl/item/$id.json")?.let { body ->
-        val serializer: KSerializer<Item?> = serializer()
-        json.decodeFromString(serializer, body)
+        if (body == "null") null
+        else json.decodeFromString(Item.serializer(), body)
     }
 }
