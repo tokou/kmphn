@@ -67,7 +67,7 @@ internal class ExecutorImpl(
 
     override suspend fun executeAction(action: Unit, getState: () -> State) = coroutineScope {
         repository.updates
-            .debounce(60)
+            .sample(100)
             .subscribe(this, ::dispatch) { r -> r
                 .map { Outcome.Loaded(it) }
                 .recover { Outcome.NotFound } // TODO: better error handling
