@@ -1,5 +1,7 @@
 import SwiftUI
 
+let topBarHeight: CGFloat = 44
+
 struct TopAppBar<Title, Navigation, Actions> : View where Title : View, Navigation : View, Actions : View {
     let title: () -> Title
     let navigation: () -> Navigation
@@ -12,9 +14,9 @@ struct TopAppBar<Title, Navigation, Actions> : View where Title : View, Navigati
             actions()
         }
         .frame(maxWidth: .infinity)
-        .frame(height: 64)
+        .frame(height: topBarHeight)
         .background(theme.colors.primary)
-        .background(theme.colors.primaryVariant.edgesIgnoringSafeArea(.top))
+        .background(theme.colors.primaryVariant.edgesIgnoringSafeArea(.top).shadow(radius: 10))
     }
 }
 

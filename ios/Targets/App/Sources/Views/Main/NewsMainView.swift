@@ -15,14 +15,14 @@ struct NewsMainView: View {
     var body: some View {
         let model = models.value
         let refresh = { component.onRefresh(fromPull: false) }
-        VStack(spacing: 0) {
-            NewsBarView(onRefresh: refresh)
+        ZStack(alignment: .top) {
             NewsContentView(
                 model: model,
                 onSelected: component.onNewsSelected,
                 onSecondarySelected: component.onNewsSecondarySelected,
                 onRefresh: refresh
-            )
+            ).padding(.top, topBarHeight)
+            NewsBarView(onRefresh: refresh)
         }
     }
 }

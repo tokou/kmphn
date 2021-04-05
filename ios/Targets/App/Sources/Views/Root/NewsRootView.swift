@@ -18,12 +18,10 @@ struct NewsRootView: View {
 
         case let detail as NewsRootChild.Detail:
             NewsDetailView(detail.component)
-                .transition(
-                    .asymmetric(
-                        insertion: AnyTransition.move(edge: .trailing),
-                        removal: AnyTransition.move(edge: .trailing)
-                    )
-                )
+                .transition(.asymmetric(
+                    insertion: AnyTransition.move(edge: .trailing),
+                    removal: AnyTransition.move(edge: .trailing)
+                ))
                 .animation(.easeInOut)
             
         default: EmptyView()
@@ -34,6 +32,9 @@ struct NewsRootView: View {
 struct NewsRoot_Previews: PreviewProvider {
     static var previews: some View {
         NewsRootView(StubNewsRoot())
+            .previewDevice(.init(unicodeScalarLiteral: "iPhone 12 Pro Max"))
+        NewsRootView(StubNewsRoot())
+            .previewDevice(.init(unicodeScalarLiteral: "iPhone SE (2nd generation)"))
     }
     
     class StubNewsRoot : NewsRoot {
