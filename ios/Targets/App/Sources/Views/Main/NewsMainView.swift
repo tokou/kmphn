@@ -20,7 +20,8 @@ struct NewsMainView: View {
                 model: model,
                 onSelected: component.onNewsSelected,
                 onSecondarySelected: component.onNewsSecondarySelected,
-                onRefresh: refresh
+                onRefresh: refresh,
+                onLoadMore: component.onLoadMoreSelected
             ).padding(.top, topBarHeight)
             NewsBarView(onRefresh: refresh)
         }
