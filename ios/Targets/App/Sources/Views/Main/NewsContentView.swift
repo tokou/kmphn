@@ -3,7 +3,6 @@ import Hackernews
 
 extension NewsMainItem : Identifiable {}
 
-typealias ItemId = Int64
 typealias Callback = (NewsMainItem) -> ()
 
 struct NewsContentView: View {
@@ -14,9 +13,7 @@ struct NewsContentView: View {
     
     var body: some View {
         switch model {
-        case is NewsMainModel.Content:
-            // case let content is NewsMainModel.Content causes a segfault
-            let content = model as! NewsMainModel.Content
+        case let content as NewsMainModel.Content:
             NewsListView(
                 items: content.items,
                 onLinkClick: { onSelected($0.id, $0.link) },

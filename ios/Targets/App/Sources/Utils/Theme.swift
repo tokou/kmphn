@@ -19,6 +19,7 @@ struct Theme {
     struct Colors {
         let primary = safetyOrange
         let primaryVariant = tenne
+        let surface = Color.white
         let onPrimary = Color.white
         let onSurface = Color.black
         let onBackground = Color.black
@@ -28,6 +29,7 @@ struct Theme {
     struct Typography {
         let subtitle1 = Font.system(.body)
         let subtitle2 = Font.system(.callout)
+        let body2 = Font.system(.callout)
     }
 }
 

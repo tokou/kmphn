@@ -3,17 +3,21 @@ import Hackernews
 
 struct NewsDetailContentView: View {
     let model: NewsDetailModel
+    let onUserClicked: (UserId) -> ()
+    let onLinkClicked: (String, Bool) -> ()
+    let onCommentClicked: (ItemId) -> ()
 
     var body: some View {
         switch model {
         case let content as NewsDetailModel.Content:
-            VStack(spacing: 0) {
-                Text("\(content.header.title)")
-                Text("\(content.header.user)")
-                Text("\(content.header.link ?? "")")
-                Text("\(content.header.hnLink)")
-                Spacer()
+            List {
+                NewsHeaderView(header: content.header, onLinkClicked: onLinkClicked, onUserClicked: onUserClicked)
+                    .listRowInsets(.init())
+                NewsCommentsView(comments: content.comments, onCommentClicked: onCommentClicked, onUserClicked: onUserClicked, onLinkClicked: onLinkClicked)
+                    .listRowInsets(.init())
             }
+            .listStyle(PlainListStyle())
+            .buttonStyle(PlainButtonStyle())
         case is NewsDetailModel.Loading:
             LoaderView()
         case is NewsDetailModel.Error:
@@ -26,9 +30,9 @@ struct NewsDetailContentView: View {
 
 struct NewsDetailContentView_Previews: PreviewProvider {
     static var previews: some View {
-        NewsDetailContentView(model: errorStub)
-        NewsDetailContentView(model: loadingStub)
-        NewsDetailContentView(model: contentStub)
+        NewsDetailContentView(model: errorStub, onUserClicked: { _ in }, onLinkClicked: { _, _ in }, onCommentClicked: { _ in })
+        NewsDetailContentView(model: loadingStub, onUserClicked: { _ in }, onLinkClicked: { _, _ in }, onCommentClicked: { _ in })
+        NewsDetailContentView(model: contentStub, onUserClicked: { _ in }, onLinkClicked: { _, _ in }, onCommentClicked: { _ in })
     }
     
     static let errorStub = NewsDetailModel.Error()

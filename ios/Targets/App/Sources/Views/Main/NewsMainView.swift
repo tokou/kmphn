@@ -58,8 +58,8 @@ struct NewsMainView_Previews: PreviewProvider {
         }
         
         func onLoadMoreSelected() {}
-        func onNewsSecondarySelected(id: Int64) {}
-        func onNewsSelected(id: Int64, link: String?) {}
+        func onNewsSecondarySelected(id: ItemId) {}
+        func onNewsSelected(id: ItemId, link: String?) {}
         func onRefresh(fromPull: Bool) {}
     }
 }

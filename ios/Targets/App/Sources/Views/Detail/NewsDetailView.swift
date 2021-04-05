@@ -15,7 +15,12 @@ struct NewsDetailView: View {
     var body: some View {
         let model = models.value
         ZStack(alignment: .top) {
-            NewsDetailContentView(model: model).padding(.top, topBarHeight)
+            NewsDetailContentView(
+                model: model,
+                onUserClicked: component.onUserClicked,
+                onLinkClicked: component.onLinkClicked,
+                onCommentClicked: component.onCommentClicked
+            ).padding(.top, topBarHeight)
             NewsDetailBarView(onBack: component.onBack)
         }
     }
@@ -30,7 +35,7 @@ struct NewsDetailView_Previews: PreviewProvider {
         var models: Value<NewsDetailModel> = valueOf(NewsDetailContentView_Previews.contentStub)
 
         func onBack() {}
-        func onCommentClicked(id: Int64) {}
+        func onCommentClicked(id: ItemId) {}
         func onLinkClicked(uri: String, forceExternal: Bool) {}
         func onRetry() {}
         func onUserClicked(id: String) {}

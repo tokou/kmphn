@@ -88,7 +88,7 @@ private struct RightColumnView: View {
 
 struct NewsRowView_Previews: PreviewProvider {
     static func item(
-        id: Int64 = 1,
+        id: ItemId = 1,
         title: String = "enkiTS: A C and C++ Task Scheduler for creating parallel programs",
         link: String? = "https://mmartinfahy.medium.com/my-experience-releasing-3-failed-saas-products-44e61cbde424",
         user: String = "user",
