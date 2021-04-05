@@ -10,10 +10,7 @@ import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.*
-import kotlinx.serialization.PolymorphicSerializer
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -149,7 +146,8 @@ class NewsApi(private val baseUrl: String, private val client: HttpClient) {
     suspend fun fetchUpdates() = client.get<Updates>("$baseUrl/updates.json")
     suspend fun fetchUser(id: String) = client.get<User?>("$baseUrl/user/$id.json")
     // https://github.com/Kotlin/kotlinx.serialization/issues/1000#issuecomment-678983701
-    suspend fun fetchItem(id: Long) = client.get<String?>("$baseUrl/item/$id.json")?.let {
-        json.decodeFromString(Item.serializer(), it)
+    suspend fun fetchItem(id: Long) = client.get<String?>("$baseUrl/item/$id.json")?.let { body ->
+        val serializer: KSerializer<Item?> = serializer()
+        json.decodeFromString(serializer, body)
     }
 }
