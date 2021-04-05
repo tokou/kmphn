@@ -1,8 +1,6 @@
 import SwiftUI
 import Hackernews
 
-let buttonSize: CGFloat = 44
-
 struct NewsBarView: View {
     let onRefresh: () -> ()
 
@@ -13,19 +11,12 @@ struct NewsBarView: View {
                     .font(theme.typography.subtitle1)
                     .foregroundColor(theme.colors.onPrimary)
                     .frame(maxWidth: .infinity)
-                    .padding(.leading, buttonSize * 2)
             },
-            navigation: { EmptyView() },
+            navigation: { Spacer().frame(maxWidth: buttonSize * 2) },
             actions: {
                 HStack(spacing: 0) {
-                    Button(action: onRefresh) {
-                        Image(systemName: "arrow.clockwise")
-                            .foregroundColor(theme.colors.onPrimary)
-                    }.frame(minWidth: buttonSize, minHeight: buttonSize)
-                    Button(action: {}) {
-                        Image(systemName: "ellipsis")
-                            .foregroundColor(theme.colors.onPrimary)
-                    }.frame(minWidth: buttonSize, minHeight: buttonSize)
+                    BarButton(systemName: "arrow.clockwise", action: onRefresh)
+                    BarButton(systemName: "ellipsis", action: {})
                 }
             }
         )

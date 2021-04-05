@@ -8,25 +8,13 @@ struct NewsDetailBarView: View {
         TopAppBar(
             title: { Spacer() },
             navigation: {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(theme.colors.onPrimary)
-                }.frame(minWidth: buttonSize, minHeight: buttonSize)
+                BarButton(systemName: "chevron.left", action: onBack)
             },
             actions: {
                 HStack(spacing: 0) {
-                    Button(action: {}) {
-                        Image(systemName: "square.and.arrow.up")
-                            .foregroundColor(theme.colors.onPrimary)
-                    }.frame(minWidth: buttonSize, minHeight: buttonSize)
-                    Button(action: {}) {
-                        Image(systemName: "bookmark")
-                            .foregroundColor(theme.colors.onPrimary)
-                    }.frame(minWidth: buttonSize, minHeight: buttonSize)
-                    Button(action: {}) {
-                        Image(systemName: "ellipsis")
-                            .foregroundColor(theme.colors.onPrimary)
-                    }.frame(minWidth: buttonSize, minHeight: buttonSize)
+                    BarButton(systemName: "square.and.arrow.up", action: {})
+                    BarButton(systemName: "bookmark", action: {})
+                    BarButton(systemName: "ellipsis", action: {})
                 }
             }
         )
