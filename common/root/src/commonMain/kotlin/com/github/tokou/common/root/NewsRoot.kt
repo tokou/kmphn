@@ -27,14 +27,14 @@ interface NewsRoot {
 
 class NewsRootComponent(
     componentContext: ComponentContext,
-    private val uriHandler: (String) -> Unit,
+    var uriHandler: (String) -> Unit = {},
     private val newsMain: (ComponentContext, (NewsMain.Output) -> Unit) -> NewsMain,
     private val newsDetail: (ComponentContext, itemId: Long, (NewsDetail.Output) -> Unit) -> NewsDetail,
 ): NewsRoot, ComponentContext by componentContext {
 
     constructor(
         componentContext: ComponentContext,
-        uriHandler: (String) -> Unit,
+        uriHandler: (String) -> Unit = {},
         storeFactory: StoreFactory,
         api: NewsApi,
         database: NewsDatabase
