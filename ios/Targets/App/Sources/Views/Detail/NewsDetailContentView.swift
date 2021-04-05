@@ -10,14 +10,9 @@ struct NewsDetailContentView: View {
     var body: some View {
         switch model {
         case let content as NewsDetailModel.Content:
-            List {
+            NewsCommentsView(comments: content.comments, onCommentClicked: onCommentClicked, onUserClicked: onUserClicked, onLinkClicked: onLinkClicked) {
                 NewsHeaderView(header: content.header, onLinkClicked: onLinkClicked, onUserClicked: onUserClicked)
-                    .listRowInsets(.init())
-                NewsCommentsView(comments: content.comments, onCommentClicked: onCommentClicked, onUserClicked: onUserClicked, onLinkClicked: onLinkClicked)
-                    .listRowInsets(.init())
             }
-            .listStyle(PlainListStyle())
-            .buttonStyle(PlainButtonStyle())
         case is NewsDetailModel.Loading:
             LoaderView()
         case is NewsDetailModel.Error:
