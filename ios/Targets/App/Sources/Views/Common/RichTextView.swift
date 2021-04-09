@@ -1,36 +1,114 @@
 import SwiftUI
 import Hackernews
 
-struct RichTextView: View {
-    let text: [NewsDetailText]
-    let onLinkClicked: (String, Bool) -> ()
+class TapabbleLabel: UILabel {
 
-    @State private var height: CGFloat = 0
+    let layoutManager = NSLayoutManager()
+    let textContainer = NSTextContainer(size: CGSize.zero)
+    var textStorage = NSTextStorage() {
+        didSet {
+            textStorage.addLayoutManager(layoutManager)
+        }
+    }
 
-    var body: some View {
-        InternalRichText(
-            text: text,
-            onLinkClicked: onLinkClicked,
-            dynamicHeight: $height
+    var onLinkTapped: (URL) -> () = { _ in }
+
+    let tapGesture = UITapGestureRecognizer()
+
+    override var attributedText: NSAttributedString? {
+        didSet {
+            if let attributedText = attributedText {
+                textStorage = NSTextStorage(attributedString: attributedText)
+            } else {
+                textStorage = NSTextStorage()
+            }
+        }
+    }
+
+    override var lineBreakMode: NSLineBreakMode {
+        didSet {
+            textContainer.lineBreakMode = lineBreakMode
+        }
+    }
+
+    override var numberOfLines: Int {
+        didSet {
+            textContainer.maximumNumberOfLines = numberOfLines
+        }
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setUp()
+    }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setUp()
+    }
+
+    func setUp() {
+        isUserInteractionEnabled = true
+        layoutManager.addTextContainer(textContainer)
+        textContainer.lineFragmentPadding = 0
+        textContainer.lineBreakMode = lineBreakMode
+        textContainer.maximumNumberOfLines = numberOfLines
+        tapGesture.addTarget(self, action: #selector(labelTapped))
+        addGestureRecognizer(tapGesture)
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        textContainer.size = bounds.size
+    }
+
+    @objc func labelTapped() {
+        guard tapGesture.state == .ended else {
+            return
+        }
+
+        let locationOfTouch = tapGesture.location(in: tapGesture.view)
+        let textBoundingBox = layoutManager.usedRect(for: textContainer)
+        let textContainerOffset = CGPoint(
+            x: (bounds.width - textBoundingBox.width) / 2 - textBoundingBox.minX,
+            y: (bounds.height - textBoundingBox.height) / 2 - textBoundingBox.minY
         )
-        .frame(minHeight: height)
+        let locationOfTouchInTextContainer = CGPoint(
+            x: locationOfTouch.x - textContainerOffset.x,
+            y: locationOfTouch.y - textContainerOffset.y
+        )
+        let indexOfCharacter = layoutManager.characterIndex(
+            for: locationOfTouchInTextContainer,
+            in: textContainer,
+            fractionOfDistanceBetweenInsertionPoints: nil
+        )
+        onCharacterTapped(label: self, characterIndex: indexOfCharacter)
+    }
+    
+    func onCharacterTapped(label: UILabel, characterIndex: Int) {
+        if
+            let attribute = label.attributedText?.attribute(NSAttributedString.Key.link, at: characterIndex, effectiveRange: nil) as? String,
+            let url = URL(string: attribute)
+        {
+            self.onLinkTapped(url)
+        }
     }
 }
 
-private struct InternalRichText: UIViewRepresentable {
+struct RichTextView: UIViewRepresentable {
     let text: [NewsDetailText]
     let onLinkClicked: (String, Bool) -> ()
-    
-    @Binding var dynamicHeight: CGFloat
 
     func makeUIView(context: UIViewRepresentableContext<Self>) -> UILabel {
-        let label = UILabel()
+        let label = TapabbleLabel()
         label.lineBreakMode = .byWordWrapping
         label.numberOfLines = 0
         label.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        label.setContentHuggingPriority(.defaultHigh, for: .vertical)
+        label.onLinkTapped = { url in onLinkClicked(url.absoluteString, false) }
         return label
     }
-    
+
     private func buildAttributedString() -> NSAttributedString {
         let attributedString = NSMutableAttributedString()
         for t in text {
@@ -51,10 +129,6 @@ private struct InternalRichText: UIViewRepresentable {
         
     func updateUIView(_ uiView: UILabel, context: Context) {
         uiView.attributedText = buildAttributedString()
-        DispatchQueue.main.async {
-            let size = CGSize(width: uiView.bounds.width, height: CGFloat.greatestFiniteMagnitude)
-            dynamicHeight = uiView.sizeThatFits(size).height
-        }
     }
 }
 
