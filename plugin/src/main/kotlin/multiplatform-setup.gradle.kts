@@ -34,7 +34,10 @@ kotlin {
     }
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions {
+            useIR = true
+            jvmTarget = "11"
+        }
     }
 
     targets.all {

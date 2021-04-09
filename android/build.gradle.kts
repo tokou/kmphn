@@ -49,4 +49,8 @@ android {
             isMinifyEnabled = false
         }
     }
+
+    kotlinOptions {
+        useIR = true
+    }
 }
