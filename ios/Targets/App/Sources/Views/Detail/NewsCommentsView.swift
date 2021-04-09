@@ -44,13 +44,14 @@ private struct CommentTree: View {
 
     var body: some View {
         ForEach(comments) { comment in
-            CommentRow(
+            CommentRowView(
                 comment: comment,
                 padding: padding,
                 onCommentClicked: onCommentClicked,
                 onUserClicked: onUserClicked,
                 onLinkClicked: onLinkClicked
             )
+            .listRowInsets(.init())
             if let c = comment as? NewsDetailComment.ContentExpanded {
                 CommentTree(
                     comments: c.children,
@@ -64,48 +65,23 @@ private struct CommentTree: View {
     }
 }
 
-struct CommentRow: View {
-    let comment: NewsDetailComment
-    let padding: CGFloat
-    let onCommentClicked: (ItemId) -> ()
-    let onUserClicked: (UserId) -> ()
-    let onLinkClicked: (String, Bool) -> ()
-
-    var body: some View {
-        switch comment {
-        case is NewsDetailComment.Loading:
-            Text("...")
-                .listRowInsets(.init())
-                .padding(.leading, padding)
-        case let c as NewsDetailComment.ContentCollapsed:
-            Button(action: { onCommentClicked(c.id) }) {
-                Text("\(c.user) \(c.time) \(c.childrenCount)")
-            }
-            .listRowInsets(.init())
-            .padding(.leading, padding)
-        case let c as NewsDetailComment.ContentExpanded:
-            Button(action: { onCommentClicked(c.id) }) {
-                VStack {
-                    Text("\(c.user) \(c.time)")
-                    RichTextView(text: c.text, onLinkClicked: onLinkClicked)
-                }
-            }
-            .listRowInsets(.init())
-            .padding(.leading, padding)
-        default: fatalError("Unhandled type of comment")
-        }
-    }
-}
-
 struct NewsCommentsView_Previews: PreviewProvider {
     static var previews: some View {
         NewsCommentsView(
-            comments: [],
+            comments: [
+                NewsDetailComment.Loading(),
+                NewsDetailComment.ContentCollapsed(id: 1, user: "user", time: "now", isOp: false, isSelected: false, childrenCount: "12"),
+                NewsDetailComment.ContentExpanded(id: 2, user: "user", time: "now", isOp: true, isSelected: true, children: [
+                    NewsDetailComment.ContentCollapsed(id: 1, user: "user", time: "now", isOp: false, isSelected: false, childrenCount: "12"),
+                    NewsDetailComment.Loading()
+                ], text: [NewsDetailText.Plain(text: "Hello world")])
+            ],
             onCommentClicked: { _ in },
             onUserClicked: { _ in },
             onLinkClicked: { _, _ in }
         ) {
             Text("Header")
+                .padding(16)
         }
     }
 }
