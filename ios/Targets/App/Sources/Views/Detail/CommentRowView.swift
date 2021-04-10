@@ -17,22 +17,26 @@ struct CommentRowView: View {
             }
         case let collapsed as NewsDetailComment.ContentCollapsed:
             CommentPaddingView(padding: padding) {
-                CommentCollapsedView(
-                    comment: collapsed,
-                    onUserClicked: onUserClicked,
-                    onCommentClicked: onCommentClicked
-                )
-                .frame(maxWidth: .infinity, alignment: .leading)
+                SelectionView(isSelected: collapsed.isSelected) {
+                    CommentCollapsedView(
+                        comment: collapsed,
+                        onUserClicked: onUserClicked,
+                        onCommentClicked: onCommentClicked
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         case let expanded as NewsDetailComment.ContentExpanded:
             CommentPaddingView(padding: padding) {
-                CommentExpandedView(
-                    comment: expanded,
-                    onCommentClicked: onCommentClicked,
-                    onUserClicked: onUserClicked,
-                    onLinkClicked: onLinkClicked
-                )
-                .frame(maxWidth: .infinity, alignment: .leading)
+                SelectionView(isSelected: expanded.isSelected) {
+                    CommentExpandedView(
+                        comment: expanded,
+                        onCommentClicked: onCommentClicked,
+                        onUserClicked: onUserClicked,
+                        onLinkClicked: onLinkClicked
+                    )
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
             }
         default: fatalError("Unhandled type of comment")
         }
