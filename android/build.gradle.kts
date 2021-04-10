@@ -54,3 +54,16 @@ android {
         useIR = true
     }
 }
+
+project.afterEvaluate {
+    android.applicationVariants.forEach { variant ->
+        tasks.create("installRun${variant.name.capitalize()}", type = Exec::class) {
+            group = "run"
+            dependsOn("install${variant.name.capitalize()}")
+            commandLine = listOf("adb", "shell", "monkey", "-p", variant.applicationId + " 1")
+            doLast {
+                println("Launching ${variant.applicationId}")
+            }
+        }
+    }
+}
