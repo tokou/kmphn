@@ -27,7 +27,8 @@ let infoPlist: [String: InfoPlist.Value] = [
     "UIMainStoryboardFile": "",
     "UILaunchStoryboardName": "LaunchScreen",
     "UIStatusBarStyle": "UIStatusBarStyleLightContent",
-    "UIViewControllerBasedStatusBarAppearance": "false"
+    "UIViewControllerBasedStatusBarAppearance": "false",
+    "CFBundleName": "HN"
 ]
 
 let organizationName = "com.github.tokou"
