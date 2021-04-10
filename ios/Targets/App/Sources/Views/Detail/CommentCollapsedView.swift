@@ -12,7 +12,10 @@ struct CommentCollapsedView: View {
                 CommentHeaderView(comment: comment, onUserClicked: onUserClicked)
                 Text(comment.childrenCount)
                     .font(theme.typography.body1)
+                Spacer()
             }
+            .frame(maxWidth:.infinity)
+            .contentShape(Rectangle())
             .padding(16)
         }
     }
