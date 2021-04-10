@@ -9,12 +9,14 @@ struct NewsHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 0) {
-                Text("\(header.title)")
-                    .font(theme.typography.subtitle1)
-                    .foregroundColor(theme.colors.onPrimary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Spacer()
-                    .frame(height: 14)
+                if let title = header.title {
+                    Text(title)
+                        .font(theme.typography.subtitle1)
+                        .foregroundColor(theme.colors.onPrimary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Spacer()
+                        .frame(height: 14)
+                }
                 HStack(spacing: 12) {
                     Text(header.points)
                         .padding(4)
@@ -60,10 +62,15 @@ struct NewsHeaderView: View {
 }
 
 struct NewsHeaderView_Previews: PreviewProvider {
-    static let headerStub = NewsDetailHeader(id: 1, title: "Title", link: "https://hello.com", user: "user", time: "1 hour", commentsCount: "12", points: "42", text: [])
-    
+    static let headerStub = NewsDetailHeader(id: 1, title: "Title", link: "https://hello.com", user: "user", time: "1 hour", commentsCount: "12", points: "42", text: nil)
+    static let commentStub = NewsDetailHeader(id: 1, title: nil, link: nil, user: "user", time: "1 hour", commentsCount: "12", points: "42", text: [NewsDetailText.Plain(text: "NewsDetailHeader(id: 1, title: Title link: https://hello.com, user: user, time: 1 hour, commentsCount: 12, points: 42, text: nil)")])
+
     static var previews: some View {
-        NewsHeaderView(header: headerStub, onLinkClicked: { _, _ in }, onUserClicked: { _ in })
-            .previewLayout(.fixed(width: 360, height: 260))
+        Group {
+            NewsHeaderView(header: headerStub, onLinkClicked: { _, _ in }, onUserClicked: { _ in })
+                .previewLayout(.fixed(width: 360, height: 260))
+            NewsHeaderView(header: commentStub, onLinkClicked: { _, _ in }, onUserClicked: { _ in })
+                .previewLayout(.fixed(width: 360, height: 260))
+        }
     }
 }

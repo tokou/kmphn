@@ -30,11 +30,13 @@ fun NewsHeader(
         Column {
             with(header) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = title,
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                    Spacer(Modifier.height(14.dp))
+                    title?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.subtitle1
+                        )
+                        Spacer(Modifier.height(14.dp))
+                    }
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Row {
                             Surface(color = MaterialTheme.colors.primaryVariant.copy(ContentAlpha.medium)) {

@@ -23,7 +23,7 @@ class NewsDetailComponent(
 
     private fun NewsDetailStore.News.asHeader() = Header(
         id = id,
-        title = title.orEmpty(),
+        title = title,
         text = text?.parseText(),
         link = link,
         user = user.orEmpty(),

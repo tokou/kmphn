@@ -28,7 +28,7 @@ interface NewsDetail {
 
     data class Header(
         val id: Long,
-        val title: String,
+        val title: String? = null,
         val link: String? = null,
         val user: String,
         val time: String,

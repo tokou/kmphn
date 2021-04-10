@@ -82,6 +82,8 @@ struct NewsCommentsView_Previews: PreviewProvider {
         ) {
             Text("Header")
                 .padding(16)
+                .frame(maxWidth: .infinity)
+                .background(Color.red)
         }
     }
 }
