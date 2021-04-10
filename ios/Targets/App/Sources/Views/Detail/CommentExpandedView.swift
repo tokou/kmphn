@@ -9,7 +9,7 @@ struct CommentExpandedView: View {
 
     var body: some View {
         Button(action: { onCommentClicked(comment.id) }) {
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 16) {
                 CommentHeaderView(comment: comment, onUserClicked: onUserClicked)
                 RichTextView(text: comment.text, onLinkClicked: onLinkClicked)
             }.padding(16)

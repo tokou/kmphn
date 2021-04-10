@@ -12,7 +12,8 @@ struct CommentCollapsedView: View {
                 CommentHeaderView(comment: comment, onUserClicked: onUserClicked)
                 Text(comment.childrenCount)
                     .font(theme.typography.body1)
-            }.padding(16)
+            }
+            .padding(16)
         }
     }
 }
