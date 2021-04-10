@@ -9,8 +9,14 @@ struct RichTextView : View {
     let text: [NewsDetailText]
     let onLinkClicked: (String, Bool) -> ()
 
+    @State var showActionSheet = false
+
     var body: some View {
-        text.map { t in
+        let links = text
+            .filter { $0 is NewsDetailText.Link }
+            .map { l in l as! NewsDetailText.Link }
+
+        let result = text.map { t in
             switch t {
             case let t as NewsDetailText.Plain:
                 return Text(t.text)
@@ -23,10 +29,31 @@ struct RichTextView : View {
             case let t as NewsDetailText.Link:
                 return Text(t.text)
                     .underline()
-                    .foregroundColor(.blue)
-            default: fatalError("Unkown span type")
+                    .foregroundColor(theme.colors.primary)
+            default: fatalError("Unknown span type")
             }
-        }.reduce(Text("")) { result, text in result + text }
+        }
+        .reduce(Text("")) { result, text in result + text }
+
+        // We handle link tap this way for now as there's no SwiftUI way to detect taps on part of text
+        return HStack {
+            if links.isEmpty {
+                result
+            } else if links.count == 1 {
+                result.onTapGesture(count: 2) { onLinkClicked(links.first!.link, false) }
+            } else {
+                result
+                    .onTapGesture(count: 2) { showActionSheet = true }
+                    .actionSheet(isPresented: $showActionSheet) {
+                        ActionSheet(
+                            title: Text("Open link"),
+                            buttons: links.map { l -> ActionSheet.Button in
+                                .default(Text(l.text)) { onLinkClicked(l.link, false) }
+                            } + [.cancel()]
+                        )
+                    }
+            }
+        }.frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
