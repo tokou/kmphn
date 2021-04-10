@@ -12,30 +12,39 @@ struct CommentRowView: View {
         switch comment {
         case is NewsDetailComment.Loading:
             CommentPaddingView(padding: padding) {
-                CommentLoaderView()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(spacing: 0) {
+                    CommentLoaderView()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Divider()
+                }
             }
         case let collapsed as NewsDetailComment.ContentCollapsed:
             CommentPaddingView(padding: padding) {
                 SelectionView(isSelected: collapsed.isSelected) {
-                    CommentCollapsedView(
-                        comment: collapsed,
-                        onUserClicked: onUserClicked,
-                        onCommentClicked: onCommentClicked
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(spacing: 0) {
+                        CommentCollapsedView(
+                            comment: collapsed,
+                            onUserClicked: onUserClicked,
+                            onCommentClicked: onCommentClicked
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                    }
                 }
             }
         case let expanded as NewsDetailComment.ContentExpanded:
             CommentPaddingView(padding: padding) {
                 SelectionView(isSelected: expanded.isSelected) {
-                    CommentExpandedView(
-                        comment: expanded,
-                        onCommentClicked: onCommentClicked,
-                        onUserClicked: onUserClicked,
-                        onLinkClicked: onLinkClicked
-                    )
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    VStack(spacing: 0) {
+                        CommentExpandedView(
+                            comment: expanded,
+                            onCommentClicked: onCommentClicked,
+                            onUserClicked: onUserClicked,
+                            onLinkClicked: onLinkClicked
+                        )
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Divider()
+                    }
                 }
             }
         default: fatalError("Unhandled type of comment")

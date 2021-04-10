@@ -10,16 +10,17 @@ struct NewsListView: View {
     let onLoadMore: () -> ()
 
     var body: some View {
-        List {
-            ForEach(items) { item in
-                NewsRowView(item: item, onItemClick: onItemClick, onLinkClick: onLinkClick)
-                    .listRowInsets(.init())
-            }
-            if canLoadMore {
-                LoadMoreView(isLoadingMore: isLoadingMore, onLoadMore: onLoadMore)
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                ForEach(items) { item in
+                    NewsRowView(item: item, onItemClick: onItemClick, onLinkClick: onLinkClick)
+                    Divider()
+                }
+                if canLoadMore {
+                    LoadMoreView(isLoadingMore: isLoadingMore, onLoadMore: onLoadMore)
+                }
             }
         }
-        .listStyle(PlainListStyle())
         .buttonStyle(PlainButtonStyle())
     }
 }

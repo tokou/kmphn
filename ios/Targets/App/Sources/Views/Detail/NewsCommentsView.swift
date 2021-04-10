@@ -26,11 +26,12 @@ struct NewsCommentsView<Header>: View where Header: View {
     let header: () -> Header
 
     var body: some View {
-        List {
-            header().listRowInsets(.init())
-            CommentTree(comments: comments, padding: 0, onCommentClicked: onCommentClicked, onUserClicked: onUserClicked, onLinkClicked: onLinkClicked)
+        ScrollView {
+            LazyVStack(spacing: 0) {
+                header()
+                CommentTree(comments: comments, padding: 0, onCommentClicked: onCommentClicked, onUserClicked: onUserClicked, onLinkClicked: onLinkClicked)
+            }
         }
-        .listStyle(PlainListStyle())
         .buttonStyle(PlainButtonStyle())
     }
 }
@@ -51,7 +52,6 @@ private struct CommentTree: View {
                 onUserClicked: onUserClicked,
                 onLinkClicked: onLinkClicked
             )
-            .listRowInsets(.init())
             if let c = comment as? NewsDetailComment.ContentExpanded {
                 CommentTree(
                     comments: c.children,
