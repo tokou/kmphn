@@ -9,6 +9,7 @@ struct CommentTimeView: View {
             Image(systemName: "hourglass")
             Text(time)
                 .font(theme.typography.body1)
+                .fixedSize()
         }
         .opacity(mediumOpacity)
     }
