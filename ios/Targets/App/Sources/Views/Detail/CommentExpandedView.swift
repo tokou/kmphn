@@ -14,7 +14,7 @@ struct CommentExpandedView: View {
                 RichTextView(text: comment.text, onLinkClicked: onLinkClicked)
             }.padding(16)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
