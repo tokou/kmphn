@@ -31,8 +31,8 @@ interface NewsDetailStore : Store<Intent, State, Label> {
         val user: UserId?,
         val time: Instant,
         val comments: List<Comment>,
-        val points: Long,
-        val descendants: Long,
+        val points: Long?,
+        val descendants: Long?,
     )
 
     sealed class Comment {

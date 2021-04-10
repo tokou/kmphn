@@ -33,8 +33,8 @@ class NewsDetailRepository(
         user = user.orEmpty(),
         time = created,
         comments = kids.map { NewsDetailStore.Comment.Loading(it) },
-        points = score ?: 0,
-        descendants = descendants ?: 0,
+        points = score,
+        descendants = descendants,
     )
 
     private fun Comment.asNewsComment() = NewsDetailStore.Comment.Content(

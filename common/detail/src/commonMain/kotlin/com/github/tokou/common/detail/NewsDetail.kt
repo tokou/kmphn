@@ -32,8 +32,8 @@ interface NewsDetail {
         val link: String? = null,
         val user: String,
         val time: String,
-        val commentsCount: String,
-        val points: String,
+        val commentsCount: String? = null,
+        val points: String? = null,
         val text: List<Text>? = null,
     ) {
         val hnLink: String get() = "https://news.ycombinator.com/item?id=$id"

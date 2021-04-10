@@ -18,14 +18,18 @@ struct NewsHeaderView: View {
                         .frame(height: 14)
                 }
                 HStack(spacing: 12) {
-                    Text(header.points)
-                        .padding(4)
-                        .background(theme.colors.primaryVariant.mediumOpacity())
+                    if let points = header.points {
+                        Text(points)
+                            .padding(4)
+                            .background(theme.colors.primaryVariant.mediumOpacity())
+                    }
                     Button(header.user) { onUserClicked(header.user) }
                     Text(header.time)
-                    HStack(spacing: 4) {
-                        Image(systemName: "message")
-                        Text(header.commentsCount)
+                    if let count = header.commentsCount {
+                        HStack(spacing: 4) {
+                            Image(systemName: "message")
+                            Text(count)
+                        }
                     }
                 }
                 .font(theme.typography.body2)

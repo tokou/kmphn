@@ -28,8 +28,8 @@ class NewsDetailComponent(
         link = link,
         user = user.orEmpty(),
         time = time.format(),
-        commentsCount = descendants.toString(),
-        points = points.toString()
+        commentsCount = descendants?.toString(),
+        points = points?.toString()
     )
 
     private fun NewsDetailStore.Comment.asModel(

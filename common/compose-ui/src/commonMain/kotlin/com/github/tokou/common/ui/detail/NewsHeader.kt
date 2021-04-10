@@ -39,14 +39,16 @@ fun NewsHeader(
                     }
                     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                         Row {
-                            Surface(color = MaterialTheme.colors.primaryVariant.copy(ContentAlpha.medium)) {
-                                Text(
-                                    text = points,
-                                    style = MaterialTheme.typography.body2,
-                                    modifier = Modifier.padding(4.dp).align(Alignment.CenterVertically)
-                                )
+                            points?.let {
+                                Surface(color = MaterialTheme.colors.primaryVariant.copy(ContentAlpha.medium)) {
+                                    Text(
+                                        text = it,
+                                        style = MaterialTheme.typography.body2,
+                                        modifier = Modifier.padding(4.dp).align(Alignment.CenterVertically)
+                                    )
+                                }
+                                Spacer(Modifier.width(12.dp))
                             }
-                            Spacer(Modifier.width(12.dp))
                             Text(
                                 text = user,
                                 style = MaterialTheme.typography.body2,
@@ -58,18 +60,20 @@ fun NewsHeader(
                                 style = MaterialTheme.typography.body2,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
-                            Spacer(Modifier.width(12.dp))
-                            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                                Icon(
-                                    Icons.Filled.Comment, null, Modifier.size(16.dp).align(
-                                        Alignment.CenterVertically))
+                            commentsCount?.let {
+                                Spacer(Modifier.width(12.dp))
+                                CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                                    Icon(
+                                        Icons.Filled.Comment, null, Modifier.size(16.dp).align(
+                                            Alignment.CenterVertically))
+                                }
+                                Spacer(Modifier.width(4.dp))
+                                Text(
+                                    text = it,
+                                    style = MaterialTheme.typography.body2,
+                                    modifier = Modifier.align(Alignment.CenterVertically)
+                                )
                             }
-                            Spacer(Modifier.width(4.dp))
-                            Text(
-                                text = commentsCount,
-                                style = MaterialTheme.typography.body2,
-                                modifier = Modifier.align(Alignment.CenterVertically)
-                            )
                         }
                     }
                     Spacer(Modifier.height(14.dp))
