@@ -55,7 +55,7 @@ private struct CommentTree: View {
             if let c = comment as? NewsDetailComment.ContentExpanded {
                 CommentTree(
                     comments: c.children,
-                    padding: padding + 16,
+                    padding: padding + commentPaddingStep,
                     onCommentClicked: onCommentClicked,
                     onUserClicked: onUserClicked,
                     onLinkClicked: onLinkClicked

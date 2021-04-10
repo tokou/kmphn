@@ -22,6 +22,7 @@ struct Theme {
         let primary = safetyOrange
         let primaryVariant = tenne
         let surface = Color.white
+        let background = Color.white
         let onPrimary = Color.white
         let onSurface = Color.black
         let onBackground = Color.black

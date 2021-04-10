@@ -1,13 +1,19 @@
 import SwiftUI
 import Hackernews
 
+let commentPaddingStep: CGFloat = 16
+
 struct CommentPaddingView<Content>: View where Content: View {
     let padding: CGFloat
     let content: () -> Content
     
     var body: some View {
-        content()
-            .padding(.leading, padding)
+        HStack {
+            content()
+                .background(theme.colors.background)
+                .padding(.leading, padding)
+        }
+        .background(theme.colors.onBackground.opacity(0.05))
     }
 }
 
