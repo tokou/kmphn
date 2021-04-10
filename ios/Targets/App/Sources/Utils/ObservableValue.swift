@@ -11,7 +11,11 @@ public class ObservableValue<T : AnyObject> : ObservableObject {
     init(_ value: Value<T>) {
         self.observableValue = value
         self.value = observableValue.value
-        self.observer = { [weak self] value in self?.value = value }
+        self.observer = { [weak self] value in
+            DispatchQueue.main.async {
+                self?.value = value
+            }
+        }
 
         observableValue.subscribe(observer: observer!)
     }
