@@ -14,6 +14,7 @@ includeBuild("plugin")
 include(":android")
 include(":desktop")
 include(":ios")
+include(":web")
 
 include(":common:compose-ui")
 

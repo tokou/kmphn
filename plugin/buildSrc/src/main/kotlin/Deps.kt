@@ -7,7 +7,20 @@ object Deps {
             const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$VERSION"
             const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:$VERSION"
             const val testJunit = "org.jetbrains.kotlin:kotlin-test-junit:$VERSION"
+            const val testJs = "org.jetbrains.kotlin:kotlin-test-js:$VERSION"
             const val testAnnotationsCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common:$VERSION"
+            const val stdlibJs = "org.jetbrains.kotlin:kotlin-stdlib-js:$VERSION"
+
+            object React {
+                private const val VERSION = "16.13.1-pre.110-kotlin-1.4.0"
+                const val react = "org.jetbrains:kotlin-react:$VERSION"
+                const val reactDom = "org.jetbrains:kotlin-react-dom:$VERSION"
+
+                object Router {
+                    private const val VERSION = "5.1.2-pre.110-kotlin-1.4.0"
+                    const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$VERSION"
+                }
+            }
         }
 
         object KotlinX {
@@ -20,6 +33,10 @@ object Deps {
 
             object DateTime {
                 const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1"
+            }
+
+            object Html {
+                const val htmlJs = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.2"
             }
 
             object Serialization {
@@ -47,7 +64,16 @@ object Deps {
             const val clientSerialization = "io.ktor:ktor-client-serialization:$VERSION"
             const val clientOkhttp = "io.ktor:ktor-client-okhttp:$VERSION"
             const val clientIos = "io.ktor:ktor-client-ios:$VERSION"
+            const val clientJs = "io.ktor:ktor-client-js:$VERSION"
             const val clientCurl = "io.ktor:ktor-client-curl:$VERSION"
+        }
+    }
+
+    object Npm {
+        object React {
+            const val VERSION = "16.13.0"
+            const val react = "react"
+            const val reactDom = "react-dom"
         }
     }
 
@@ -78,6 +104,7 @@ object Deps {
             const val mvikotlinMain = "com.arkivanov.mvikotlin:mvikotlin-main:$VERSION"
             const val mvikotlinMainIosX64 = "com.arkivanov.mvikotlin:mvikotlin-main-iosx64:$VERSION"
             const val mvikotlinMainIosArm64 = "com.arkivanov.mvikotlin:mvikotlin-main-iosarm64:$VERSION"
+            const val mvikotlinMainJs = "com.arkivanov.mvikotlin:mvikotlin-main-js:$VERSION"
             const val mvikotlinLogging = "com.arkivanov.mvikotlin:mvikotlin-logging:$VERSION"
             const val mvikotlinTimeTravel = "com.arkivanov.mvikotlin:mvikotlin-timetravel:$VERSION"
             const val mvikotlinExtensionsCoroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$VERSION"
@@ -89,6 +116,7 @@ object Deps {
             const val decompose = "com.arkivanov.decompose:decompose:$VERSION"
             const val decomposeIosX64 = "com.arkivanov.decompose:decompose-iosx64:$VERSION"
             const val decomposeIosArm64 = "com.arkivanov.decompose:decompose-iosarm64:$VERSION"
+            const val decomposeJs = "com.arkivanov.decompose:decompose-js:$VERSION"
             const val extensionsCompose = "com.arkivanov.decompose:extensions-compose-jetbrains:$VERSION"
         }
     }
@@ -100,6 +128,7 @@ object Deps {
             const val androidDriver = "com.squareup.sqldelight:android-driver:$VERSION"
             const val sqliteDriver = "com.squareup.sqldelight:sqlite-driver:$VERSION"
             const val nativeDriver = "com.squareup.sqldelight:native-driver:$VERSION"
+            const val sqljsDriver = "com.squareup.sqldelight:sqljs-driver:$VERSION"
         }
     }
 

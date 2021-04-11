@@ -11,6 +11,9 @@ kotlin {
     jvm("desktop")
     android()
     ios()
+    js("web", LEGACY) {
+        browser()
+    }
 
     sourceSets {
         val commonTest by getting {
@@ -29,6 +32,12 @@ kotlin {
         val desktopTest by getting {
             dependencies {
                 implementation(Deps.JetBrains.Kotlin.testJunit)
+            }
+        }
+
+        val webTest by getting {
+            dependencies {
+                implementation(Deps.JetBrains.Kotlin.testJs)
             }
         }
     }
