@@ -1,20 +1,17 @@
 package com.github.tokou.common.root
 
-import com.arkivanov.decompose.RouterState
-import com.arkivanov.decompose.pop
-import com.arkivanov.decompose.push
+import com.arkivanov.decompose.*
 import com.arkivanov.decompose.statekeeper.Parcelable
 import com.arkivanov.decompose.statekeeper.Parcelize
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.mvikotlin.core.store.StoreFactory
+import com.github.tokou.common.api.NewsApi
 import com.github.tokou.common.database.NewsDatabase
 import com.github.tokou.common.detail.NewsDetail
 import com.github.tokou.common.detail.NewsDetailComponent
 import com.github.tokou.common.main.NewsMain
 import com.github.tokou.common.main.NewsMainComponent
 import com.github.tokou.common.root.NewsRoot.Child
-import com.arkivanov.decompose.ComponentContext
-import com.github.tokou.common.api.NewsApi
 
 interface NewsRoot {
     val routerState: Value<RouterState<*, Child>>
@@ -65,7 +62,7 @@ class NewsRootComponent(
     private val router = router(
         initialConfiguration = { Configuration.Main },
         handleBackButton = true,
-        componentFactory = ::createChild,
+        childFactory = ::createChild,
         configurationClass = Configuration::class
     )
 

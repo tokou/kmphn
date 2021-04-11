@@ -1,10 +1,9 @@
-import org.gradle.kotlin.dsl.version
 
 object Deps {
 
     object JetBrains {
         object Kotlin {
-            private const val VERSION = "1.4.31"
+            private const val VERSION = "1.4.32"
             const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$VERSION"
             const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:$VERSION"
             const val testJunit = "org.jetbrains.kotlin:kotlin-test-junit:$VERSION"
@@ -13,7 +12,7 @@ object Deps {
 
         object KotlinX {
             object Coroutines {
-                const val VERSION = "1.4.3-native-mt"
+                private const val VERSION = "1.4.3-native-mt"
                 const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3-native-mt"
                 const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$VERSION"
                 const val swing = "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$VERSION"
@@ -32,16 +31,16 @@ object Deps {
         }
 
         object Compose {
-            private const val VERSION = "0.4.0-build178"
+            private const val VERSION = "0.4.0-build180"
             const val gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:$VERSION"
 
             object Runtime {
-                const val runtime = "androidx.compose.runtime:runtime:1.0.0-beta02"
+                const val runtime = "androidx.compose.runtime:runtime:1.0.0-beta04"
             }
         }
 
         object Ktor {
-            private const val VERSION = "1.5.2"
+            private const val VERSION = "1.5.3"
             const val clientCore = "io.ktor:ktor-client-core:$VERSION"
             const val clientJson = "io.ktor:ktor-client-json:$VERSION"
             const val clientLogging = "io.ktor:ktor-client-logging:$VERSION"
@@ -63,12 +62,12 @@ object Deps {
 
     object AndroidX {
         object AppCompat {
-            const val appCompat = "androidx.appcompat:appcompat:1.3.0-beta01"
+            const val appCompat = "androidx.appcompat:appcompat:1.3.0-rc01"
             const val browser = "androidx.browser:browser:1.3.0"
         }
 
         object Activity {
-            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha05"
+            const val activityCompose = "androidx.activity:activity-compose:1.3.0-alpha06"
         }
     }
 
@@ -86,7 +85,7 @@ object Deps {
         }
 
         object Decompose {
-            private const val VERSION = "0.1.9"
+            private const val VERSION = "0.2.1"
             const val decompose = "com.arkivanov.decompose:decompose:$VERSION"
             const val decomposeIosX64 = "com.arkivanov.decompose:decompose-iosx64:$VERSION"
             const val decomposeIosArm64 = "com.arkivanov.decompose:decompose-iosarm64:$VERSION"

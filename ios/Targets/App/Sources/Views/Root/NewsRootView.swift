@@ -10,7 +10,7 @@ struct NewsRootView: View {
     }
 
     var body: some View {
-        let child = self.routerStates.value.activeChild.component        
+        let child = self.routerStates.value.activeChild.instance
         switch child {
         case let main as NewsRootChild.Main:
             NewsMainView(main.component)
