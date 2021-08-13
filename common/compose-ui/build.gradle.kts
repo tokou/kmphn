@@ -4,10 +4,8 @@ plugins {
 }
 
 android {
-    sourceSets {
-        val main by getting {
-            res.srcDirs("src/androidMain/res", "src/commonMain/resources")
-        }
+    sourceSets.getByName("main") {
+        res.srcDirs("src/androidMain/res", "src/commonMain/resources")
     }
 }
 

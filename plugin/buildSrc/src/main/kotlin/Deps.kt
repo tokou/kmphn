@@ -95,7 +95,7 @@ object Deps {
     object Android {
         object Tools {
             object Build {
-                const val gradlePlugin = "com.android.tools.build:gradle:7.0.0-alpha14"
+                const val gradlePlugin = "com.android.tools.build:gradle:7.1.0-alpha08"
             }
             const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.1.5"
         }
