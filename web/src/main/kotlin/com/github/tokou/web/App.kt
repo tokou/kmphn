@@ -5,6 +5,9 @@ import com.arkivanov.decompose.lifecycle.LifecycleRegistry
 import com.arkivanov.decompose.lifecycle.destroy
 import com.arkivanov.decompose.lifecycle.resume
 import com.arkivanov.mvikotlin.main.store.DefaultStoreFactory
+import com.ccfraser.muirwik.components.mContainer
+import com.ccfraser.muirwik.components.mCssBaseline
+import com.ccfraser.muirwik.components.styles.Breakpoint
 import com.github.tokou.common.api.createApi
 import com.github.tokou.common.database.createDatabase
 import com.github.tokou.common.database.inMemoryDatabaseDriver
@@ -37,6 +40,10 @@ class App : RComponent<RProps, RState>() {
     }
 
     override fun RBuilder.render() {
-        renderableChild(NewsRootR::class, root)
+        mCssBaseline()
+
+        mContainer {
+            renderableChild(NewsRootR::class, root)
+        }
     }
 }

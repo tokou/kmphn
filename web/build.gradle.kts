@@ -3,24 +3,25 @@ plugins {
     kotlin("plugin.serialization")
 }
 
+repositories {
+    maven(url = "https://maven.pkg.jetbrains.space/kotlin/p/kotlin/kotlin-js-wrappers")
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
+}
+
 dependencies {
 
     implementation(Deps.JetBrains.Kotlin.stdlibJs)
-
     implementation(Deps.JetBrains.KotlinX.Html.htmlJs)
-
-    implementation(Deps.JetBrains.Kotlin.React.react)
-    implementation(Deps.JetBrains.Kotlin.React.reactDom)
-    implementation(Deps.JetBrains.Kotlin.React.Router.reactRouterDom)
+    implementation(Deps.JetBrains.Kotlin.Wrappers.React.react)
+    implementation(Deps.JetBrains.Kotlin.Wrappers.React.reactDom)
+    implementation(Deps.JetBrains.Kotlin.Wrappers.Styled.styled)
+    implementation(Deps.CcFraser.Muirwik.muirwik)
 
     implementation(npm(Deps.Npm.React.react, Deps.Npm.React.VERSION))
     implementation(npm(Deps.Npm.React.reactDom, Deps.Npm.React.VERSION))
 
-    implementation(Deps.ArkIvanov.Decompose.decompose)
     implementation(Deps.ArkIvanov.Decompose.decomposeJs)
-
     implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
-    implementation(Deps.ArkIvanov.MviKotlin.mvikotlinMain)
     implementation(Deps.ArkIvanov.MviKotlin.mvikotlinMainJs)
 
     implementation(project(":common:api"))
@@ -33,7 +34,16 @@ dependencies {
 
 kotlin {
     js(LEGACY) {
-        browser()
+        browser {
+            commonWebpackConfig {
+                cssSupport.enabled = true
+            }
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
         binaries.executable()
     }
 }

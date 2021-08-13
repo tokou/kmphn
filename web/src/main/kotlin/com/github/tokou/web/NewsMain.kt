@@ -19,7 +19,7 @@ class NewsMainR(props: Props<NewsMain>) : RenderableComponent<NewsMain, NewsMain
     override fun RBuilder.render() {
         when (val m = state.model) {
             NewsMain.Model.Loading -> loader()
-            NewsMain.Model.Error -> div { +"Error!" }
+            NewsMain.Model.Error -> error()
             is NewsMain.Model.Content -> ul {
                 for (item in m.items) {
                     li {
@@ -72,13 +72,5 @@ class NewsMainR(props: Props<NewsMain>) : RenderableComponent<NewsMain, NewsMain
     ) : RState
 }
 
-class Loader: RComponent<RProps, RState>() {
-
-    override fun RBuilder.render() {
-        div {
-            +"Loading..."
-        }
-    }
-}
-
-fun RBuilder.loader() = child(Loader::class) {}
+fun RBuilder.loader() = div { +"Loading..." }
+fun RBuilder.error() = div { +"Error!" }

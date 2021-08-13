@@ -109,7 +109,7 @@ project.tasks.create("projectDependencyGraph") {
         dot.appendText("}\n")
 
         dot.appendText("\n  # Dependencies\n\n")
-        dependencies.forEach { key, traits ->
+        dependencies.forEach { (key, traits) ->
             dot.appendText("  \"${key.first.path}\" -> \"${key.second.path}\"")
             if (traits.isNotEmpty()) {
                 dot.appendText(" [${traits.joinToString(", ")}]")
@@ -119,7 +119,7 @@ project.tasks.create("projectDependencyGraph") {
 
         dot.appendText("}\n")
 
-        val p = Runtime.getRuntime().exec("dot -Tpng -O project.dot", emptyArray(), dot.parentFile)
+        val p = Runtime.getRuntime().exec(arrayOf("/usr/local/bin/dot", "-Tpng", "-O", "project.dot"), emptyArray(), dot.parentFile)
         p.waitFor()
         if (p.exitValue() != 0) {
             println(p.errorStream.bufferedReader().use(java.io.BufferedReader::readText))

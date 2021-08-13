@@ -11,10 +11,18 @@ object Deps {
             const val testAnnotationsCommon = "org.jetbrains.kotlin:kotlin-test-annotations-common:$VERSION"
             const val stdlibJs = "org.jetbrains.kotlin:kotlin-stdlib-js:$VERSION"
 
-            object React {
-                private const val VERSION = "16.13.1-pre.110-kotlin-1.4.0"
-                const val react = "org.jetbrains:kotlin-react:$VERSION"
-                const val reactDom = "org.jetbrains:kotlin-react-dom:$VERSION"
+            object Wrappers {
+                object Styled {
+                    private const val VERSION = "5.2.3-pre.153-kotlin-1.4.32"
+                    const val styled = "org.jetbrains:kotlin-styled:$VERSION"
+                }
+
+                object React {
+                    private const val VERSION = "16.13.1-pre.110-kotlin-1.4.0"
+                    const val react = "org.jetbrains:kotlin-react:$VERSION"
+                    const val reactDom = "org.jetbrains:kotlin-react-dom:$VERSION"
+
+                }
 
                 object Router {
                     private const val VERSION = "5.1.2-pre.110-kotlin-1.4.0"
@@ -36,7 +44,7 @@ object Deps {
             }
 
             object Html {
-                const val htmlJs = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.2"
+                const val htmlJs = "org.jetbrains.kotlinx:kotlinx-html-js:0.7.3"
             }
 
             object Serialization {
@@ -74,6 +82,13 @@ object Deps {
             const val VERSION = "16.13.0"
             const val react = "react"
             const val reactDom = "react-dom"
+        }
+    }
+
+    object CcFraser {
+        object Muirwik {
+            private const val VERSION = "0.6.7"
+            const val muirwik = "com.ccfraser.muirwik:muirwik-components:$VERSION"
         }
     }
 
