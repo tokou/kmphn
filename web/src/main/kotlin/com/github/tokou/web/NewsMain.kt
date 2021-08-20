@@ -3,14 +3,12 @@ package com.github.tokou.web
 import com.github.tokou.common.main.NewsMain
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
-import react.RComponent
-import react.RProps
-import react.RState
+import react.State
 import react.dom.*
 
-class NewsMainR(props: Props<NewsMain>) : RenderableComponent<NewsMain, NewsMainR.State>(
+class NewsMainR(props: Props<NewsMain>) : RenderableComponent<NewsMain, NewsMainR.NewsMainState>(
     props = props,
-    initialState = State(props.component.models.value)
+    initialState = NewsMainState(props.component.models.value)
 ) {
     init {
         component.models.bindToState { model = it }
@@ -67,9 +65,9 @@ class NewsMainR(props: Props<NewsMain>) : RenderableComponent<NewsMain, NewsMain
         }
     }
 
-    class State(
+    class NewsMainState(
         var model: NewsMain.Model
-    ) : RState
+    ) : State
 }
 
 fun RBuilder.loader() = div { +"Loading..." }

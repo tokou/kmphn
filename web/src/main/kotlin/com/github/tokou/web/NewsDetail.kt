@@ -4,12 +4,12 @@ import com.github.tokou.common.detail.NewsDetail
 import kotlinx.html.UL
 import kotlinx.html.js.onClickFunction
 import react.RBuilder
-import react.RState
+import react.State
 import react.dom.*
 
-class NewsDetailR(props: Props<NewsDetail>) : RenderableComponent<NewsDetail, NewsDetailR.State>(
+class NewsDetailR(props: Props<NewsDetail>) : RenderableComponent<NewsDetail, NewsDetailR.NewsDetailState>(
     props = props,
-    initialState = State(props.component.models.value)
+    initialState = NewsDetailState(props.component.models.value)
 ) {
 
     init {
@@ -125,7 +125,7 @@ class NewsDetailR(props: Props<NewsDetail>) : RenderableComponent<NewsDetail, Ne
         }
     }
 
-    class State(
+    class NewsDetailState(
         var model: NewsDetail.Model
-    ) : RState
+    ) : State
 }

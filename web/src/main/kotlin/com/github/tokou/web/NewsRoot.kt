@@ -3,11 +3,11 @@ package com.github.tokou.web
 import com.arkivanov.decompose.RouterState
 import com.github.tokou.common.root.NewsRoot
 import react.RBuilder
-import react.RState
+import react.State
 
-class NewsRootR(props: Props<NewsRoot>) : RenderableComponent<NewsRoot, NewsRootR.State>(
+class NewsRootR(props: Props<NewsRoot>) : RenderableComponent<NewsRoot, NewsRootR.NewsRootState>(
     props = props,
-    initialState = State(routerState = props.component.routerState.value)
+    initialState = NewsRootState(routerState = props.component.routerState.value)
 ) {
 
     init {
@@ -21,7 +21,7 @@ class NewsRootR(props: Props<NewsRoot>) : RenderableComponent<NewsRoot, NewsRoot
         }
     }
 
-    class State(
+    class NewsRootState(
         var routerState: RouterState<*, NewsRoot.Child>,
-    ) : RState
+    ) : State
 }

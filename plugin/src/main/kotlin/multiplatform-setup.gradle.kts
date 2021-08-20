@@ -11,7 +11,7 @@ kotlin {
     jvm("desktop")
     android()
     ios()
-    js("web", LEGACY) {
+    js("web", IR) {
         browser()
     }
 

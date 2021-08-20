@@ -15,7 +15,6 @@ dependencies {
     implementation(Deps.JetBrains.Kotlin.Wrappers.React.react)
     implementation(Deps.JetBrains.Kotlin.Wrappers.React.reactDom)
     implementation(Deps.JetBrains.Kotlin.Wrappers.Styled.styled)
-    implementation(Deps.CcFraser.Muirwik.muirwik)
 
     implementation(npm(Deps.Npm.React.react, Deps.Npm.React.VERSION))
     implementation(npm(Deps.Npm.React.reactDom, Deps.Npm.React.VERSION))
@@ -33,7 +32,7 @@ dependencies {
 }
 
 kotlin {
-    js(LEGACY) {
+    js(IR) {
         browser {
             commonWebpackConfig {
                 cssSupport.enabled = true
@@ -47,4 +46,3 @@ kotlin {
         binaries.executable()
     }
 }
-

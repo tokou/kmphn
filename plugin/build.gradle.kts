@@ -2,10 +2,6 @@ plugins {
     `kotlin-dsl`
 }
 
-kotlinDslPluginOptions {
-    experimentalWarning.set(false)
-}
-
 group = "com.github.tokou"
 
 repositories {
@@ -13,7 +9,6 @@ repositories {
     mavenLocal()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     google()
-    jcenter()
     mavenCentral()
 }
 

@@ -26,7 +26,7 @@ version = "1.0.0"
 allprojects {
     repositories {
         mavenCentral()
-        jcenter()
+        google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://kotlin.bintray.com/kotlinx")
     }

@@ -1,7 +1,6 @@
 @file:Suppress("UNUSED_VARIABLE")
 
 import org.jetbrains.compose.compose
-import org.jetbrains.kotlin.gradle.dsl.KotlinCommonCompile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {

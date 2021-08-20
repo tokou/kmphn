@@ -10,10 +10,10 @@ parentId INTEGER REFERENCES comment(id),
 user TEXT,
 created INTEGER AS Instant NOT NULL,
 updated INTEGER AS Instant NOT NULL,
-kids TEXT as List<Long> NOT NULL DEFAULT "[]",
+kids TEXT AS List<Long> NOT NULL DEFAULT "[]",
 content TEXT,
-deleted INTEGER as Boolean NOT NULL DEFAULT 0,
-dead INTEGER as Boolean NOT NULL DEFAULT 0
+deleted INTEGER AS Boolean NOT NULL DEFAULT 0,
+dead INTEGER AS Boolean NOT NULL DEFAULT 0
 );
 
 CREATE INDEX IF NOT EXISTS idx_comment_parentId ON comment (parentId);

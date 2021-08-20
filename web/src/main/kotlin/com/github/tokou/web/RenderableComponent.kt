@@ -2,13 +2,14 @@ package com.github.tokou.web
 
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.ValueObserver
-import react.RComponent
-import react.RProps
-import react.RState
-import react.setState
+import react.*
 
-abstract class RenderableComponent<T : Any, S : RState>(props: Props<T>, initialState: S) :
-    RComponent<RenderableComponent.Props<T>, S>(props)
+external interface Props<T : Any> : react.Props {
+    var component: T
+}
+
+abstract class RenderableComponent<T : Any, S : State>(props: Props<T>, initialState: S) :
+    RComponent<Props<T>, S>(props)
 {
     protected val component: T get() = props.component
     private val subscriptions = ArrayList<Subscription<*>>()
@@ -35,10 +36,6 @@ abstract class RenderableComponent<T : Any, S : RState>(props: Props<T>, initial
 
     protected fun <T : Any> Value<T>.bindToState(buildState: S.(T) -> Unit) {
         subscriptions += Subscription(this) { data -> setState { buildState(data) } }
-    }
-
-    interface Props<T : Any> : RProps {
-        var component: T
     }
 
     protected class Subscription<T : Any>(

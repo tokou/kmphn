@@ -3,7 +3,7 @@ object Deps {
 
     object JetBrains {
         object Kotlin {
-            private const val VERSION = "1.4.32"
+            private const val VERSION = "1.5.21"
             const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$VERSION"
             const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:$VERSION"
             const val testJunit = "org.jetbrains.kotlin:kotlin-test-junit:$VERSION"
@@ -13,34 +13,34 @@ object Deps {
 
             object Wrappers {
                 object Styled {
-                    private const val VERSION = "5.2.3-pre.153-kotlin-1.4.32"
-                    const val styled = "org.jetbrains:kotlin-styled:$VERSION"
+                    private const val VERSION = "5.3.0-pre.232-kotlin-1.5.21"
+                    const val styled = "org.jetbrains.kotlin-wrappers:kotlin-styled:$VERSION"
                 }
 
                 object React {
-                    private const val VERSION = "16.13.1-pre.110-kotlin-1.4.0"
-                    const val react = "org.jetbrains:kotlin-react:$VERSION"
-                    const val reactDom = "org.jetbrains:kotlin-react-dom:$VERSION"
+                    private const val VERSION = "17.0.2-pre.232-kotlin-1.5.21"
+                    const val react = "org.jetbrains.kotlin-wrappers:kotlin-react:$VERSION"
+                    const val reactDom = "org.jetbrains.kotlin-wrappers:kotlin-react-dom:$VERSION"
 
                 }
 
                 object Router {
-                    private const val VERSION = "5.1.2-pre.110-kotlin-1.4.0"
-                    const val reactRouterDom = "org.jetbrains:kotlin-react-router-dom:$VERSION"
+                    private const val VERSION = "5.3.0-pre.232-kotlin-1.5.21"
+                    const val reactRouterDom = "org.jetbrains.kotlin-wrappers:kotlin-react-router-dom:$VERSION"
                 }
             }
         }
 
         object KotlinX {
             object Coroutines {
-                private const val VERSION = "1.4.3-native-mt"
-                const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3-native-mt"
+                private const val VERSION = "1.5.1"
+                const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$VERSION"
                 const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$VERSION"
                 const val swing = "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$VERSION"
             }
 
             object DateTime {
-                const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.1.1"
+                const val dateTime = "org.jetbrains.kotlinx:kotlinx-datetime:0.2.1"
             }
 
             object Html {
@@ -48,15 +48,15 @@ object Deps {
             }
 
             object Serialization {
-                const val gradlePlugin = "org.jetbrains.kotlin:kotlin-serialization:1.4.30"
-                private const val VERSION = "1.1.0"
+                const val gradlePlugin = "org.jetbrains.kotlin:kotlin-serialization:1.5.20"
+                private const val VERSION = "1.2.2"
                 const val core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$VERSION"
                 const val json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$VERSION"
             }
         }
 
         object Compose {
-            private const val VERSION = "0.4.0-build180"
+            private const val VERSION = "1.0.0-alpha3"
             const val gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:$VERSION"
 
             object Runtime {
@@ -65,7 +65,7 @@ object Deps {
         }
 
         object Ktor {
-            private const val VERSION = "1.5.3"
+            private const val VERSION = "1.6.2"
             const val clientCore = "io.ktor:ktor-client-core:$VERSION"
             const val clientJson = "io.ktor:ktor-client-json:$VERSION"
             const val clientLogging = "io.ktor:ktor-client-logging:$VERSION"
@@ -82,13 +82,6 @@ object Deps {
             const val VERSION = "16.13.0"
             const val react = "react"
             const val reactDom = "react-dom"
-        }
-    }
-
-    object CcFraser {
-        object Muirwik {
-            private const val VERSION = "0.6.7"
-            const val muirwik = "com.ccfraser.muirwik:muirwik-components:$VERSION"
         }
     }
 
@@ -114,7 +107,7 @@ object Deps {
 
     object ArkIvanov {
         object MviKotlin {
-            private const val VERSION = "2.0.1"
+            private const val VERSION = "2.0.4"
             const val mvikotlin = "com.arkivanov.mvikotlin:mvikotlin:$VERSION"
             const val mvikotlinMain = "com.arkivanov.mvikotlin:mvikotlin-main:$VERSION"
             const val mvikotlinMainIosX64 = "com.arkivanov.mvikotlin:mvikotlin-main-iosx64:$VERSION"
@@ -127,7 +120,7 @@ object Deps {
         }
 
         object Decompose {
-            private const val VERSION = "0.2.1"
+            private const val VERSION = "0.3.1"
             const val decompose = "com.arkivanov.decompose:decompose:$VERSION"
             const val decomposeIosX64 = "com.arkivanov.decompose:decompose-iosx64:$VERSION"
             const val decomposeIosArm64 = "com.arkivanov.decompose:decompose-iosarm64:$VERSION"
@@ -138,7 +131,7 @@ object Deps {
 
     object Squareup {
         object SqlDelight {
-            private const val VERSION = "1.4.4"
+            private const val VERSION = "1.5.1"
             const val gradlePlugin = "com.squareup.sqldelight:gradle-plugin:$VERSION"
             const val androidDriver = "com.squareup.sqldelight:android-driver:$VERSION"
             const val sqliteDriver = "com.squareup.sqldelight:sqlite-driver:$VERSION"
@@ -155,7 +148,7 @@ object Deps {
 
     object TouchLab {
         object Kermit {
-            const val kermit = "co.touchlab:kermit:0.1.8"
+            const val kermit = "co.touchlab:kermit:0.1.9"
         }
     }
 
