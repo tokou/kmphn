@@ -24,14 +24,8 @@ kotlin {
                 projectDependencies.forEach { export(it) }
 
                 when (val target = compilation.target.name) {
-                    "iosX64" -> {
-                        export(Deps.ArkIvanov.Decompose.decomposeIosX64)
-                        export(Deps.ArkIvanov.MviKotlin.mvikotlinMainIosX64)
-                    }
-                    "iosArm64" -> {
-                        export(Deps.ArkIvanov.Decompose.decomposeIosArm64)
-                        export(Deps.ArkIvanov.MviKotlin.mvikotlinMainIosArm64)
-                    }
+                    "iosX64" -> { }
+                    "iosArm64" -> { }
                     else -> error("Unsupported target: $target")
                 }
             }
@@ -57,15 +51,11 @@ kotlin {
 
         iosX64Main {
             dependencies {
-                api(Deps.ArkIvanov.Decompose.decomposeIosX64)
-                api(Deps.ArkIvanov.MviKotlin.mvikotlinMainIosX64)
             }
         }
 
         iosArm64Main {
             dependencies {
-                api(Deps.ArkIvanov.Decompose.decomposeIosArm64)
-                api(Deps.ArkIvanov.MviKotlin.mvikotlinMainIosArm64)
             }
         }
     }

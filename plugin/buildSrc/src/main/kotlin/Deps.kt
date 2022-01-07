@@ -3,7 +3,7 @@ object Deps {
 
     object JetBrains {
         object Kotlin {
-            private const val VERSION = "1.5.21"
+            private const val VERSION = "1.6.10"
             const val gradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$VERSION"
             const val testCommon = "org.jetbrains.kotlin:kotlin-test-common:$VERSION"
             const val testJunit = "org.jetbrains.kotlin:kotlin-test-junit:$VERSION"
@@ -33,7 +33,7 @@ object Deps {
 
         object KotlinX {
             object Coroutines {
-                private const val VERSION = "1.5.1"
+                private const val VERSION = "1.6.0-native-mt"
                 const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$VERSION"
                 const val test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$VERSION"
                 const val swing = "org.jetbrains.kotlinx:kotlinx-coroutines-swing:$VERSION"
@@ -56,11 +56,11 @@ object Deps {
         }
 
         object Compose {
-            private const val VERSION = "1.0.0-alpha3"
+            private const val VERSION = "1.0.1"
             const val gradlePlugin = "org.jetbrains.compose:compose-gradle-plugin:$VERSION"
 
             object Runtime {
-                const val runtime = "androidx.compose.runtime:runtime:1.0.0-beta04"
+                const val runtime = "androidx.compose.runtime:runtime:1.0.1"
             }
         }
 
@@ -88,7 +88,7 @@ object Deps {
     object Android {
         object Tools {
             object Build {
-                const val gradlePlugin = "com.android.tools.build:gradle:7.1.0-alpha08"
+                const val gradlePlugin = "com.android.tools.build:gradle:7.2.0-alpha06"
             }
             const val desugarJdk = "com.android.tools:desugar_jdk_libs:1.1.5"
         }
@@ -110,9 +110,6 @@ object Deps {
             private const val VERSION = "2.0.4"
             const val mvikotlin = "com.arkivanov.mvikotlin:mvikotlin:$VERSION"
             const val mvikotlinMain = "com.arkivanov.mvikotlin:mvikotlin-main:$VERSION"
-            const val mvikotlinMainIosX64 = "com.arkivanov.mvikotlin:mvikotlin-main-iosx64:$VERSION"
-            const val mvikotlinMainIosArm64 = "com.arkivanov.mvikotlin:mvikotlin-main-iosarm64:$VERSION"
-            const val mvikotlinMainJs = "com.arkivanov.mvikotlin:mvikotlin-main-js:$VERSION"
             const val mvikotlinLogging = "com.arkivanov.mvikotlin:mvikotlin-logging:$VERSION"
             const val mvikotlinTimeTravel = "com.arkivanov.mvikotlin:mvikotlin-timetravel:$VERSION"
             const val mvikotlinExtensionsCoroutines = "com.arkivanov.mvikotlin:mvikotlin-extensions-coroutines:$VERSION"
@@ -122,9 +119,6 @@ object Deps {
         object Decompose {
             private const val VERSION = "0.3.1"
             const val decompose = "com.arkivanov.decompose:decompose:$VERSION"
-            const val decomposeIosX64 = "com.arkivanov.decompose:decompose-iosx64:$VERSION"
-            const val decomposeIosArm64 = "com.arkivanov.decompose:decompose-iosarm64:$VERSION"
-            const val decomposeJs = "com.arkivanov.decompose:decompose-js:$VERSION"
             const val extensionsCompose = "com.arkivanov.decompose:extensions-compose-jetbrains:$VERSION"
         }
     }

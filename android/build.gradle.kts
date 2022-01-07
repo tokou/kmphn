@@ -51,7 +51,6 @@ android {
     }
 
     kotlinOptions {
-        useIR = true
     }
 }
 

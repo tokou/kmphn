@@ -19,9 +19,7 @@ dependencies {
     implementation(npm(Deps.Npm.React.react, Deps.Npm.React.VERSION))
     implementation(npm(Deps.Npm.React.reactDom, Deps.Npm.React.VERSION))
 
-    implementation(Deps.ArkIvanov.Decompose.decomposeJs)
     implementation(Deps.ArkIvanov.MviKotlin.mvikotlin)
-    implementation(Deps.ArkIvanov.MviKotlin.mvikotlinMainJs)
 
     implementation(project(":common:api"))
     implementation(project(":common:database"))

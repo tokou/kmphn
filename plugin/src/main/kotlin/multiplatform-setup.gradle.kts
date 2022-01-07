@@ -44,7 +44,6 @@ kotlin {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            useIR = true
             jvmTarget = "11"
         }
     }

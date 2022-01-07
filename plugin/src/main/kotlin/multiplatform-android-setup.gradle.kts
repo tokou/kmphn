@@ -38,7 +38,6 @@ android {
 
     tasks.withType<KotlinCompile> {
         kotlinOptions {
-            useIR = true
             jvmTarget = "11"
             freeCompilerArgs.plus(listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xallow-result-return-type"))
         }

@@ -23,8 +23,6 @@ actual fun rememberScrollbarAdapter(
 ): ScrollbarAdapter =
     composeRememberScrollbarAdapter(
         scrollState = scrollState,
-        itemCount = itemCount,
-        averageItemSize = averageItemSize
     )
 
 @Composable

@@ -1,4 +1,4 @@
-An clone of hn.premii.com implemented in Kotlin Multiplatform with shared Android/Desktop Compose UI, SwiftUI on iOS and React for Web
+An clone of [hn.premii.com](https://hn.premii.com) implemented in Kotlin Multiplatform with shared Android/Desktop Compose UI, SwiftUI on iOS and React for Web
 
 This example supports the following targets:
 - `Android` (Compose)

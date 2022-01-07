@@ -32,7 +32,7 @@ struct NewsDetailView_Previews: PreviewProvider {
     }
     
     class StubNewsDetail : NewsDetail {
-        var models: Value<NewsDetailModel> = valueOf(NewsDetailContentView_Previews.contentStub)
+        var models: DecomposeValue<NewsDetailModel> = valueOf(NewsDetailContentView_Previews.contentStub)
 
         func onBack() {}
         func onCommentClicked(id: ItemId) {}
